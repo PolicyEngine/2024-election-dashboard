@@ -1,70 +1,94 @@
 import streamlit as st
 import plotly.graph_objects as go
+import pandas as pd
 from policyengine_core.charts import format_fig
 from results import calculate_results
-from config import REFORMS, APP_TITLE, BASELINE_DESCRIPTION, REFORMS_DESCRIPTION, NOTES
-from utils import STATE_CODES
-import pandas as pd
+from config import REFORMS, APP_TITLE, NOTES
+from utils import STATE_CODES, YEAR
 
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 
-st.markdown(BASELINE_DESCRIPTION)
-
 col1, col2 = st.columns(2)
 
 with col1:
+    is_married = st.checkbox("I am married")
     state = st.selectbox("Select State", STATE_CODES)
-    num_children = st.number_input("Number of Children", min_value=0, max_value=10, value=2, step=1)
+    num_children = st.number_input("Number of Children", min_value=0, max_value=10, value=0, step=1)
+    
+    # Child age inputs
+    child_ages = []
+    if num_children > 0:
+        age_cols = st.columns(min(num_children, 3))  # Up to 3 columns for child ages
+        for i in range(num_children):
+            with age_cols[i % 3]:
+                age = st.number_input(f"Age Child {i+1}", min_value=0, max_value=18, value=5, key=f"child_{i}")
+                child_ages.append(age)
 
 with col2:
-    income = st.number_input("Annual Employment Income", min_value=0, max_value=500000, value=50000, step=1000)
-    rent = st.number_input("Annual Rent", min_value=0, max_value=120000, value=12000, step=1000)
+    income = st.slider("Annual Employment Income", min_value=0, max_value=500000, value=50000, step=1000, format="$%d")
+    social_security_retirement = st.slider("Annual Social Security Retirement Income", min_value=0, max_value=50000, value=0, step=100, format="$%d")
+    rent = st.slider("Annual Rent", min_value=0, max_value=120000, value=12000, step=100, format="$%d")
+    fair_market_rent = st.number_input("Small Area Fair Market Rent (yearly)", min_value=0, max_value=120000, value=12000, step=100)
 
+# Reform selection using checkboxes
+st.markdown("## Select Reforms to Compare")
 available_reforms = list(REFORMS.keys())[1:]  # Exclude Baseline
-selected_reforms = st.multiselect("Select Reforms to Compare", available_reforms, 
-                                  format_func=lambda x: REFORMS[x]['name'])
+
+# Separate reforms into two groups
+harris_walz_reforms = [reform for reform in available_reforms if any(name in reform for name in ['Harris', 'Walz'])]
+trump_vance_reforms = [reform for reform in available_reforms if any(name in reform for name in ['Trump', 'Vance'])]
+
+selected_reforms = []
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("### Harris/Walz Reforms")
+    for reform in harris_walz_reforms:
+        if st.checkbox(REFORMS[reform]['name'], key=f"reform_{reform}"):
+            selected_reforms.append(reform)
+
+with col2:
+    st.markdown("### Trump/Vance Reforms")
+    for reform in trump_vance_reforms:
+        if st.checkbox(REFORMS[reform]['name'], key=f"reform_{reform}"):
+            selected_reforms.append(reform)
+
 
 if st.button("Calculate"):
-    results = calculate_results(selected_reforms, state, num_children, income, rent)
+    # Display descriptions for selected reforms immediately after button press
+    if selected_reforms:
+        st.markdown("## Selected Reforms")
+        for reform in selected_reforms:
+            st.markdown(f"### {REFORMS[reform]['name']}")
+            st.markdown(REFORMS[reform]['description'])
+            if 'link' in REFORMS[reform]:
+                st.markdown(f"[Read our full report on this reform.]({REFORMS[reform]['link']})")
     
-    # Create DataFrame
-    df = pd.DataFrame(columns=["Scenario", "Net Income", "Difference", "Percent Change"])
-    baseline_income = results["Baseline"]
+    # Now trigger the calculations
+    results = calculate_results(selected_reforms, state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement)
     
-    for scenario, net_income in results.items():
-        difference = net_income - baseline_income
-        percent_change = (difference / baseline_income) * 100
-        df = df.append({
-            "Scenario": scenario,
-            "Net Income": net_income,
-            "Difference": difference,
-            "Percent Change": percent_change
-        }, ignore_index=True)
-    
-    # Display descriptions only for selected reforms
-    st.markdown("## Selected Reforms")
-    for reform in selected_reforms:
-        st.markdown(f"### {REFORMS[reform]['name']}")
-        st.markdown(REFORMS[reform]['description'])
-        st.markdown(f"[Read full report]({REFORMS[reform]['link']})")
+    # Convert results to DataFrame
+    df = pd.DataFrame(list(results.items()), columns=['Reform', 'Net Income'])
+    df['Difference'] = df['Net Income'] - df.loc[df['Reform'] == 'Baseline', 'Net Income'].values[0]
+    df['Percent Change'] = (df['Difference'] / df.loc[df['Reform'] == 'Baseline', 'Net Income'].values[0]) * 100
     
     st.markdown("## Results")
 
     # Plotting
-    df_plot = df[df["Scenario"] != "Baseline"]  # Exclude baseline from plot
+    df_plot = df[df["Reform"] != "Baseline"]  # Exclude baseline from plot
     fig = go.Figure()
 
     for _, row in df_plot.iterrows():
         fig.add_trace(go.Bar(
-            x=[REFORMS[row["Scenario"]]['name']],
+            x=[REFORMS[row["Reform"]]['name'] if row["Reform"] in REFORMS else row["Reform"]],
             y=[row["Difference"]],
-            name=REFORMS[row["Scenario"]]['name'],
-            marker_color=REFORMS[row["Scenario"]]['color']
+            name=REFORMS[row["Reform"]]['name'] if row["Reform"] in REFORMS else row["Reform"],
+            marker_color=REFORMS[row["Reform"]]['color'] if row["Reform"] in REFORMS else 'gray'
         ))
 
     fig.update_layout(
-        title=f"Net Income Difference Comparison (Income: ${income:,}, Rent: ${rent:,}/year)",
+        title=f"Net Income Difference Comparison ({YEAR})",
         xaxis_title="Reforms",
         yaxis_title="Difference in Net Income ($)",
         height=600,
@@ -89,12 +113,12 @@ if st.button("Calculate"):
 
     # Formatting the DataFrame for display
     df_display = df.copy()
-    df_display["Scenario"] = df_display["Scenario"].map(lambda x: REFORMS[x]['name'])
+    df_display["Reform"] = df_display["Reform"].map(lambda x: REFORMS[x]['name'] if x in REFORMS else x)
     df_display["Net Income"] = df_display["Net Income"].apply(lambda x: f"${x:,.2f}")
     df_display["Difference"] = df_display["Difference"].apply(lambda x: f"${x:,.2f}")
     df_display["Percent Change"] = df_display["Percent Change"].apply(lambda x: f"{x:.2f}%")
 
     st.write("Results Table:")
-    st.dataframe(df_display.set_index("Scenario"))
+    st.dataframe(df_display.set_index("Reform"))
 
 st.markdown(NOTES)

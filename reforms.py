@@ -146,4 +146,12 @@ REFORMS = {
             "2035-01-01.2100-12-31": 562750
         },
     },
+    "Trump Social Security Tax Exemption": {
+        "gov.irs.social_security.taxability.rate.additional": {
+            "2024-01-01.2100-12-31": 0
+        },
+        "gov.irs.social_security.taxability.rate.base": {
+            "2024-01-01.2100-12-31": 0
+        }
+    },
 }

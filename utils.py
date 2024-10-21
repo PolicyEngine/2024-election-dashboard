@@ -33,5 +33,5 @@ STATE_CODES = [
 ]
 
 # Simulation constants
-YEAR = "2024"
+YEAR = "2025"
 DEFAULT_AGE = 40

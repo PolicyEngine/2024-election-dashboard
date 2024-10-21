@@ -3,39 +3,57 @@ from policyengine_core.reforms import Reform
 from reforms import REFORMS
 from utils import YEAR, DEFAULT_AGE
 
-def create_situation(state, num_children, income, rent):
+def create_situation(state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement):
     situation = {
         "people": {
-            "you": {
+            "adult": {
                 "age": {YEAR: DEFAULT_AGE},
                 "employment_income": {YEAR: income},
-                "pre_subsidy_rent": {YEAR: rent}
+                "rent": {YEAR: rent},
+                "social_security_retirement": {YEAR: social_security_retirement},
             },
         },
-        "families": {"your family": {"members": ["you"]}},
-        "marital_units": {"your marital unit": {"members": ["you"]}},
+        "families": {"family": {"members": ["adult"]}},
+        "marital_units": {"marital_unit": {"members": ["adult"]}},
         "tax_units": {
-            "your tax unit": {
-                "members": ["you"],
+            "tax_unit": {
+                "members": ["adult"],
+                # Performance improvement settings
+                "premium_tax_credit": {YEAR: 0},
+                "tax_unit_itemizes": {YEAR: False},
+                "taxable_income_deductions_if_itemizing": {YEAR: 0},
+                "alternative_minimum_tax": {YEAR: 0},
+                "net_investment_income_tax": {YEAR: 0},
             }
         },
         "households": {
-            "your household": {"members": ["you"], "state_name": {YEAR: state}}
+            "household": {
+                "members": ["adult"], 
+                "state_name": {YEAR: state},
+                "small_area_fair_market_rent": {YEAR: fair_market_rent} 
+            }
         },
-        "spm_units": {"your household": {"members": ["you"]}},
+        "spm_units": {"household": {"members": ["adult"]}},
     }
 
-    for i in range(num_children):
+    for i, age in enumerate(child_ages):
         child_id = f"child_{i}"
-        situation["people"][child_id] = {"age": {YEAR: 10}}
+        situation["people"][child_id] = {"age": {YEAR: age}}
         for unit in ["families", "tax_units", "households", "spm_units"]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append(child_id)
 
+    if is_married:
+        situation["people"]["spouse"] = {
+            "age": {YEAR: DEFAULT_AGE},
+        }
+        for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
+            situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
+
     return situation
 
-def calculate_results(selected_reforms, state, num_children, income, rent):
+def calculate_results(selected_reforms, state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement):
     results = {}
-    situation = create_situation(state, num_children, income, rent)
+    situation = create_situation(state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement)
 
     # Calculate baseline
     baseline_simulation = Simulation(situation=situation)
