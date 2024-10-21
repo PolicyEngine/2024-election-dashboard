@@ -1,22 +1,26 @@
 import streamlit as st
-import plotly.graph_objects as go
 import pandas as pd
-from policyengine_core.charts import format_fig
 from results import calculate_results
-from config import REFORMS, APP_TITLE, NOTES
+from config import REFORMS, APP_TITLE, NOTES, REFORMS_DESCRIPTION
 from utils import STATE_CODES, YEAR
+from graph import create_reform_comparison_graph  # Import the graph function from graph.py
 
+# Main streamlit application logic
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 
+# Display the reform description (this is the exact content from REFORMS_DESCRIPTION)
+st.markdown(REFORMS_DESCRIPTION)
+
+# Input sections for the user
 col1, col2 = st.columns(2)
 
 with col1:
     is_married = st.checkbox("I am married")
-    state = st.selectbox("Select State", STATE_CODES)
+    state = st.selectbox("State of residence", STATE_CODES)
     num_children = st.number_input("Number of Children", min_value=0, max_value=10, value=0, step=1)
-    
-    # Child age inputs
+
+    # Inputs for child ages
     child_ages = []
     if num_children > 0:
         age_cols = st.columns(min(num_children, 3))  # Up to 3 columns for child ages
@@ -26,16 +30,16 @@ with col1:
                 child_ages.append(age)
 
 with col2:
-    income = st.slider("Annual Employment Income", min_value=0, max_value=500000, value=50000, step=1000, format="$%d")
-    social_security_retirement = st.slider("Annual Social Security Retirement Income", min_value=0, max_value=50000, value=0, step=100, format="$%d")
-    rent = st.slider("Annual Rent", min_value=0, max_value=120000, value=12000, step=100, format="$%d")
-    fair_market_rent = st.number_input("Small Area Fair Market Rent (yearly)", min_value=0, max_value=120000, value=12000, step=100)
+    income = st.slider("Household annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")
+    social_security_retirement = st.slider("Household annual social security retirement income", min_value=0, max_value=100000, value=0, step=500, format="$%d")
+    rent = st.slider("Household annual rent", min_value=0, max_value=120000, value=12000, step=500, format="$%d")
+    fair_market_rent = st.number_input("Estimated small area fair market rent", min_value=0, max_value=120000, value=12000, step=500)
 
-# Reform selection using checkboxes
+# Section for reform selection
 st.markdown("## Select Reforms to Compare")
 available_reforms = list(REFORMS.keys())[1:]  # Exclude Baseline
 
-# Separate reforms into two groups
+# Separate reforms into two groups for selection
 harris_walz_reforms = [reform for reform in available_reforms if any(name in reform for name in ['Harris', 'Walz'])]
 trump_vance_reforms = [reform for reform in available_reforms if any(name in reform for name in ['Trump', 'Vance'])]
 
@@ -54,71 +58,28 @@ with col2:
         if st.checkbox(REFORMS[reform]['name'], key=f"reform_{reform}"):
             selected_reforms.append(reform)
 
+# Calculation button
+if st.button("Calculate my household income"):
 
-if st.button("Calculate"):
-    # Display descriptions for selected reforms immediately after button press
-    if selected_reforms:
-        st.markdown("## Selected Reforms")
-        for reform in selected_reforms:
-            st.markdown(f"### {REFORMS[reform]['name']}")
-            st.markdown(REFORMS[reform]['description'])
-            if 'link' in REFORMS[reform]:
-                st.markdown(f"[Read our full report on this reform.]({REFORMS[reform]['link']})")
+
+    # Placeholder for the chart
+    chart_placeholder = st.empty()
+
+    # Initial calculation (Baseline)
+    results = calculate_results(['Baseline'], state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement)
     
-    # Now trigger the calculations
-    results = calculate_results(selected_reforms, state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement)
-    
-    # Convert results to DataFrame
-    df = pd.DataFrame(list(results.items()), columns=['Reform', 'Net Income'])
-    df['Difference'] = df['Net Income'] - df.loc[df['Reform'] == 'Baseline', 'Net Income'].values[0]
-    df['Percent Change'] = (df['Difference'] / df.loc[df['Reform'] == 'Baseline', 'Net Income'].values[0]) * 100
-    
-    st.markdown("## Results")
+    # Display baseline chart
+    fig = create_reform_comparison_graph(results)
+    chart_placeholder.plotly_chart(fig, use_container_width=True)
 
-    # Plotting
-    df_plot = df[df["Reform"] != "Baseline"]  # Exclude baseline from plot
-    fig = go.Figure()
+    # Calculate each selected reform and update the chart
+    for reform_key in selected_reforms:
+        # Perform calculation for the selected reform
+        reform_results = calculate_results([reform_key], state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement)
+        results[reform_key] = reform_results[reform_key]
 
-    for _, row in df_plot.iterrows():
-        fig.add_trace(go.Bar(
-            x=[REFORMS[row["Reform"]]['name'] if row["Reform"] in REFORMS else row["Reform"]],
-            y=[row["Difference"]],
-            name=REFORMS[row["Reform"]]['name'] if row["Reform"] in REFORMS else row["Reform"],
-            marker_color=REFORMS[row["Reform"]]['color'] if row["Reform"] in REFORMS else 'gray'
-        ))
-
-    fig.update_layout(
-        title=f"Net Income Difference Comparison ({YEAR})",
-        xaxis_title="Reforms",
-        yaxis_title="Difference in Net Income ($)",
-        height=600,
-    )
-
-    fig.update_yaxes(tickformat="$,.0f")
-
-    # Add value labels on the bars
-    for trace in fig.data:
-        y_value = trace.y[0]
-        fig.add_annotation(
-            x=trace.x[0],
-            y=y_value,
-            text=f"${y_value:,.0f}",
-            showarrow=False,
-            yshift=10 if y_value >= 0 else -10,
-            font=dict(color="black")
-        )
-
-    fig = format_fig(fig)
-    st.plotly_chart(fig, use_container_width=True)
-
-    # Formatting the DataFrame for display
-    df_display = df.copy()
-    df_display["Reform"] = df_display["Reform"].map(lambda x: REFORMS[x]['name'] if x in REFORMS else x)
-    df_display["Net Income"] = df_display["Net Income"].apply(lambda x: f"${x:,.2f}")
-    df_display["Difference"] = df_display["Difference"].apply(lambda x: f"${x:,.2f}")
-    df_display["Percent Change"] = df_display["Percent Change"].apply(lambda x: f"{x:.2f}%")
-
-    st.write("Results Table:")
-    st.dataframe(df_display.set_index("Reform"))
+        # Update chart with new reform results
+        fig = create_reform_comparison_graph(results)
+        chart_placeholder.plotly_chart(fig, use_container_width=True)
 
 st.markdown(NOTES)
