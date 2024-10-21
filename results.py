@@ -29,7 +29,7 @@ def create_situation(state, is_married, child_ages, income, rent, fair_market_re
         "households": {
             "household": {
                 "members": ["adult"], 
-                "state_name": {YEAR: state},
+                "state_code": {YEAR: state},
                 "small_area_fair_market_rent": {YEAR: fair_market_rent} 
             }
         },

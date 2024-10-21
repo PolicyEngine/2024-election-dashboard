@@ -10,7 +10,7 @@ REFORMS = {
             "2024-01-01.2100-12-31": True
         }
     },
-    "Vance Current Refundability CTC": {
+    "Vance Child Tax Credit (non-refundable version)": {
         "gov.irs.credits.ctc.amount.base[0].amount": {
             "2024-01-01.2100-12-31": 5000
         },
@@ -18,7 +18,7 @@ REFORMS = {
             "2024-01-01.2100-12-31": 0
         }
     },
-    "Vance Refundable CTC": {
+    "Vance Child Tax Credit (refundable version)": {
         "gov.irs.credits.ctc.amount.base[0].amount": {
             "2024-01-01.2100-12-31": 5000
         },

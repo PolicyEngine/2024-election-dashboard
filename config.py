@@ -19,14 +19,14 @@ REFORMS = {
         "description": "A proposal by Vice President Kamala Harris to provide tax credits for renters to alleviate housing costs.",
         "link": "https://policyengine.org/us/research/rent-relief-act"
     },
-    "Vance Current Refundability CTC": {
-        "name": "Vance CTC (Non-refundable)",
+    "Vance Child Tax Credit (refundable version)": {
+        "name": "Vance Child Tax Credit (non-refundable version)",
         "color": LIGHTER_RED,
         "description": "Senator JD Vance's suggestion to expand the Child Tax Credit to $5,000, modeled as non-refundable.",
         "link": "https://policyengine.org/us/research/vance-ctc"
     },
-    "Vance Refundable CTC": {
-        "name": "Vance CTC (Refundable)",
+    "Vance Child Tax Credit (non-refundable version)": {
+        "name": "Vance Child Tax Credit (refundable version)",
         "color": LIGHT_RED,
         "description": "Senator JD Vance's suggestion to expand the Child Tax Credit to $5,000, modeled as fully refundable.",
         "link": "https://policyengine.org/us/research/vance-ctc"
@@ -83,6 +83,8 @@ Several reforms have been proposed by candidates and policymakers for the 2024 e
   [Read our full report on the Social Security tax exemption proposal.](https://policyengine.org/us/research/social-security-tax-exemption)
 
 - **Harris High Earners Reform**: Vice President Kamala Harris has proposed adjusting tax rates and thresholds for high-income earners. (Detailed analysis coming soon)
+
+- **Harris Restoring ARPA EITC**: Vice President Kamala Harris has proposed restoring the American Rescua Plan Version of the Earned Income Tax Credit. (Detailed analysis coming soon)
 
 """
 
