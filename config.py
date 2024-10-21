@@ -31,7 +31,7 @@ REFORMS = {
         "description": "Senator JD Vance's suggestion to expand the Child Tax Credit to $5,000, modeled as fully refundable.",
         "link": "https://policyengine.org/us/research/vance-ctc"
     },
-    "Harris CTC": {
+    "Harris Child Tax Credit": {
         "name": "Harris Child Tax Credit",
         "color": BLUE,
         "description": "Vice President Kamala Harris's proposal to expand the Child Tax Credit, including a 'baby bonus' and increased credit amounts.",
@@ -47,11 +47,15 @@ REFORMS = {
         "color": LIGHT_RED,
         "description": "A proposal to exempt Social Security benefits from taxation, as suggested by former President Donald Trump.",
         "link": "https://policyengine.org/us/research/social-security-tax-exemption"
+    },
+    "Harris Restoring ARPA EITC": {
+        "name": "Harris Restoring ARPA EITC",
+        "color": BLUE,
+        "description": "Vice President Kamala Harris's proposal to restore and expand the Earned Income Tax Credit (EITC) to ARPA levels."    
     }
 }
 
-
-APP_TITLE = "2024 Election Household Calculator: Reform Comparisons"
+APP_TITLE = "2024 Election, Personal Household Impact Calculator"
 
 BASELINE_DESCRIPTION = """
 ## Current Tax System
@@ -80,7 +84,6 @@ Several reforms have been proposed by candidates and policymakers for the 2024 e
 
 - **Harris High Earners Reform**: Vice President Kamala Harris has proposed adjusting tax rates and thresholds for high-income earners. (Detailed analysis coming soon)
 
-The graph below shows how these reforms would affect your household's net income:
 """
 
 NOTES = """

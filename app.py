@@ -12,6 +12,8 @@ st.title(APP_TITLE)
 # Display the reform description (this is the exact content from REFORMS_DESCRIPTION)
 st.markdown(REFORMS_DESCRIPTION)
 
+st.markdown("## Enter your current household information")
+
 # Input sections for the user
 col1, col2 = st.columns(2)
 
@@ -30,10 +32,10 @@ with col1:
                 child_ages.append(age)
 
 with col2:
-    income = st.slider("Household annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")
-    social_security_retirement = st.slider("Household annual social security retirement income", min_value=0, max_value=100000, value=0, step=500, format="$%d")
-    rent = st.slider("Household annual rent", min_value=0, max_value=120000, value=12000, step=500, format="$%d")
-    fair_market_rent = st.number_input("Estimated small area fair market rent", min_value=0, max_value=120000, value=12000, step=500)
+    income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")
+    social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=100000, value=0, step=500, format="$%d")
+    rent = st.slider("Annual rent", min_value=0, max_value=120000, value=21000, step=500, format="$%d")
+    fair_market_rent = st.number_input("Estimated small area fair market rent", min_value=0, max_value=120000, value=25000, step=500)
 
 # Section for reform selection
 st.markdown("## Select Reforms to Compare")
