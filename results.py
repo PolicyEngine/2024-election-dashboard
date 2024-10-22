@@ -2,6 +2,7 @@ from policyengine_us import Simulation
 from policyengine_core.reforms import Reform
 from reforms import COMBINED_REFORMS
 from utils import YEAR, DEFAULT_AGE
+import pandas as pd
 
 def create_situation(state, is_married, child_ages, income, social_security_retirement):
     situation = {
@@ -66,3 +67,44 @@ def calculate_results(selected_reforms, state, is_married, child_ages, income, s
             results[reform_name] = simulation.calculate("household_net_income", YEAR)[0]
 
     return results
+
+def calculate_detailed_metrics(state, is_married, child_ages, income, social_security_retirement):
+    """Calculate detailed tax metrics for all reforms after the bar chart is displayed"""
+    situation = create_situation(state, is_married, child_ages, income, social_security_retirement)
+    
+    # Initialize DataFrame with reforms as columns and metrics as rows
+    columns = ["Baseline", "Harris-Walz", "Trump-Vance"]
+    rows = [
+        "Household Net Income",
+        "Income Tax Before Credits",
+        "Refundable Tax Credits"
+    ]
+    
+    detailed_df = pd.DataFrame(
+        index=rows,
+        columns=columns,
+        dtype=float
+    )
+    
+    # Map the row names to their corresponding variables
+    variable_map = {
+        "Household Net Income": "household_net_income",
+        "Income Tax Before Credits": "income_tax_before_refundable_credits",
+        "Refundable Tax Credits": "income_tax_refundable_credits"
+    }
+
+    # Calculate for each reform
+    for reform_name in columns:
+        if reform_name == "Baseline":
+            simulation = Simulation(situation=situation)
+        else:
+            reform_dict = COMBINED_REFORMS.get(reform_name, {})
+            reform = Reform.from_dict(reform_dict, country_id="us")
+            simulation = Simulation(reform=reform, situation=situation)
+        
+        # Calculate all metrics for this reform
+        for row in rows:
+            variable = variable_map[row]
+            detailed_df.at[row, reform_name] = simulation.calculate(variable, YEAR)[0]
+
+    return detailed_df
