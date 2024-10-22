@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from results import calculate_results
 from reforms import COMBINED_REFORMS
-from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION
+from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION
 from utils import STATE_CODES, YEAR
 from graph import create_reform_comparison_graph
 
@@ -10,8 +10,7 @@ from graph import create_reform_comparison_graph
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 
-# Display the reform description
-st.markdown(REFORMS_DESCRIPTION)
+st.markdown(BASELINE_DESCRIPTION)
 
 st.markdown("## Enter your current household information")
 
@@ -96,4 +95,7 @@ if st.button("Calculate my household income"):
     # Clear the progress text
     progress_text.empty()
 
-st.markdown(NOTES)
+    # Display reform descriptions after the chart
+    st.markdown("## Reform Details")
+    st.markdown(REFORMS_DESCRIPTION)
+    st.markdown(NOTES)
