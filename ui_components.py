@@ -39,43 +39,43 @@ def render_itemized_deductions():
     with show_itemized:
         medical_expenses = st.number_input(
             "Medical out-of-pocket expenses ($)",
-            min_value=0, max_value=100000, value=0, step=100,
+            min_value=0, max_value=100000, value=0, step=500,
             help="Medical and dental expenses that exceed 7.5% of your adjusted gross income"
         )
         
         real_estate_taxes = st.number_input(
             "Real estate taxes ($)",
-            min_value=0, max_value=50000, value=0, step=100,
+            min_value=0, max_value=50000, value=0, step=500,
             help="Property taxes paid on your primary residence"
         )
         
         interest_expense = st.number_input(
             "Interest expense ($)",
-            min_value=0, max_value=50000, value=0, step=100,
+            min_value=0, max_value=50000, value=0, step=500,
             help="Mortgage interest and investment interest expenses"
         )
         
         charitable_cash = st.number_input(
             "Charitable cash donations ($)",
-            min_value=0, max_value=100000, value=0, step=100,
+            min_value=0, max_value=100000, value=0, step=500,
             help="Cash donations to qualified charitable organizations"
         )
         
         charitable_non_cash = st.number_input(
             "Charitable non-cash donations ($)",
-            min_value=0, max_value=100000, value=0, step=100,
+            min_value=0, max_value=100000, value=0, step=500,
             help="Value of donated items like clothing, furniture, etc."
         )
         
         qualified_business_income = st.number_input(
             "Qualified business income ($)",
-            min_value=0, max_value=500000, value=0, step=100,
+            min_value=0, max_value=500000, value=0, step=500,
             help="Income from partnerships, S corporations, or sole proprietorships"
         )
         
         casualty_loss = st.number_input(
             "Casualty loss ($)",
-            min_value=0, max_value=100000, value=0, step=100,
+            min_value=0, max_value=100000, value=0, step=500,
             help="Losses from federally declared disasters"
         )
         
