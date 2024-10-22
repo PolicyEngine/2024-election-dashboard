@@ -48,6 +48,13 @@ COMBINED_REFORMS = {
         "gov.irs.income.bracket.thresholds.5.SURVIVING_SPOUSE": {
             "2025-01-01.2025-12-31": 462400,
         },
+        # Capital Gains Reform
+        "gov.contrib.harris.capital_gains.in_effect": {
+            "2025-01-01.2100-12-31": True
+        },
+        "gov.contrib.harris.capital_gains.brackets.thresholds.3.SEPARATE": {
+            "2025-01-01.2100-12-31": 500000
+        },
         # Restoring ARPA EITC
         "gov.irs.credits.eitc.eligibility.age.max": {
             "2024-01-01.2033-12-31": 100

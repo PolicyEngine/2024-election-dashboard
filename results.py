@@ -7,7 +7,7 @@ import pandas as pd
 def create_situation(state, is_married, child_ages, income, social_security_retirement,
                     medical_expenses=0, real_estate_taxes=0, interest_expense=0,
                     charitable_cash=0, charitable_non_cash=0, qualified_business_income=0,
-                    casualty_loss=0):
+                    casualty_loss=0, capital_gains=0):
     situation = {
         "people": {
             "adult": {
@@ -21,6 +21,7 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
                 "qualified_business_income": {YEAR: qualified_business_income},
                 "casualty_loss": {YEAR: casualty_loss},
                 "real_estate_taxes": {YEAR: real_estate_taxes},
+                "capital_gains": {YEAR: capital_gains},
             },
         },
         "families": {"family": {"members": ["adult"]}},
@@ -61,13 +62,13 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
 def calculate_results(selected_reforms, state, is_married, child_ages, income, social_security_retirement,
                      medical_expenses=0, real_estate_taxes=0, interest_expense=0,
                      charitable_cash=0, charitable_non_cash=0, qualified_business_income=0,
-                     casualty_loss=0):
+                     casualty_loss=0, capital_gains=0):
     results = {}
     situation = create_situation(
         state, is_married, child_ages, income, social_security_retirement,
         medical_expenses, real_estate_taxes, interest_expense,
         charitable_cash, charitable_non_cash, qualified_business_income,
-        casualty_loss
+        casualty_loss, capital_gains
     )
 
     # Calculate baseline
@@ -87,16 +88,14 @@ def calculate_results(selected_reforms, state, is_married, child_ages, income, s
 def calculate_detailed_metrics(state, is_married, child_ages, income, social_security_retirement,
                              medical_expenses=0, real_estate_taxes=0, interest_expense=0,
                              charitable_cash=0, charitable_non_cash=0, qualified_business_income=0,
-                             casualty_loss=0):
-    """Calculate detailed tax metrics for all reforms after the bar chart is displayed"""
+                             casualty_loss=0, capital_gains=0):
     situation = create_situation(
         state, is_married, child_ages, income, social_security_retirement,
         medical_expenses, real_estate_taxes, interest_expense,
         charitable_cash, charitable_non_cash, qualified_business_income,
-        casualty_loss
+        casualty_loss, capital_gains
     )
     
-    # Initialize DataFrame with reforms as columns and metrics as rows
     columns = ["Baseline", "Harris-Walz", "Trump-Vance"]
     rows = [
         "Household Net Income",
@@ -110,14 +109,12 @@ def calculate_detailed_metrics(state, is_married, child_ages, income, social_sec
         dtype=float
     )
     
-    # Map the row names to their corresponding variables
     variable_map = {
         "Household Net Income": "household_net_income",
         "Income Tax Before Credits": "income_tax_before_refundable_credits",
         "Refundable Tax Credits": "income_tax_refundable_credits"
     }
 
-    # Calculate for each reform
     for reform_name in columns:
         if reform_name == "Baseline":
             simulation = Simulation(situation=situation)
@@ -126,7 +123,6 @@ def calculate_detailed_metrics(state, is_married, child_ages, income, social_sec
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
         
-        # Calculate all metrics for this reform
         for row in rows:
             variable = variable_map[row]
             detailed_df.at[row, reform_name] = simulation.calculate(variable, YEAR)[0]

@@ -34,6 +34,13 @@ with col1:
 with col2:
     income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")
     social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=100000, value=0, step=500, format="$%d")
+    capital_gains = st.slider(
+    "Annual capital gains", 
+    min_value=0, 
+    max_value=500000, 
+    value=0, 
+    step=500, 
+    format="$%d")
     
     # Add expandable section for itemized deductions
     show_itemized = st.expander("Itemized deduction sources", expanded=False)
@@ -126,7 +133,8 @@ if st.button("Calculate my household income"):
         charitable_cash,
         charitable_non_cash,
         qualified_business_income,
-        casualty_loss
+        casualty_loss,
+        capital_gains  
     )
     results["Baseline"] = baseline_results["Baseline"]
     
@@ -149,7 +157,8 @@ if st.button("Calculate my household income"):
         charitable_cash,
         charitable_non_cash,
         qualified_business_income,
-        casualty_loss
+        casualty_loss,
+        capital_gains
     )
     results["Harris-Walz"] = harris_results["Harris-Walz"]
     
@@ -172,7 +181,8 @@ if st.button("Calculate my household income"):
         charitable_cash,
         charitable_non_cash,
         qualified_business_income,
-        casualty_loss
+        casualty_loss,
+        capital_gains
     )
     results["Trump-Vance"] = trump_results["Trump-Vance"]
     
@@ -203,7 +213,8 @@ if st.button("Calculate my household income"):
         charitable_cash,
         charitable_non_cash,
         qualified_business_income,
-        casualty_loss
+        casualty_loss,
+        capital_gains
     )
     
     # Format values with rounding
