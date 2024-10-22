@@ -1,6 +1,7 @@
 import plotly.graph_objects as go
 import pandas as pd
 from policyengine_core.charts import format_fig
+from utils import BLUE, RED, GREY
 
 def create_reform_comparison_graph(results):
     # Convert the results dictionary into a DataFrame
@@ -11,11 +12,11 @@ def create_reform_comparison_graph(results):
     # Get the baseline value for comparison
     baseline_value = results.get("Baseline", 0)
 
-    # Define colors for each reform
+    # Define colors for each reform using utils constants
     reform_colors = {
-        "Harris-Walz": "#3378b2",  # BLUE_PRESSED
-        "Trump-Vance": "#f45959",  # LIGHT_RED
-        "Baseline": "#868686"      # MEDIUM_DARK_GRAY
+        "Harris-Walz": BLUE,
+        "Trump-Vance": RED,
+        "Baseline": GREY
     }
 
     # Create bars for each reform
@@ -29,7 +30,7 @@ def create_reform_comparison_graph(results):
             x=[reform],
             y=[baseline_value],
             name=f"Baseline of {reform}",
-            marker_color="#D2D2D2",  # MEDIUM_DARK_GRAY
+            marker_color=GREY,
             hoverinfo='none',
             showlegend=False
         ))
@@ -70,7 +71,6 @@ def create_reform_comparison_graph(results):
     # Update layout settings
     fig.update_layout(
         title="Net Income Comparison by Campaign Platform",
-        xaxis_title="Reform Packages",
         yaxis_title="Net Income ($)",
         barmode="stack",
         height=600,

@@ -1,5 +1,3 @@
-from utils import GRAY, BLUE, LIGHT_RED
-
 APP_TITLE = "2024 Election, Personal Household Impact Calculator"
 
 BASELINE_DESCRIPTION = """
