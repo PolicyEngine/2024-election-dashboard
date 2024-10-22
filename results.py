@@ -1,15 +1,14 @@
 from policyengine_us import Simulation
 from policyengine_core.reforms import Reform
-from reforms import COMBINED_REFORMS  # Updated import
+from reforms import COMBINED_REFORMS
 from utils import YEAR, DEFAULT_AGE
 
-def create_situation(state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement):
+def create_situation(state, is_married, child_ages, income, social_security_retirement):
     situation = {
         "people": {
             "adult": {
                 "age": {YEAR: DEFAULT_AGE},
                 "employment_income": {YEAR: income},
-                "rent": {YEAR: rent},
                 "social_security_retirement": {YEAR: social_security_retirement},
             },
         },
@@ -30,7 +29,6 @@ def create_situation(state, is_married, child_ages, income, rent, fair_market_re
             "household": {
                 "members": ["adult"], 
                 "state_code": {YEAR: state},
-                "small_area_fair_market_rent": {YEAR: fair_market_rent} 
             }
         },
         "spm_units": {"household": {"members": ["adult"]}},
@@ -51,9 +49,9 @@ def create_situation(state, is_married, child_ages, income, rent, fair_market_re
 
     return situation
 
-def calculate_results(selected_reforms, state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement):
+def calculate_results(selected_reforms, state, is_married, child_ages, income, social_security_retirement):
     results = {}
-    situation = create_situation(state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement)
+    situation = create_situation(state, is_married, child_ages, income, social_security_retirement)
 
     # Calculate baseline
     baseline_simulation = Simulation(situation=situation)
