@@ -1,6 +1,6 @@
 from policyengine_us import Simulation
 from policyengine_core.reforms import Reform
-from reforms import REFORMS
+from reforms import COMBINED_REFORMS  # Updated import
 from utils import YEAR, DEFAULT_AGE
 
 def create_situation(state, is_married, child_ages, income, rent, fair_market_rent, social_security_retirement):
@@ -61,9 +61,10 @@ def calculate_results(selected_reforms, state, is_married, child_ages, income, r
 
     # Calculate selected reforms
     for reform_name in selected_reforms:
-        reform_dict = REFORMS.get(reform_name, {})
-        reform = Reform.from_dict(reform_dict, country_id="us") if reform_dict else None
-        simulation = Simulation(reform=reform, situation=situation)
-        results[reform_name] = simulation.calculate("household_net_income", YEAR)[0]
+        reform_dict = COMBINED_REFORMS.get(reform_name, {})
+        if reform_dict:  # Skip if None (baseline)
+            reform = Reform.from_dict(reform_dict, country_id="us")
+            simulation = Simulation(reform=reform, situation=situation)
+            results[reform_name] = simulation.calculate("household_net_income", YEAR)[0]
 
     return results

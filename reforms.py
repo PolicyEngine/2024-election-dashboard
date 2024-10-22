@@ -1,35 +1,16 @@
-REFORMS = {
+
+COMBINED_REFORMS = {
     "Baseline": None,
-    "Harris LIFT Middle Class Tax Credit": {
+    "Harris-Walz": {
+        # LIFT Middle Class Tax Credit
         "gov.contrib.harris.lift.middle_class_tax_credit.in_effect": {
             "2024-01-01.2100-12-31": True
-        }
-    },
-    "Harris Rent Relief Act": {
+        },
+        # Rent Relief Act
         "gov.contrib.harris.rent_relief_act.rent_relief_credit.in_effect": {
             "2024-01-01.2100-12-31": True
-        }
-    },
-    "Vance Child Tax Credit (non-refundable version)": {
-        "gov.irs.credits.ctc.amount.base[0].amount": {
-            "2024-01-01.2100-12-31": 5000
         },
-        "gov.irs.credits.ctc.phase_out.amount": {
-            "2024-01-01.2100-12-31": 0
-        }
-    },
-    "Vance Child Tax Credit (refundable version)": {
-        "gov.irs.credits.ctc.amount.base[0].amount": {
-            "2024-01-01.2100-12-31": 5000
-        },
-        "gov.irs.credits.ctc.phase_out.amount": {
-            "2024-01-01.2100-12-31": 0
-        },
-        "gov.irs.credits.ctc.refundable.fully_refundable": {
-            "2024-01-01.2100-12-31": True
-        }
-    },
-    "Harris Child Tax Credit": {
+        # Harris Child Tax Credit
         "gov.contrib.congress.delauro.american_family_act.baby_bonus": {
             "2024-01-01.2100-12-31": 2400
         },
@@ -44,9 +25,8 @@ REFORMS = {
         },
         "gov.irs.credits.ctc.refundable.fully_refundable": {
             "2023-01-01.2028-12-31": True
-        }
-    },
-    "Harris High Earners Reform": {
+        },
+        # High Earners Reform
         "gov.contrib.biden.budget_2025.medicare.rate": {
             "2025-01-01.2100-12-31": 0.012
         },
@@ -145,16 +125,7 @@ REFORMS = {
             "2034-01-01.2034-12-31": 551600,
             "2035-01-01.2100-12-31": 562750
         },
-    },
-    "Trump Social Security Tax Exemption": {
-        "gov.irs.social_security.taxability.rate.additional": {
-            "2024-01-01.2100-12-31": 0
-        },
-        "gov.irs.social_security.taxability.rate.base": {
-            "2024-01-01.2100-12-31": 0
-        }
-    },
-    "Harris Restoring ARPA EITC": {
+        # Restoring ARPA EITC
         "gov.irs.credits.eitc.eligibility.age.max": {
             "2024-01-01.2033-12-31": 100
         },
@@ -201,6 +172,25 @@ REFORMS = {
             "2032-01-01.2032-12-31": 15758,
             "2033-01-01.2033-12-31": 16074,
             "2034-01-01.2034-12-31": 16398
+        }
+    },
+    "Trump-Vance": {
+        # Trump Social Security Tax Exemption
+        "gov.irs.social_security.taxability.rate.additional": {
+            "2024-01-01.2100-12-31": 0
+        },
+        "gov.irs.social_security.taxability.rate.base": {
+            "2024-01-01.2100-12-31": 0
+        },
+        # Vance Child Tax Credit (refundable version)
+        "gov.irs.credits.ctc.amount.base[0].amount": {
+            "2024-01-01.2100-12-31": 5000
+        },
+        "gov.irs.credits.ctc.phase_out.amount": {
+            "2024-01-01.2100-12-31": 0
+        },
+        "gov.irs.credits.ctc.refundable.fully_refundable": {
+            "2024-01-01.2100-12-31": True
         }
     }
 }
