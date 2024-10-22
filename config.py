@@ -14,10 +14,6 @@ This calculator compares the economic proposals of the two major party tickets i
 
 ### Harris-Walz Economic Package
 The Harris-Walz platform includes several major tax reforms:
-- **LIFT Middle Class Tax Credit**: Additional support for middle-class families through tax credits
-  [Learn more about the LIFT Act](https://policyengine.org/us/research/lift-act)
-- **Rent Relief Act**: Tax credits for renters to alleviate housing costs
-  [Learn more about the Rent Relief Act](https://policyengine.org/us/research/rent-relief-act)
 - **Enhanced Child Tax Credit**: Restoring the 2021 expansion with full refundability and a $2,400 "baby bonus"
   [Learn more about the Harris CTC](https://policyengine.org/us/research/harris-ctc)
 - **High Earners Reform**: Adjustments to tax rates and thresholds for high-income earners
@@ -27,8 +23,6 @@ The Harris-Walz platform includes several major tax reforms:
 The Trump-Vance platform includes:
 - **Social Security Tax Exemption**: Eliminating taxes on Social Security benefits
   [Learn more about the Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
-- **$5,000 Child Tax Credit**: An expanded, fully refundable Child Tax Credit
-  [Learn more about the Vance CTC](https://policyengine.org/us/research/vance-ctc)
 """
 
 NOTES = """

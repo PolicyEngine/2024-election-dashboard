@@ -35,8 +35,6 @@ with col1:
 with col2:
     income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")
     social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=100000, value=0, step=500, format="$%d")
-    rent = st.slider("Annual rent", min_value=0, max_value=120000, value=21000, step=500, format="$%d")
-    fair_market_rent = st.number_input("Estimated small area fair market rent", min_value=0, max_value=120000, value=25000, step=500)
 
 # Calculation button
 if st.button("Calculate my household income"):
@@ -55,8 +53,6 @@ if st.button("Calculate my household income"):
         is_married,
         child_ages,
         income,
-        rent,
-        fair_market_rent,
         social_security_retirement
     )
     results["Baseline"] = baseline_results["Baseline"]
@@ -73,8 +69,6 @@ if st.button("Calculate my household income"):
         is_married,
         child_ages,
         income,
-        rent,
-        fair_market_rent,
         social_security_retirement
     )
     results["Harris-Walz"] = harris_results["Harris-Walz"]
@@ -91,8 +85,6 @@ if st.button("Calculate my household income"):
         is_married,
         child_ages,
         income,
-        rent,
-        fair_market_rent,
         social_security_retirement
     )
     results["Trump-Vance"] = trump_results["Trump-Vance"]
