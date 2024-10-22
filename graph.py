@@ -70,7 +70,6 @@ def create_reform_comparison_graph(results):
     # Update layout settings
     fig.update_layout(
         title="Net Income Comparison by Campaign Platform",
-        xaxis_title="Reform Packages",
         yaxis_title="Net Income ($)",
         barmode="stack",
         height=600,
