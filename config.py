@@ -29,8 +29,7 @@ NOTES = """
 ### Assumptions and Notes:
 - All calculations are based on projected 2025 tax parameters.
 - The calculator assumes all income is from employment (wages and salaries).
-- It uses standard deductions and does not account for itemized deductions.
-- State and local taxes are not considered in this federal-level analysis.
+- Whether to use standard or itemized deductions is calculated based on the user input.
 - The calculator uses the PolicyEngine US microsimulation model.
 - Actual impacts may vary based on individual circumstances and final policy implementations.
 - Proposals are modeled based on currently available information and may be updated as more details are released.
