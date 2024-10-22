@@ -2,19 +2,17 @@ APP_TITLE = "2024 Election, Personal Household Impact Calculator"
 
 BASELINE_DESCRIPTION = """
 ## Current Tax System
-This calculator compares various proposed tax reforms to the current (baseline) tax system. 
+This calculator compares a combination of various proposed tax reforms to current law. 
 Enter your household information below to see how these reforms might affect your net income.
-[Learn more about the current US tax system](https://policyengine.org/us/policy)
 """
 
 REFORMS_DESCRIPTION = """
-This calculator compares the economic proposals of the two major party tickets in the 2024 presidential election:
 
 ### Harris-Walz Economic Package
 The Harris-Walz platform includes several major tax reforms:
-- **Enhanced Child Tax Credit**: Restoring the 2021 expansion with full refundability and a $2,400 "baby bonus"
+- **Enhanced Child Tax Credit**: Child Tax Credit expanded to $3,600 for children under 6 and $3,000 for children 6-17, with a new $2,400 "baby bonus" for newborns
   [Learn more about the Harris CTC](https://policyengine.org/us/research/harris-ctc)
-- **High Earners Reform**: Adjustments to tax rates and thresholds for high-income earners
+- **High Earners Reform**: High earners face a 39.6% tax rate on income above $418,450 (single) or $462,400 (married), plus increased Medicare and Net Investment Income tax of 1.2% on income above $411,000
 - **Restored EITC**: Bringing back the expanded American Rescue Plan version of the Earned Income Tax Credit
 
 ### Trump-Vance Economic Package
