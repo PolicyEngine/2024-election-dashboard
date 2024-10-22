@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from results import calculate_results
+from results import calculate_results, calculate_detailed_metrics
 from reforms import COMBINED_REFORMS
 from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION
 from utils import STATE_CODES, YEAR
@@ -98,4 +98,33 @@ if st.button("Calculate my household income"):
     # Display reform descriptions after the chart
     st.markdown("## Reform Details")
     st.markdown(REFORMS_DESCRIPTION)
+    
+    # Show calculation progress after reform descriptions
+    progress_text.text("Calculating detailed breakdown metrics...")
+
+    # Calculate and display detailed metrics
+    detailed_df = calculate_detailed_metrics(
+        state,
+        is_married,
+        child_ages,
+        income,
+        social_security_retirement
+    )
+    
+    # Format values with rounding
+    formatted_df = pd.DataFrame(
+        index=detailed_df.index,
+        columns=detailed_df.columns
+    )
+    
+    for idx in detailed_df.index:
+        for col in detailed_df.columns:
+            value = detailed_df.at[idx, col]
+            formatted_df.at[idx, col] = f"${round(value):,}"
+    
+    # Clear progress text
+    progress_text.empty()
+    
+    # Display the table followed by notes
+    st.markdown(formatted_df.to_markdown())
     st.markdown(NOTES)
