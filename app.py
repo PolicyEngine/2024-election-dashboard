@@ -1,6 +1,6 @@
 import streamlit as st
 from ui_components import render_personal_info, render_income_inputs, render_itemized_deductions
-from calculator import calculate_reforms, format_detailed_metrics
+from calculator import calculate_reforms, format_detailed_metrics, format_credit_components
 from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION
 
 # Page setup
@@ -45,9 +45,21 @@ if st.button("Calculate my household income"):
     st.markdown("## Reform Details")
     st.markdown(REFORMS_DESCRIPTION)
     
-    # Format and display detailed metrics
-    formatted_df = format_detailed_metrics(results_df)
-    st.markdown(formatted_df.to_markdown())
-    st.markdown(NOTES)
+    # Create tabs for main metrics and credit components
+    tab1, tab2 = st.tabs(["Main Breakdown", "Refundable Credits"])
     
+    with tab1:
+        # Display main metrics
+        formatted_df = format_detailed_metrics(results_df)
+        st.markdown(formatted_df.to_markdown())
+    
+    with tab2:
+        # Display credit components
+        credit_df = format_credit_components(results_df, state)  # Pass the state code
+        if credit_df is not None:
+            st.markdown(credit_df.to_markdown())
+        else:
+            st.markdown("### No changes in credit components")
+    
+    st.markdown(NOTES)
     progress_text.empty()
