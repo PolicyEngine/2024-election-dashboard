@@ -1,7 +1,6 @@
 import streamlit as st
 from ui_components import render_personal_info, render_income_inputs, render_itemized_deductions
 from calculator import calculate_reforms, format_detailed_metrics
-from results import calculate_detailed_metrics
 from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION
 
 # Page setup
@@ -40,18 +39,15 @@ if st.button("Calculate my household income"):
     }
     
     # Calculate and display results
-    results = calculate_reforms(inputs, progress_text, chart_placeholder)
-    progress_text.empty()
+    summary_results, results_df = calculate_reforms(inputs, progress_text, chart_placeholder)
     
     # Display reform details
     st.markdown("## Reform Details")
     st.markdown(REFORMS_DESCRIPTION)
     
-    # Calculate and display detailed metrics
-    progress_text.text("Calculating detailed breakdown metrics...")
-    detailed_df = calculate_detailed_metrics(**inputs)
-    formatted_df = format_detailed_metrics(detailed_df)
-    progress_text.empty()
-    
+    # Format and display detailed metrics
+    formatted_df = format_detailed_metrics(results_df)
     st.markdown(formatted_df.to_markdown())
     st.markdown(NOTES)
+    
+    progress_text.empty()
