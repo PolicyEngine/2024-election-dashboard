@@ -55,8 +55,8 @@ def render_personal_info():
     return is_married, state, child_ages, head_age, spouse_age
 
 def render_income_inputs():
-    income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")
-    social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=100000, value=0, step=500, format="$%d")
+    income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=30000, step=500, format="$%d")
+    social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=500000, value=0, step=500, format="$%d")
     
     return income, social_security_retirement
 
@@ -66,25 +66,25 @@ def render_itemized_deductions():
     with show_itemized:
         medical_expenses = st.number_input(
             "Medical out-of-pocket expenses ($)",
-            min_value=0, max_value=100000, value=0, step=500,
+            min_value=0, max_value=1000000, value=0, step=500,
             help="Medical and dental expenses that exceed 7.5% of your adjusted gross income"
         )
         
         real_estate_taxes = st.number_input(
             "Real estate taxes ($)",
-            min_value=0, max_value=50000, value=0, step=500,
+            min_value=0, max_value=1000000, value=0, step=500,
             help="Property taxes paid on your primary residence"
         )
         
         interest_expense = st.number_input(
             "Interest expense ($)",
-            min_value=0, max_value=50000, value=0, step=500,
+            min_value=0, max_value=1000000, value=0, step=500,
             help="Mortgage interest and investment interest expenses"
         )
         
         charitable_cash = st.number_input(
             "Charitable cash donations ($)",
-            min_value=0, max_value=100000, value=0, step=500,
+            min_value=0, max_value=1000000, value=0, step=500,
             help="Cash donations to qualified charitable organizations"
         )
         
@@ -96,13 +96,13 @@ def render_itemized_deductions():
         
         qualified_business_income = st.number_input(
             "Qualified business income ($)",
-            min_value=0, max_value=500000, value=0, step=500,
+            min_value=0, max_value=1000000, value=0, step=500,
             help="Income from partnerships, S corporations, or sole proprietorships"
         )
         
         casualty_loss = st.number_input(
             "Casualty loss ($)",
-            min_value=0, max_value=100000, value=0, step=500,
+            min_value=0, max_value=1000000, value=0, step=500,
             help="Losses from federally declared disasters"
         )
         
