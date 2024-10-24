@@ -46,7 +46,7 @@ if st.button("Calculate my household income"):
     st.markdown(REFORMS_DESCRIPTION)
     
     # Create tabs for main metrics and credit components
-    tab1, tab2 = st.tabs(["Main Breakdown", "Refundable Credit Changes"])
+    tab1, tab2 = st.tabs(["Main Breakdown", "Refundable Credits"])
     
     with tab1:
         # Display main metrics

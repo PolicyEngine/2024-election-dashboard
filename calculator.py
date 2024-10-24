@@ -54,25 +54,22 @@ def format_detailed_metrics(results_df):
 
 def format_credit_components(results_df, state_code):
     formatted_df = results_df.copy()
-    baseline = formatted_df["Baseline"]
     
     # Exclude main metrics to get only credit components
     credit_rows = [idx for idx in formatted_df.index if idx not in MAIN_METRICS]
     
-    # Filter credit components that changed
-    changed_credits = []
+    # Filter credit components that have any non-zero value
+    active_credits = []
     for idx in credit_rows:
-        has_nonzero = (formatted_df.loc[idx] != 0).any()
-        has_change = any(formatted_df.loc[idx, col] != baseline[idx] 
-                        for col in results_df.columns if col != "Baseline")
-        if has_nonzero and has_change:
-            changed_credits.append(idx)
+        has_value = (formatted_df.loc[idx] != 0).any()
+        if has_value:
+            active_credits.append(idx)
     
-    if not changed_credits:
+    if not active_credits:
         return None
     
-    # Keep only credits that changed
-    formatted_df = formatted_df.loc[changed_credits]
+    # Keep only credits with values
+    formatted_df = formatted_df.loc[active_credits]
     formatted_df = formatted_df.round(2)
     formatted_df = formatted_df.applymap(format_currency)
     
