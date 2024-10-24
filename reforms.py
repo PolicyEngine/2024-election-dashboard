@@ -1,6 +1,6 @@
 COMBINED_REFORMS = {
     "Baseline": None,
-    "Harris-Walz": {
+    "Harris": {
         # Harris Child Tax Credit
         "gov.contrib.congress.delauro.american_family_act.baby_bonus": {
             "2024-01-01.2100-12-31": 2400
@@ -71,7 +71,7 @@ COMBINED_REFORMS = {
             "2025-01-01.2025-12-31": 13706,
         }
     },
-    "Trump-Vance": {
+    "Trump": {
         # Trump Social Security Tax Exemption
         "gov.irs.social_security.taxability.rate.additional": {
             "2024-01-01.2100-12-31": 0

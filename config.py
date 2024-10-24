@@ -10,15 +10,15 @@ Enter your household information below to see how these reforms might affect you
 REFORMS_DESCRIPTION = """
 This calculator compares the economic proposals of the two major party tickets in the 2024 presidential election:
 
-### Harris-Walz Economic Package
-The Harris-Walz platform includes several major tax reforms:
+### Harris Economic Package
+The Harris platform includes several major tax reforms:
 - **Enhanced Child Tax Credit**: Restoring the 2021 expansion with full refundability and a $2,400 "baby bonus"
   [Learn more about the Harris CTC](https://policyengine.org/us/research/harris-ctc)
 - **High Earners Reform**: Adjustments to tax rates and thresholds for high-income earners
 - **Restored EITC**: Bringing back the expanded American Rescue Plan version of the Earned Income Tax Credit
 
-### Trump-Vance Economic Package
-The Trump-Vance platform includes:
+### Trump Economic Package
+The Trump platform includes:
 - **Social Security Tax Exemption**: Eliminating taxes on Social Security benefits
   [Learn more about the Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
 """

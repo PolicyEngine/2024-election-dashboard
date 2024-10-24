@@ -97,7 +97,7 @@ def calculate_detailed_metrics(state, is_married, child_ages, income, social_sec
     )
     
     # Initialize DataFrame with reforms as columns and metrics as rows
-    columns = ["Baseline", "Harris-Walz", "Trump-Vance"]
+    columns = ["Baseline", "Harris", "Trump"]
     rows = [
         "Household Net Income",
         "Income Tax Before Credits",
