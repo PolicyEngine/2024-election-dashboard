@@ -1,8 +1,19 @@
 from policyengine_us import Simulation
 from policyengine_core.reforms import Reform
 from reforms import COMBINED_REFORMS
+from policyengine_us.variables.gov.irs.credits.income_tax_refundable_credits import income_tax_refundable_credits as IncomeTaxRefundableCredits
+from policyengine_us.variables.gov.states.tax.income.state_refundable_credits import state_refundable_credits as StateRefundableCredits
 from utils import YEAR
+import pkg_resources
+import yaml
 import pandas as pd
+
+def load_credits_from_yaml(package, resource_path):
+    yaml_file = pkg_resources.resource_stream(package, resource_path)
+    data = yaml.safe_load(yaml_file)
+    newest_year = max(data["values"].keys())
+    credits = data["values"].get(newest_year, [])
+    return credits
 
 def create_situation(state, is_married, child_ages, income, social_security_retirement,
                     head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
@@ -57,13 +68,22 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
 
     return situation
 
+def calculate_values(categories, simulation, year):
+    result_dict = {}
+    for category in categories:
+        try:
+            amount = simulation.calculate(category, year, map_to="household")[0]
+            result_dict[category] = amount
+        except:
+            result_dict[category] = 0
+    return result_dict
+
 def calculate_consolidated_results(reform_name, state, is_married, child_ages, income, social_security_retirement,
                                 head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                                 interest_expense=0, charitable_cash=0, charitable_non_cash=0,
                                 qualified_business_income=0, casualty_loss=0):
     """
-    Calculates metrics for a single reform.
-    Returns a DataFrame containing all metrics for the specified reform.
+    Calculates metrics for a single reform with detailed breakdowns.
     """
     # Create situation dictionary
     situation = create_situation(
@@ -73,30 +93,54 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
         casualty_loss
     )
     
-    # Define all metrics we want to calculate
-    metrics = {
-        "Household Net Income": "household_net_income",
-        "Income Tax Before Credits": "income_tax_before_refundable_credits",
-        "Refundable Tax Credits": "income_tax_refundable_credits"
-    }
-    
-    # Initialize DataFrame with just this reform
-    results_df = pd.DataFrame(
-        index=metrics.keys(),
-        columns=["Baseline", "Harris", "Trump"],  # Keep all columns for consistency
-        dtype=float
-    )
-    
-    # Calculate metrics for just this reform
+    # Set up simulation
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
         reform_dict = COMBINED_REFORMS.get(reform_name, {})
         reform = Reform.from_dict(reform_dict, country_id="us")
         simulation = Simulation(reform=reform, situation=situation)
+
+    # # Get categories for credits
+    # federal_refundable_credits = IncomeTaxRefundableCredits.adds
+    # state_refundable_credits = StateRefundableCredits.adds
+
+    package = "policyengine_us"
+    resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
+    resource_path_state = f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
+
+    try:
+        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
+    except FileNotFoundError:
+        federal_refundable_credits = []
+
+    try:
+        state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
+    except FileNotFoundError:
+        state_refundable_credits = []
+
+
+    # Calculate main metrics
+    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
+    household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
+    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
+
+    # Calculate credit breakdowns
+    federal_credits_dict = calculate_values(federal_refundable_credits, simulation, YEAR)
+    state_credits_dict = calculate_values(state_refundable_credits, simulation, YEAR)
+
+    # Combine all results
+    all_results = {
+        "Household Net Income": household_net_income,
+        "Income Tax Before Credits": household_tax_before_refundable_credits,
+        "Refundable Tax Credits": household_refundable_tax_credits,
+        **federal_credits_dict,
+        **state_credits_dict
+    }
     
-    # Calculate all metrics for this reform
-    for metric_name, variable in metrics.items():
-        results_df.at[metric_name, reform_name] = simulation.calculate(variable, YEAR)[0]
+    # Create DataFrame with all results
+    results_df = pd.DataFrame(
+        {reform_name: all_results}
+    ).T
     
     return results_df
