@@ -4,7 +4,7 @@ from graph import create_reform_comparison_graph
 
 def calculate_reforms(inputs, progress_text, chart_placeholder):
     results = {}
-    reforms_to_calculate = ["Baseline", "Harris-Walz", "Trump-Vance"]
+    reforms_to_calculate = ["Baseline", "Harris", "Trump"]
     
     for reform in reforms_to_calculate:
         progress_text.text(f"Calculating {reform}...")

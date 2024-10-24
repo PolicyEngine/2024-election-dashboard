@@ -14,8 +14,8 @@ def create_reform_comparison_graph(results):
 
     # Define colors for each reform using utils constants
     reform_colors = {
-        "Harris-Walz": BLUE,
-        "Trump-Vance": RED,
+        "Harris": BLUE,
+        "Trump": RED,
         "Baseline": GREY
     }
 
