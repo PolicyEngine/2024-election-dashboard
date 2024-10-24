@@ -1,10 +1,11 @@
 APP_TITLE = "2024 Election, Personal Household Impact Calculator"
 
 BASELINE_DESCRIPTION = """
-## Current Tax System
-This calculator compares various proposed tax reforms to the current (baseline) tax system. 
-Enter your household information below to see how these reforms might affect your net income.
-[Learn more about the current US tax system](https://policyengine.org/us/policy)
+This calculator compares how tax proposals from the two major party presidential candidates would affect your household's net income. Enter your household information below to see a personalized analysis of each plan's impact.
+
+**Learn More:**
+- [Harris Economic Policy Document](https://kamalaharris.com/wp-content/uploads/2024/09/Policy_Book_Economic-Opportunity.pdf)
+- [Trump Campaign Platform](https://rncplatform.donaldjtrump.com/?_gl=1*s9hec5*_gcl_au*MTE5NjQwNTg0MC4xNzI3ODgwOTQw&_ga=2.140186549.721558943.1727880940-379257754.1727880940)
 """
 
 REFORMS_DESCRIPTION = """
