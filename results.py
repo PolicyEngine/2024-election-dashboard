@@ -5,13 +5,13 @@ from utils import YEAR, DEFAULT_AGE
 import pandas as pd
 
 def create_situation(state, is_married, child_ages, income, social_security_retirement,
-                    medical_expenses=0, real_estate_taxes=0, interest_expense=0,
-                    charitable_cash=0, charitable_non_cash=0, qualified_business_income=0,
-                    casualty_loss=0):
+                    head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
+                    interest_expense=0, charitable_cash=0, charitable_non_cash=0,
+                    qualified_business_income=0, casualty_loss=0):
     situation = {
         "people": {
             "adult": {
-                "age": {YEAR: DEFAULT_AGE},
+                "age": {YEAR: head_age},
                 "employment_income": {YEAR: income},
                 "social_security_retirement": {YEAR: social_security_retirement},
                 "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
@@ -49,9 +49,9 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
         for unit in ["families", "tax_units", "households", "spm_units"]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append(child_id)
 
-    if is_married:
+    if is_married and spouse_age is not None:
         situation["people"]["spouse"] = {
-            "age": {YEAR: DEFAULT_AGE},
+            "age": {YEAR: spouse_age},
         }
         for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
@@ -59,13 +59,13 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
     return situation
 
 def calculate_results(selected_reforms, state, is_married, child_ages, income, social_security_retirement,
-                     medical_expenses=0, real_estate_taxes=0, interest_expense=0,
-                     charitable_cash=0, charitable_non_cash=0, qualified_business_income=0,
-                     casualty_loss=0):
+                     head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0, 
+                     interest_expense=0, charitable_cash=0, charitable_non_cash=0, 
+                     qualified_business_income=0, casualty_loss=0):
     results = {}
     situation = create_situation(
         state, is_married, child_ages, income, social_security_retirement,
-        medical_expenses, real_estate_taxes, interest_expense,
+        head_age, spouse_age, medical_expenses, real_estate_taxes, interest_expense,
         charitable_cash, charitable_non_cash, qualified_business_income,
         casualty_loss
     )
@@ -85,13 +85,13 @@ def calculate_results(selected_reforms, state, is_married, child_ages, income, s
     return results
 
 def calculate_detailed_metrics(state, is_married, child_ages, income, social_security_retirement,
-                             medical_expenses=0, real_estate_taxes=0, interest_expense=0,
-                             charitable_cash=0, charitable_non_cash=0, qualified_business_income=0,
-                             casualty_loss=0):
+                             head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
+                             interest_expense=0, charitable_cash=0, charitable_non_cash=0,
+                             qualified_business_income=0, casualty_loss=0):
     """Calculate detailed tax metrics for all reforms after the bar chart is displayed"""
     situation = create_situation(
         state, is_married, child_ages, income, social_security_retirement,
-        medical_expenses, real_estate_taxes, interest_expense,
+        head_age, spouse_age, medical_expenses, real_estate_taxes, interest_expense,
         charitable_cash, charitable_non_cash, qualified_business_income,
         casualty_loss
     )
