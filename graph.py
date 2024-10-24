@@ -96,7 +96,7 @@ def create_reform_comparison_graph(results):
     # Update layout settings
     fig.update_layout(
         title={
-            'text': "Household Net Income by Reform",
+            'text': "Household Net Income Comparison",
             'y': 0.95,
             'x': 0.5,
             'xanchor': 'center',
