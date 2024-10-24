@@ -1,99 +1,92 @@
 import plotly.graph_objects as go
 import pandas as pd
 from policyengine_core.charts import format_fig
-from utils import BLUE, RED, GREY
+from utils import BLUE, RED, GREY, format_currency
+ 
 
 def create_reform_comparison_graph(results):
     # Convert the results dictionary into a DataFrame
     df = pd.DataFrame(results.items(), columns=["reform", "net_income"])
     
-    # Sort the reforms: Baseline first, then others by ascending value
+    # Split baseline and other reforms
     non_baseline = df[df["reform"] != "Baseline"].copy()
     baseline = df[df["reform"] == "Baseline"].copy()
     
-    # Sort non-baseline reforms by net_income
+    # Sort non-baseline reforms by net_income (ascending puts larger value at bottom)
     non_baseline = non_baseline.sort_values("net_income", ascending=True)
     
-    # Combine back together: Baseline at top, followed by sorted reforms
-    df = pd.concat([baseline, non_baseline])
-    
-    # Reverse the order for display (since bars are built bottom-to-top)
-    df = df.iloc[::-1]
+    # Combine back together with baseline and reverse to get baseline on top
+    df = pd.concat([baseline, non_baseline]).iloc[::-1]
 
+    baseline_value = results.get("Baseline", 0)
+    
     fig = go.Figure()
 
-    # Get the baseline value for comparison
-    baseline_value = results.get("Baseline", 0)
+    # Use predefined colors
+    colors = {
+        "Baseline": GREY,
+        "Harris": BLUE,
+        "Trump": RED
+    }
 
-    # Create bars for each reform
+    # Create bars
     for reform, value in zip(df["reform"], df["net_income"]):
         diff = value - baseline_value
-        total_text = f"${value:,.0f}"
-        diff_text = f"+${diff:,.0f}" if diff > 0 else (f"-${abs(diff):,.0f}" if diff < 0 else "")
-        
-        # Modify the reform name display
-        display_name = reform if reform == "Baseline" else (
-            "Harris" if reform == "Harris" else "Trump"
+        total_text = format_currency(value)
+        diff_text = (
+            format_currency(diff) if diff == 0 
+            else f"+{format_currency(diff)}" if diff > 0 
+            else f"-{format_currency(abs(diff))}"
         )
-
-        # Set up bar colors
-        if reform == "Baseline":
-            color = GREY
-        elif reform == "Harris":
-            color = BLUE
-        else:  # Trump
-            color = RED
-
-        # Add the bar without y-axis labels (we'll add them as annotations)
+        
+        # Add bar
         fig.add_trace(go.Bar(
             y=[reform],
             x=[value],
-            name=reform,
-            marker_color=color,
             orientation='h',
+            name=reform,
+            marker_color=colors.get(reform, GREY),
             text=total_text,
             textposition='inside',
             insidetextanchor='middle',
-            textfont=dict(
-                color='white',
-                size=20
+            textfont=dict(color='white', size=14),
+            hovertemplate=(
+                f"Total: {total_text}<br>"
+                f"Difference: {diff_text}<extra></extra>"
             ),
-            hovertemplate=f"Total: {total_text}<br>Difference: {diff_text}<extra></extra>",
             showlegend=False
         ))
 
-        # Add custom label on the left
+        # Add reform label on the left
         fig.add_annotation(
             y=reform,
             x=0,
-            text=display_name,
+            text=reform,
             xanchor='right',
             yanchor='middle',
-            xshift=-10,  # Offset to the left of the bar
+            xshift=-10,
             showarrow=False,
-            font=dict(
-                size=16,
-                color='black'
-            ),
+            font=dict(size=16)
         )
 
-        # Add the difference annotation for non-baseline reforms
+        # Add difference annotation for non-baseline reforms
         if reform != "Baseline" and diff != 0:
             fig.add_annotation(
                 y=reform,
                 x=value,
                 xanchor='left',
                 yanchor='middle',
-                xshift=10,  # Offset to the right of the bar
+                xshift=10,
                 text=diff_text,
                 showarrow=False,
-                font=dict(
-                    size=20,
-                    color='black'
-                ),
+                font=dict(size=16)
             )
 
-    # Update layout settings
+    # Calculate x-axis range
+    max_value = df['net_income'].max()
+    x_max = max_value * 1.2
+    
+    # Basic layout
     fig.update_layout(
         title={
             'text': "Household Net Income Comparison",
@@ -105,27 +98,29 @@ def create_reform_comparison_graph(results):
         },
         height=400,
         showlegend=False,
+        margin=dict(t=70, b=50, l=150, r=150),
+        yaxis=dict(
+            showgrid=False,
+            showline=False,
+            showticklabels=False,
+            ticks=''
+        ),
+        xaxis=dict(
+            showgrid=True,
+            gridcolor='rgba(0,0,0,0.1)',
+            showline=True,
+            linecolor='rgba(0,0,0,0.2)',
+            tickformat='$,.0f',
+            range=[0, x_max],
+            title="Household Net Income",
+            title_standoff=20
+        ),
         plot_bgcolor='rgba(0,0,0,0)',
         paper_bgcolor='rgba(0,0,0,0)',
-        margin=dict(t=70, b=30, l=150, r=150),
-        yaxis={
-            'categoryorder': 'array', 
-            'categoryarray': df["reform"].tolist(),  # Use our explicitly sorted order
-            'showgrid': False,
-            'showline': False,
-            'ticks': '',
-            'showticklabels': False,  # Hide default y-axis labels
-        },
-        xaxis={
-            'showgrid': False,
-            'showline': False,
-            'showticklabels': False,
-            'ticks': '',
-        },
         bargap=0.5
     )
 
-    # Apply the format_fig function for consistent styling
+    # Apply PolicyEngine formatting
     fig = format_fig(fig)
-
+    
     return fig
