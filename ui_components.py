@@ -3,6 +3,33 @@ from utils import STATE_CODES
 
 def render_personal_info():
     is_married = st.checkbox("I am married")
+    
+    # Create two small columns for age inputs
+    age_col1, age_col2 = st.columns([1, 1])
+    
+    with age_col1:
+        head_age = st.number_input(
+            "Your age",
+            min_value=0,
+            max_value=100,
+            value=35,
+            step=1,
+            key="head_age"
+        )
+    
+    # If married, show spouse age input, otherwise show empty column
+    with age_col2:
+        spouse_age = None
+        if is_married:
+            spouse_age = st.number_input(
+                "Spouse's age",
+                min_value=0,
+                max_value=100,
+                value=35,
+                step=1,
+                key="spouse_age"
+            )
+    
     state = st.selectbox("State of residence", STATE_CODES)
     num_children = st.number_input("Number of Children", min_value=0, max_value=10, value=0, step=1)
     
@@ -25,7 +52,7 @@ def render_personal_info():
                         )
                         child_ages.append(age)
                     
-    return is_married, state, child_ages
+    return is_married, state, child_ages, head_age, spouse_age
 
 def render_income_inputs():
     income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=50000, step=500, format="$%d")

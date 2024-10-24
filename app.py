@@ -15,7 +15,7 @@ personal_col, income_col = st.columns(2)
 
 with personal_col:
     st.markdown("### Personal Information")
-    is_married, state, child_ages = render_personal_info()
+    is_married, state, child_ages, head_age, spouse_age = render_personal_info()
 
 with income_col:
     st.markdown("### Income Information")
@@ -32,6 +32,8 @@ if st.button("Calculate my household income"):
         "state": state,
         "is_married": is_married,
         "child_ages": child_ages,
+        "head_age": head_age,
+        "spouse_age": spouse_age,
         "income": income,
         "social_security_retirement": social_security_retirement,
         **itemized_deductions
