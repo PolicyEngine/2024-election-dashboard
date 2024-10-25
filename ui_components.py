@@ -55,10 +55,42 @@ def render_personal_info():
     return is_married, state, child_ages, head_age, spouse_age
 
 def render_income_inputs():
-    income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=30000, step=500, format="$%d")
-    social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=500000, value=0, step=500, format="$%d")
+    # Use consistent format for all income inputs
+    col1, col2 = st.columns(2)
     
-    return income, social_security_retirement
+    with col1:
+        income = st.number_input(
+            "Wages and salaries ($)",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d"
+        )
+        
+        capital_gains = st.number_input(
+            "Capital gains income ($)",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d"
+        )
+    
+    with col2:
+        social_security_retirement = st.number_input(
+            "Social security retirement ($)",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d"
+        )
+        
+        # Added empty space to align with left column
+        st.empty()
+    
+    return income, social_security_retirement, capital_gains
 
 def render_itemized_deductions():
     show_itemized = st.expander("Itemized deduction sources", expanded=False)

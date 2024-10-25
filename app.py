@@ -8,6 +8,7 @@ st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 st.markdown(BASELINE_DESCRIPTION)
 st.markdown("## Enter your current household information")
+st.markdown("*Please enter annual amounts for the tax year 2024*")
 
 # Render form sections
 personal_col, income_col = st.columns(2)
@@ -18,7 +19,7 @@ with personal_col:
 
 with income_col:
     st.markdown("### Income Information")
-    income, social_security_retirement = render_income_inputs()
+    income, social_security_retirement, capital_gains = render_income_inputs()
     itemized_deductions = render_itemized_deductions()
 
 # Calculate button
@@ -35,9 +36,10 @@ if st.button("Calculate my household income"):
         "spouse_age": spouse_age,
         "income": income,
         "social_security_retirement": social_security_retirement,
+        "capital_gains": capital_gains,  # Add this line
         **itemized_deductions
     }
-    
+        
     # Calculate and display results
     summary_results, results_df = calculate_reforms(inputs, progress_text, chart_placeholder)
     
