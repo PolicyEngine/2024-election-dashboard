@@ -18,69 +18,100 @@ def load_credits_from_yaml(package, resource_path):
 def create_situation(state, is_married, child_ages, income, social_security_retirement,
                     head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                     interest_expense=0, charitable_cash=0, charitable_non_cash=0,
-                    qualified_business_income=0, casualty_loss=0, tip_income=0,
-                    overtime_income=0, reform_name="Baseline"):
-    """
-    Creates a situation dictionary for the simulation.
-    All income types are added to employment_income for all reforms.
-    The tax treatment will be handled by the reform parameters.
-    """
-    # Initialize person dict with common attributes
-    person_dict = {
-        "age": {YEAR: head_age},
-        "employment_income": {YEAR: income},  # Combine all income
-        "social_security_retirement": {YEAR: social_security_retirement},
-        "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
-        "interest_expense": {YEAR: interest_expense},
-        "charitable_cash_donations": {YEAR: charitable_cash},
-        "charitable_non_cash_donations": {YEAR: charitable_non_cash},
-        "qualified_business_income": {YEAR: qualified_business_income},
-        "casualty_loss": {YEAR: casualty_loss},
-        "real_estate_taxes": {YEAR: real_estate_taxes},
-        "tip_income": {YEAR: tip_income},
-        "overtime_income": {YEAR: overtime_income},
-    }
-
+                    qualified_business_income=0, casualty_loss=0, tip_income=0, overtime_income=0):
+    """Create the base situation dictionary following working example structure."""
+    
     situation = {
         "people": {
-            "adult": person_dict
+            "you": {
+                "age": {YEAR: head_age},
+                "employment_income": {YEAR: income},
+                "tip_income": {YEAR: tip_income},
+                "overtime_income": {YEAR: overtime_income},
+                "social_security_retirement": {YEAR: social_security_retirement},
+                "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
+                "interest_expense": {YEAR: interest_expense},
+                "charitable_cash_donations": {YEAR: charitable_cash},
+                "charitable_non_cash_donations": {YEAR: charitable_non_cash},
+                "qualified_business_income": {YEAR: qualified_business_income},
+                "casualty_loss": {YEAR: casualty_loss},
+                "real_estate_taxes": {YEAR: real_estate_taxes},
+            }
         },
-        "families": {"family": {"members": ["adult"]}},
-        "marital_units": {"marital_unit": {"members": ["adult"]}},
+        "families": {
+            "your family": {
+                "members": ["you"]
+            }
+        },
+        "marital_units": {
+            "your marital unit": {
+                "members": ["you"]
+            }
+        },
         "tax_units": {
-            "tax_unit": {
-                "members": ["adult"],
-                "premium_tax_credit": {YEAR: 0},
-                "alternative_minimum_tax": {YEAR: 0},
-                "net_investment_income_tax": {YEAR: 0},
+            "your tax unit": {
+                "members": ["you"]
+            }
+        },
+        "spm_units": {
+            "your household": {
+                "members": ["you"]
             }
         },
         "households": {
-            "household": {
-                "members": ["adult"], 
-                "state_code": {YEAR: state},
+            "your household": {
+                "members": ["you"],
+                "state_name": {YEAR: state}
             }
-        },
-        "spm_units": {"household": {"members": ["adult"]}},
+        }
     }
 
-    # Add children
+    # Add children if any
     for i, age in enumerate(child_ages):
-        child_id = f"child_{i}"
-        situation["people"][child_id] = {"age": {YEAR: age}}
-        for unit in ["families", "tax_units", "households", "spm_units"]:
-            situation[unit][list(situation[unit].keys())[0]]["members"].append(child_id)
+        child_id = f"your dependent {i + 1}"
+        
+        # Add child to people
+        situation["people"][child_id] = {
+            "age": {YEAR: age},
+            "employment_income": {YEAR: 0}
+        }
+        
+        # Add child to family
+        situation["families"]["your family"]["members"].append(child_id)
+        
+        # Create child's marital unit
+        situation["marital_units"][f"{child_id}'s marital unit"] = {
+            "members": [child_id],
+            "marital_unit_id": {YEAR: i + 1}
+        }
+        
+        # Add child to tax unit
+        situation["tax_units"]["your tax unit"]["members"].append(child_id)
+        
+        # Add child to SPM unit and household
+        situation["spm_units"]["your household"]["members"].append(child_id)
+        situation["households"]["your household"]["members"].append(child_id)
 
     # Add spouse if married
     if is_married and spouse_age is not None:
-        spouse_dict = {
+        # Add spouse to people
+        situation["people"]["your spouse"] = {
             "age": {YEAR: spouse_age},
-            "employment_income": {YEAR: 0},
+            "employment_income": {YEAR: 0}
         }
-            
-        situation["people"]["spouse"] = spouse_dict
-        for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
-            situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
+        
+        # Add spouse to family
+        situation["families"]["your family"]["members"].append("your spouse")
+        
+        # Add spouse to marital unit
+        situation["marital_units"]["your marital unit"]["members"].append("your spouse")
+        
+        # Add spouse to tax unit
+        situation["tax_units"]["your tax unit"]["members"].append("your spouse")
+        
+        # Add spouse to SPM unit and household
+        situation["spm_units"]["your household"]["members"].append("your spouse")
+        situation["households"]["your household"]["members"].append("your spouse")
 
     return situation
 
@@ -119,17 +150,17 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
         qualified_business_income=qualified_business_income,
         casualty_loss=casualty_loss,
         tip_income=tip_income,
-        overtime_income=overtime_income,
-        reform_name=reform_name
+        overtime_income=overtime_income
     )
     
     # Set up simulation with reform
     if reform_name == "Baseline":
-        simulation = Simulation(situation=situation)
+        reform_dict = COMBINED_REFORMS["Baseline"]
     else:
         reform_dict = COMBINED_REFORMS.get(reform_name, {})
-        reform = Reform.from_dict(reform_dict, country_id="us")
-        simulation = Simulation(reform=reform, situation=situation)
+    
+    reform = Reform.from_dict(reform_dict, country_id="us")
+    simulation = Simulation(reform=reform, situation=situation)
 
     # Get metrics
     household_net_income = simulation.calculate("household_net_income", YEAR)[0]
