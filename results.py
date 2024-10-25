@@ -28,7 +28,7 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
     # Initialize person dict with common attributes
     person_dict = {
         "age": {YEAR: head_age},
-        "employment_income": {YEAR: income + tip_income + overtime_income},  # Combine all income
+        "employment_income": {YEAR: income},  # Combine all income
         "social_security_retirement": {YEAR: social_security_retirement},
         "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
         "interest_expense": {YEAR: interest_expense},
@@ -37,6 +37,8 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
         "qualified_business_income": {YEAR: qualified_business_income},
         "casualty_loss": {YEAR: casualty_loss},
         "real_estate_taxes": {YEAR: real_estate_taxes},
+        "tip_income": {YEAR: tip_income},
+        "overtime_income": {YEAR: overtime_income},
     }
 
     situation = {
