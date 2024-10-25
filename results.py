@@ -22,15 +22,13 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
                     overtime_income=0, reform_name="Baseline"):
     """
     Creates a situation dictionary for the simulation.
-    service_industry_wages are only included for specific reforms:
-    - For Harris reform: includes tip_income
-    - For Trump reform: includes both tip_income and overtime_income
-    - For Baseline: all income is treated as regular employment_income
+    All income types are added to employment_income for all reforms.
+    The tax treatment will be handled by the reform parameters.
     """
     # Initialize person dict with common attributes
     person_dict = {
         "age": {YEAR: head_age},
-        "employment_income": {YEAR: income},
+        "employment_income": {YEAR: income + tip_income + overtime_income},  # Combine all income
         "social_security_retirement": {YEAR: social_security_retirement},
         "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
         "interest_expense": {YEAR: interest_expense},
@@ -40,12 +38,6 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
         "casualty_loss": {YEAR: casualty_loss},
         "real_estate_taxes": {YEAR: real_estate_taxes},
     }
-
-    # Add service_industry_wages only for relevant reforms
-    if reform_name == "Harris":
-        person_dict["service_industry_wages"] = {YEAR: tip_income}
-    elif reform_name == "Trump":
-        person_dict["service_industry_wages"] = {YEAR: tip_income + overtime_income}
 
     situation = {
         "people": {
@@ -83,11 +75,6 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
             "age": {YEAR: spouse_age},
             "employment_income": {YEAR: 0},
         }
-        # Add service_industry_wages for spouse only if reform applies
-        if reform_name == "Harris":
-            spouse_dict["service_industry_wages"] = {YEAR: 0}
-        elif reform_name == "Trump":
-            spouse_dict["service_industry_wages"] = {YEAR: 0}
             
         situation["people"]["spouse"] = spouse_dict
         for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
@@ -113,26 +100,12 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
     """
     Calculates metrics for a single reform with detailed breakdowns.
     """
-    # For baseline, add all income to regular employment income
-    if reform_name == "Baseline":
-        total_income = income + tip_income + overtime_income
-        tip_income = 0
-        overtime_income = 0
-    else:
-        total_income = income
-        # For Harris reform, only tip income is exempt
-        if reform_name == "Harris":
-            total_income += overtime_income
-            overtime_income = 0
-        # For Trump reform, both tip and overtime remain separate
-        # (no need to modify as both will be handled in service_industry_wages)
-
-    # Create situation dictionary with reform name
+    # Create situation dictionary
     situation = create_situation(
         state=state,
         is_married=is_married,
         child_ages=child_ages,
-        income=total_income,
+        income=income,
         social_security_retirement=social_security_retirement,
         head_age=head_age,
         spouse_age=spouse_age,
@@ -148,7 +121,7 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
         reform_name=reform_name
     )
     
-    # Set up simulation
+    # Set up simulation with reform
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
@@ -161,6 +134,7 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
     household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
     household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
 
+    # Rest of the f
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"

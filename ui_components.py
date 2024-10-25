@@ -66,7 +66,7 @@ def render_income_inputs():
     )
     
     social_security_retirement = st.slider(
-        "Annual social security retirement income", 
+        "Social security benefits", 
         min_value=0, 
         max_value=500000, 
         value=0, 
