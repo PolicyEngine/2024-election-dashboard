@@ -37,6 +37,8 @@ def create_situation(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
+    tip_income=0,
+    overtime_income=0,
 ):  # Added capital_gains parameter
     situation = {
         "people": {
@@ -52,6 +54,8 @@ def create_situation(
                 "casualty_loss": {YEAR: casualty_loss},
                 "real_estate_taxes": {YEAR: real_estate_taxes},
                 "capital_gains": {YEAR: capital_gains},
+                "tip_income": {YEAR: tip_income},
+                "overtime_income": {YEAR: overtime_income},
             }
         },
         "families": {"family": {"members": ["adult"]}},
@@ -126,6 +130,8 @@ def calculate_consolidated_results(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
+    tip_income=0,
+    overtime_income=0,
 ):  # Added capital_gains parameter
     """
     Calculates metrics for a single reform with detailed breakdowns.
@@ -146,7 +152,9 @@ def calculate_consolidated_results(
         charitable_non_cash,
         qualified_business_income,
         casualty_loss,
-        capital_gains,  # Added capital_gains here
+        capital_gains,
+        tip_income,
+        overtime_income,
     )
 
     if reform_name == "Baseline":

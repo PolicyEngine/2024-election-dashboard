@@ -27,7 +27,7 @@ with personal_col:
 
 with income_col:
     st.markdown("### Income Information")
-    income, social_security, capital_gains = render_income_inputs()
+    income, tip_income, overtime_income, social_security, capital_gains = render_income_inputs()
     itemized_deductions = render_itemized_deductions()
 
 # Calculate button
@@ -43,8 +43,12 @@ if st.button("Calculate my household income"):
         "head_age": head_age,
         "spouse_age": spouse_age,
         "income": income,
+        "tip_income": tip_income,
+        "overtime_income": overtime_income,
         "social_security": social_security,
-        "capital_gains": capital_gains,  # Add this line
+        "capital_gains": capital_gains,
+        "tip_income": tip_income,
+        "overtime_income": overtime_income,
         **itemized_deductions,
     }
 

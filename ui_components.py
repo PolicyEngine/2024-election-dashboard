@@ -54,8 +54,7 @@ def render_personal_info():
 
 
 def render_income_inputs():
-    # Use consistent format for all income inputs
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1, 1])  # Equal width columns
 
     with col1:
         income = st.number_input(
@@ -67,8 +66,8 @@ def render_income_inputs():
             format="%d",
         )
 
-        capital_gains = st.number_input(
-            "Capital gains ($)",
+        tip_income = st.number_input(
+            "Tip income ($)",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -77,6 +76,15 @@ def render_income_inputs():
         )
 
     with col2:
+        overtime_income = st.number_input(
+            "Overtime income ($)",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
         social_security = st.number_input(
             "Social security Benefits received by seniors ($)",
             min_value=0,
@@ -86,10 +94,17 @@ def render_income_inputs():
             format="%d",
         )
 
-        # Added empty space to align with left column
-        st.empty()
+    # Capital gains below both columns
+    capital_gains = st.number_input(
+        "Capital gains ($)",
+        min_value=0,
+        max_value=1000000,
+        value=0,
+        step=500,
+        format="%d",
+    )
 
-    return income, social_security, capital_gains
+    return income, tip_income, overtime_income, social_security, capital_gains
 
 
 def render_itemized_deductions():
