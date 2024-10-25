@@ -15,7 +15,7 @@ def load_credits_from_yaml(package, resource_path):
     credits = data["values"].get(newest_year, [])
     return credits
 
-def create_situation(state, is_married, child_ages, income, social_security_retirement,
+def create_situation(state, is_married, child_ages, income, social_security,
                     head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                     interest_expense=0, charitable_cash=0, charitable_non_cash=0,
                     qualified_business_income=0, casualty_loss=0, capital_gains=0):  # Added capital_gains parameter
@@ -24,7 +24,7 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
             "adult": {
                 "age": {YEAR: head_age},
                 "employment_income": {YEAR: income},
-                "social_security_retirement": {YEAR: social_security_retirement},
+                "social_security": {YEAR: social_security},
                 "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
                 "interest_expense": {YEAR: interest_expense},
                 "charitable_cash_donations": {YEAR: charitable_cash},
@@ -79,7 +79,7 @@ def calculate_values(categories, simulation, year):
             result_dict[category] = 0
     return result_dict
 
-def calculate_consolidated_results(reform_name, state, is_married, child_ages, income, social_security_retirement,
+def calculate_consolidated_results(reform_name, state, is_married, child_ages, income, social_security,
                                 head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                                 interest_expense=0, charitable_cash=0, charitable_non_cash=0,
                                 qualified_business_income=0, casualty_loss=0, capital_gains=0):  # Added capital_gains parameter
@@ -88,7 +88,7 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
     """
     # Create situation dictionary
     situation = create_situation(
-        state, is_married, child_ages, income, social_security_retirement,
+        state, is_married, child_ages, income, social_security,
         head_age, spouse_age, medical_expenses, real_estate_taxes, interest_expense,
         charitable_cash, charitable_non_cash, qualified_business_income,
         casualty_loss, capital_gains  # Added capital_gains here

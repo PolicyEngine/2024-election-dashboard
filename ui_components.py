@@ -69,7 +69,7 @@ def render_income_inputs():
         )
         
         capital_gains = st.number_input(
-            "Capital gains income ($)",
+            "Capital gains ($)",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -78,8 +78,8 @@ def render_income_inputs():
         )
     
     with col2:
-        social_security_retirement = st.number_input(
-            "Social security retirement ($)",
+        social_security = st.number_input(
+            "Social security Benefits received by seniors ($)",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -90,7 +90,7 @@ def render_income_inputs():
         # Added empty space to align with left column
         st.empty()
     
-    return income, social_security_retirement, capital_gains
+    return income, social_security, capital_gains
 
 def render_itemized_deductions():
     show_itemized = st.expander("Itemized deduction sources", expanded=False)
