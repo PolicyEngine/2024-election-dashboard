@@ -4,3 +4,4 @@ matplotlib
 policyengine-us
 pyyaml
 setuptools
+black

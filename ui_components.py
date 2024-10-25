@@ -60,7 +60,7 @@ def render_income_inputs():
     
     with col1:
         income = st.number_input(
-            "Annual wages and salaries ($)",
+            "Wages and salaries ($)",
             min_value=0,
             max_value=1000000,
             value=0,
