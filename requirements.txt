@@ -2,3 +2,6 @@ streamlit
 pandas
 matplotlib
 policyengine-us
+pyyaml
+setuptools
+black
