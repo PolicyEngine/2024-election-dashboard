@@ -17,6 +17,7 @@ The Harris platform includes several major tax reforms:
   [Learn more about the Harris CTC](https://policyengine.org/us/research/harris-ctc)
 - **High Earners Reform**: Adjustments to tax rates and thresholds for high-income earners
 - **Restored EITC**: Bringing back the expanded American Rescue Plan version of the Earned Income Tax Credit
+- **Capital Gains Reform**: Creating a new 28% tax bracket for capital gains income over $1,000,000
 
 ### Trump Economic Package
 The Trump platform includes:
