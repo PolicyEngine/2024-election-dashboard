@@ -1,9 +1,5 @@
 COMBINED_REFORMS = {
-    "Baseline": {
-        "gov.contrib.tax_exempt.in_effect": {
-            "2025-01-01.2100-12-31": True
-        }
-    },
+    "Baseline": None,
     "Harris": {
         # Harris Child Tax Credit
         "gov.contrib.congress.delauro.american_family_act.baby_bonus": {
