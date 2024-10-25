@@ -18,7 +18,7 @@ def load_credits_from_yaml(package, resource_path):
 def create_situation(state, is_married, child_ages, income, social_security_retirement,
                     head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                     interest_expense=0, charitable_cash=0, charitable_non_cash=0,
-                    qualified_business_income=0, casualty_loss=0):
+                    qualified_business_income=0, casualty_loss=0, capital_gains=0):  # Added capital_gains parameter
     situation = {
         "people": {
             "adult": {
@@ -32,7 +32,7 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
                 "qualified_business_income": {YEAR: qualified_business_income},
                 "casualty_loss": {YEAR: casualty_loss},
                 "real_estate_taxes": {YEAR: real_estate_taxes},
-                "capital_gains": {YEAR: capital_gains},
+                "capital_gains": {YEAR: capital_gains},  
             },
         },
         "families": {"family": {"members": ["adult"]}},
@@ -82,7 +82,7 @@ def calculate_values(categories, simulation, year):
 def calculate_consolidated_results(reform_name, state, is_married, child_ages, income, social_security_retirement,
                                 head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                                 interest_expense=0, charitable_cash=0, charitable_non_cash=0,
-                                qualified_business_income=0, casualty_loss=0):
+                                qualified_business_income=0, casualty_loss=0, capital_gains=0):  # Added capital_gains parameter
     """
     Calculates metrics for a single reform with detailed breakdowns.
     """
@@ -91,16 +91,16 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
         state, is_married, child_ages, income, social_security_retirement,
         head_age, spouse_age, medical_expenses, real_estate_taxes, interest_expense,
         charitable_cash, charitable_non_cash, qualified_business_income,
-        casualty_loss, capital_gains
+        casualty_loss, capital_gains  # Added capital_gains here
     )
     
-    # Set up simulation
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
         reform_dict = COMBINED_REFORMS.get(reform_name, {})
         reform = Reform.from_dict(reform_dict, country_id="us")
         simulation = Simulation(reform=reform, situation=situation)
+
 
     # # Get categories for credits
     # federal_refundable_credits = IncomeTaxRefundableCredits.adds
