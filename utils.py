@@ -55,7 +55,7 @@ STATE_NAMES = {
     "WA": "Washington",
     "WV": "West Virginia",
     "WI": "Wisconsin",
-    "WY": "Wyoming"
+    "WY": "Wyoming",
 }
 
 STATE_CODES = list(STATE_NAMES.keys())
@@ -68,33 +68,32 @@ DEFAULT_AGE = 40
 MAIN_METRICS = [
     "Household Net Income",
     "Income Tax Before Credits",
-    "Refundable Tax Credits"
+    "Refundable Tax Credits",
 ]
 
 # Acronyms for credit formatting
-CREDIT_ACRONYMS = {
-    "eitc": "EITC",
-    "ctc": "CTC"
-}
+CREDIT_ACRONYMS = {"eitc": "EITC", "ctc": "CTC"}
+
 
 def format_credit_name(name, state_code=None):
     """Format credit names to be more readable"""
     # Remove tax_unit prefix if present
     name = name.replace("tax_unit_", "")
-    
+
     # Handle state-specific credits
     if "state_name" in name.lower() and state_code:
         state_name = STATE_NAMES.get(state_code, state_code)
         name = name.replace("state_name", state_name)
-    
+
     # Replace underscores with spaces and capitalize each word
     formatted = name.replace("_", " ").title()
-    
+
     # Replace any lowercase acronyms with uppercase versions
     for acronym_lower, acronym_upper in CREDIT_ACRONYMS.items():
         formatted = formatted.replace(acronym_lower.title(), acronym_upper)
-    
+
     return formatted
+
 
 def format_currency(value):
     """Format a number as currency string"""
