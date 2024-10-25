@@ -102,7 +102,7 @@ def render_itemized_deductions():
             max_value=1000000,
             value=0,
             step=500,
-            help="Medical and dental expenses that exceed 7.5% of your adjusted gross income",
+            help="Medical and dental expenses including health insurance premiums, over the counter health expenses, and other medical expenses.",
         )
 
         real_estate_taxes = st.number_input(
@@ -147,7 +147,7 @@ def render_itemized_deductions():
             max_value=1000000,
             value=0,
             step=500,
-            help="Income from partnerships, S corporations, or sole proprietorships",
+            help="Income from partnerships, S corporations, or sole proprietorships which is eligible for the Qualified Business Income deduction",
         )
 
         casualty_loss = st.number_input(
