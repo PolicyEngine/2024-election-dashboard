@@ -55,11 +55,46 @@ def render_personal_info():
     return is_married, state, child_ages, head_age, spouse_age
 
 def render_income_inputs():
-    income = st.slider("Annual wages and salaries", min_value=0, max_value=500000, value=30000, step=500, format="$%d")
-    social_security_retirement = st.slider("Annual social security retirement income", min_value=0, max_value=500000, value=0, step=500, format="$%d")
+    income = st.slider(
+        "Annual wages and salaries", 
+        min_value=0, 
+        max_value=500000, 
+        value=30000, 
+        step=500, 
+        format="$%d",
+        help="Regular wages and salaries (excluding overtime and tips)"
+    )
     
-    return income, social_security_retirement
-
+    social_security_retirement = st.slider(
+        "Annual social security retirement income", 
+        min_value=0, 
+        max_value=500000, 
+        value=0, 
+        step=500, 
+        format="$%d"
+    )
+    
+    tip_income = st.slider(
+        "Annual tip income",
+        min_value=0,
+        max_value=100000,
+        value=0,
+        step=100,
+        format="$%d",
+        help="Total annual income from tips"
+    )
+    
+    overtime_income = st.slider(
+        "Annual overtime income",
+        min_value=0,
+        max_value=100000,
+        value=0,
+        step=100,
+        format="$%d",
+        help="Total annual income from overtime work"
+    )
+    
+    return income, social_security_retirement, tip_income, overtime_income
 def render_itemized_deductions():
     show_itemized = st.expander("Itemized deduction sources", expanded=False)
     

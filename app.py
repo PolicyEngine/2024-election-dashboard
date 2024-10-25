@@ -18,7 +18,8 @@ with personal_col:
 
 with income_col:
     st.markdown("### Income Information")
-    income, social_security_retirement = render_income_inputs()
+    # Update to unpack all four return values
+    income, social_security_retirement, tip_income, overtime_income = render_income_inputs()
     itemized_deductions = render_itemized_deductions()
 
 # Calculate button
@@ -35,6 +36,8 @@ if st.button("Calculate my household income"):
         "spouse_age": spouse_age,
         "income": income,
         "social_security_retirement": social_security_retirement,
+        "tip_income": tip_income,
+        "overtime_income": overtime_income,
         **itemized_deductions
     }
     
@@ -55,7 +58,7 @@ if st.button("Calculate my household income"):
     
     with tab2:
         # Display credit components
-        credit_df = format_credit_components(results_df, state)  # Pass the state code
+        credit_df = format_credit_components(results_df, state)
         if credit_df is not None:
             st.markdown(credit_df.to_markdown())
         else:

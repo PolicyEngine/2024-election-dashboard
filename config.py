@@ -17,11 +17,15 @@ The Harris platform includes several major tax reforms:
   [Learn more about the Harris CTC](https://policyengine.org/us/research/harris-ctc)
 - **High Earners Reform**: Adjustments to tax rates and thresholds for high-income earners
 - **Restored EITC**: Bringing back the expanded American Rescue Plan version of the Earned Income Tax Credit
+- **Tip Income Tax Relief**: Exempting tip income from both income and payroll taxes
+
 
 ### Trump Economic Package
 The Trump platform includes:
 - **Social Security Tax Exemption**: Eliminating taxes on Social Security benefits
   [Learn more about the Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
+- **Tip Income Tax Relief**: Exempting all tip income from both income and payroll taxes
+- **Overtime Tax Relief**: Exempting all overtime income from both income and payroll taxes
 """
 
 NOTES = """
@@ -32,4 +36,5 @@ NOTES = """
 - The calculator uses the PolicyEngine US microsimulation model.
 - Actual impacts may vary based on individual circumstances and final policy implementations.
 - Proposals are modeled based on currently available information and may be updated as more details are released.
+- Tax exemptions for tip and overtime income apply to both income tax and payroll taxes under the specified reforms.
 """

@@ -18,21 +18,38 @@ def load_credits_from_yaml(package, resource_path):
 def create_situation(state, is_married, child_ages, income, social_security_retirement,
                     head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
                     interest_expense=0, charitable_cash=0, charitable_non_cash=0,
-                    qualified_business_income=0, casualty_loss=0):
+                    qualified_business_income=0, casualty_loss=0, tip_income=0,
+                    overtime_income=0, reform_name="Baseline"):
+    """
+    Creates a situation dictionary for the simulation.
+    service_industry_wages are only included for specific reforms:
+    - For Harris reform: includes tip_income
+    - For Trump reform: includes both tip_income and overtime_income
+    - For Baseline: all income is treated as regular employment_income
+    """
+    # Initialize person dict with common attributes
+    person_dict = {
+        "age": {YEAR: head_age},
+        "employment_income": {YEAR: income},
+        "social_security_retirement": {YEAR: social_security_retirement},
+        "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
+        "interest_expense": {YEAR: interest_expense},
+        "charitable_cash_donations": {YEAR: charitable_cash},
+        "charitable_non_cash_donations": {YEAR: charitable_non_cash},
+        "qualified_business_income": {YEAR: qualified_business_income},
+        "casualty_loss": {YEAR: casualty_loss},
+        "real_estate_taxes": {YEAR: real_estate_taxes},
+    }
+
+    # Add service_industry_wages only for relevant reforms
+    if reform_name == "Harris":
+        person_dict["service_industry_wages"] = {YEAR: tip_income}
+    elif reform_name == "Trump":
+        person_dict["service_industry_wages"] = {YEAR: tip_income + overtime_income}
+
     situation = {
         "people": {
-            "adult": {
-                "age": {YEAR: head_age},
-                "employment_income": {YEAR: income},
-                "social_security_retirement": {YEAR: social_security_retirement},
-                "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
-                "interest_expense": {YEAR: interest_expense},
-                "charitable_cash_donations": {YEAR: charitable_cash},
-                "charitable_non_cash_donations": {YEAR: charitable_non_cash},
-                "qualified_business_income": {YEAR: qualified_business_income},
-                "casualty_loss": {YEAR: casualty_loss},
-                "real_estate_taxes": {YEAR: real_estate_taxes},
-            },
+            "adult": person_dict
         },
         "families": {"family": {"members": ["adult"]}},
         "marital_units": {"marital_unit": {"members": ["adult"]}},
@@ -53,16 +70,26 @@ def create_situation(state, is_married, child_ages, income, social_security_reti
         "spm_units": {"household": {"members": ["adult"]}},
     }
 
+    # Add children
     for i, age in enumerate(child_ages):
         child_id = f"child_{i}"
         situation["people"][child_id] = {"age": {YEAR: age}}
         for unit in ["families", "tax_units", "households", "spm_units"]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append(child_id)
 
+    # Add spouse if married
     if is_married and spouse_age is not None:
-        situation["people"]["spouse"] = {
+        spouse_dict = {
             "age": {YEAR: spouse_age},
+            "employment_income": {YEAR: 0},
         }
+        # Add service_industry_wages for spouse only if reform applies
+        if reform_name == "Harris":
+            spouse_dict["service_industry_wages"] = {YEAR: 0}
+        elif reform_name == "Trump":
+            spouse_dict["service_industry_wages"] = {YEAR: 0}
+            
+        situation["people"]["spouse"] = spouse_dict
         for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
 
@@ -78,19 +105,47 @@ def calculate_values(categories, simulation, year):
             result_dict[category] = 0
     return result_dict
 
-def calculate_consolidated_results(reform_name, state, is_married, child_ages, income, social_security_retirement,
-                                head_age, spouse_age=None, medical_expenses=0, real_estate_taxes=0,
-                                interest_expense=0, charitable_cash=0, charitable_non_cash=0,
-                                qualified_business_income=0, casualty_loss=0):
+def calculate_consolidated_results(reform_name, state, is_married, child_ages, income, 
+                                social_security_retirement, head_age, spouse_age=None, 
+                                medical_expenses=0, real_estate_taxes=0, interest_expense=0, 
+                                charitable_cash=0, charitable_non_cash=0, qualified_business_income=0, 
+                                casualty_loss=0, tip_income=0, overtime_income=0):
     """
     Calculates metrics for a single reform with detailed breakdowns.
     """
-    # Create situation dictionary
+    # For baseline, add all income to regular employment income
+    if reform_name == "Baseline":
+        total_income = income + tip_income + overtime_income
+        tip_income = 0
+        overtime_income = 0
+    else:
+        total_income = income
+        # For Harris reform, only tip income is exempt
+        if reform_name == "Harris":
+            total_income += overtime_income
+            overtime_income = 0
+        # For Trump reform, both tip and overtime remain separate
+        # (no need to modify as both will be handled in service_industry_wages)
+
+    # Create situation dictionary with reform name
     situation = create_situation(
-        state, is_married, child_ages, income, social_security_retirement,
-        head_age, spouse_age, medical_expenses, real_estate_taxes, interest_expense,
-        charitable_cash, charitable_non_cash, qualified_business_income,
-        casualty_loss
+        state=state,
+        is_married=is_married,
+        child_ages=child_ages,
+        income=total_income,
+        social_security_retirement=social_security_retirement,
+        head_age=head_age,
+        spouse_age=spouse_age,
+        medical_expenses=medical_expenses,
+        real_estate_taxes=real_estate_taxes,
+        interest_expense=interest_expense,
+        charitable_cash=charitable_cash,
+        charitable_non_cash=charitable_non_cash,
+        qualified_business_income=qualified_business_income,
+        casualty_loss=casualty_loss,
+        tip_income=tip_income,
+        overtime_income=overtime_income,
+        reform_name=reform_name
     )
     
     # Set up simulation
@@ -101,14 +156,17 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
         reform = Reform.from_dict(reform_dict, country_id="us")
         simulation = Simulation(reform=reform, situation=situation)
 
-    # # Get categories for credits
-    # federal_refundable_credits = IncomeTaxRefundableCredits.adds
-    # state_refundable_credits = StateRefundableCredits.adds
+    # Get metrics
+    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
+    household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
+    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
 
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
 
+
+    # Get categories for credits
     try:
         federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
     except FileNotFoundError:
@@ -118,12 +176,6 @@ def calculate_consolidated_results(reform_name, state, is_married, child_ages, i
         state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
     except FileNotFoundError:
         state_refundable_credits = []
-
-
-    # Calculate main metrics
-    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
-    household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
-    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
 
     # Calculate credit breakdowns
     federal_credits_dict = calculate_values(federal_refundable_credits, simulation, YEAR)
