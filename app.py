@@ -8,6 +8,7 @@ st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 st.markdown(BASELINE_DESCRIPTION)
 st.markdown("## Enter your current household information")
+st.markdown("*Please enter annual amounts for the tax year 2024*")
 
 # Render form sections
 personal_col, income_col = st.columns(2)
