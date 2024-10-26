@@ -37,7 +37,8 @@ def create_situation(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
-):  # Added capital_gains parameter
+    spouse_income=0,
+):
     situation = {
         "people": {
             "adult": {
@@ -82,6 +83,7 @@ def create_situation(
     if is_married and spouse_age is not None:
         situation["people"]["spouse"] = {
             "age": {YEAR: spouse_age},
+            "employment_income": {YEAR: spouse_income},
         }
         for unit in [
             "families",
@@ -93,6 +95,7 @@ def create_situation(
             situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
 
     return situation
+
 
 
 def calculate_values(categories, simulation, year):
@@ -123,11 +126,8 @@ def calculate_consolidated_results(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
-):  # Added capital_gains parameter
-    """
-    Calculates metrics for a single reform with detailed breakdowns.
-    """
-    # Create situation dictionary
+    spouse_income=0,
+):
     situation = create_situation(
         state,
         is_married,
@@ -143,7 +143,8 @@ def calculate_consolidated_results(
         charitable_non_cash,
         qualified_business_income,
         casualty_loss,
-        capital_gains,  # Added capital_gains here
+        capital_gains,
+        spouse_income,
     )
 
     if reform_name == "Baseline":
