@@ -11,7 +11,7 @@ from policyengine_us.variables.gov.states.tax.income.state_refundable_credits im
 from policyengine_us.variables.household.income.household.household_benefits import (
     household_benefits as HouseholdBenefits,
 )
-from utils import YEAR
+from utils import YEAR, AVAILABLE_YEARS, BASE_YEAR
 import pkg_resources
 import yaml
 import pandas as pd
@@ -139,30 +139,74 @@ def calculate_consolidated_results(
 ):
     """
     Calculate consolidated results for a given reform and household situation.
-    Note: Monetary inputs should already be uprated for the target year.
+    All monetary inputs are assumed to be in BASE_YEAR dollars and will be uprated to the target year.
+    
+    Args:
+        reform_name: Name of the reform to simulate
+        state: State code (e.g., "CA")
+        is_married: Boolean indicating marital status
+        child_ages: List of ages for children
+        income: Employment income (in BASE_YEAR dollars)
+        social_security: Social security benefits (in BASE_YEAR dollars)
+        head_age: Age of household head
+        spouse_age: Age of spouse (if married)
+        medical_expenses: Medical expenses (in BASE_YEAR dollars)
+        real_estate_taxes: Real estate taxes (in BASE_YEAR dollars)
+        interest_expense: Interest expenses (in BASE_YEAR dollars)
+        charitable_cash: Cash charitable donations (in BASE_YEAR dollars)
+        charitable_non_cash: Non-cash charitable donations (in BASE_YEAR dollars)
+        qualified_business_income: Qualified business income (in BASE_YEAR dollars)
+        casualty_loss: Casualty losses (in BASE_YEAR dollars)
+        capital_gains: Capital gains (in BASE_YEAR dollars)
+        spouse_income: Spouse's employment income (in BASE_YEAR dollars)
+        year: Target year for simulation (default: first available year)
+    
+    Returns:
+        pandas.DataFrame: Results of the simulation
     """
     if year not in AVAILABLE_YEARS:
         raise ValueError(f"Year must be one of {AVAILABLE_YEARS}")
 
-    # Create situation directly with the provided values (already uprated)
+    # Create a dictionary of all monetary inputs
+    monetary_inputs = {
+        'income': income,
+        'spouse_income': spouse_income,
+        'social_security': social_security,
+        'capital_gains': capital_gains,
+        'medical_expenses': medical_expenses,
+        'real_estate_taxes': real_estate_taxes,
+        'interest_expense': interest_expense,
+        'charitable_cash': charitable_cash,
+        'charitable_non_cash': charitable_non_cash,
+        'qualified_business_income': qualified_business_income,
+        'casualty_loss': casualty_loss,
+    }
+
+    # Uprate all monetary inputs from BASE_YEAR to target year
+    uprated_values = uprate_inputs(monetary_inputs, BASE_YEAR, year)
+
+    # Create situation with uprated values
     situation = create_situation(
-        state,
-        is_married,
-        child_ages,
-        income,
-        social_security,
-        head_age,
-        spouse_age,
-        medical_expenses,
-        real_estate_taxes,
-        interest_expense,
-        charitable_cash,
-        charitable_non_cash,
-        qualified_business_income,
-        casualty_loss,
-        capital_gains,  # Added capital_gains here
+        state=state,
+        is_married=is_married,
+        child_ages=child_ages,
+        income=uprated_values['income'],
+        social_security=uprated_values['social_security'],
+        head_age=head_age,
+        spouse_age=spouse_age,
+        medical_expenses=uprated_values['medical_expenses'],
+        real_estate_taxes=uprated_values['real_estate_taxes'],
+        interest_expense=uprated_values['interest_expense'],
+        charitable_cash=uprated_values['charitable_cash'],
+        charitable_non_cash=uprated_values['charitable_non_cash'],
+        qualified_business_income=uprated_values['qualified_business_income'],
+        casualty_loss=uprated_values['casualty_loss'],
+        capital_gains=uprated_values['capital_gains'],
+        spouse_income=uprated_values['spouse_income'],
+        year=year,  # Pass the target year to create_situation
     )
 
+    # Create appropriate simulation based on reform
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
@@ -170,7 +214,7 @@ def calculate_consolidated_results(
         reform = Reform.from_dict(reform_dict, country_id="us")
         simulation = Simulation(reform=reform, situation=situation)
 
-    # Get categories for credits
+    # Load credit categories
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = (
@@ -189,17 +233,17 @@ def calculate_consolidated_results(
 
     # Get benefit categories
     benefit_categories = HouseholdBenefits.adds
-    
-    # Calculate main metrics
-    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
-    household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
-    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
-    household_benefits = simulation.calculate("household_benefits", YEAR)[0]
 
-    # Calculate breakdowns
-    federal_credits_dict = calculate_values(federal_refundable_credits, simulation, YEAR)
-    state_credits_dict = calculate_values(state_refundable_credits, simulation, YEAR)
-    benefits_dict = calculate_values(benefit_categories, simulation, YEAR)
+    # Calculate main metrics for the specified year
+    household_net_income = simulation.calculate("household_net_income", year)[0]
+    household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", year)[0]
+    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", year)[0]
+    household_benefits = simulation.calculate("household_benefits", year)[0]
+
+    # Calculate breakdowns for the specified year
+    federal_credits_dict = calculate_values(federal_refundable_credits, simulation, year)
+    state_credits_dict = calculate_values(state_refundable_credits, simulation, year)
+    benefits_dict = calculate_values(benefit_categories, simulation, year)
 
     # Combine all results
     all_results = {
@@ -214,5 +258,16 @@ def calculate_consolidated_results(
 
     # Create DataFrame with all results
     results_df = pd.DataFrame({reform_name: all_results}).T
+
+    # Print selected columns if this is one of the reforms we want to debug
+    if reform_name in ["Baseline", "Harris", "Trump"]:
+        print(f"\n=== {reform_name} Results ===")
+        selected_columns = [
+            "Household Net Income",
+            "Income Tax Before Credits",
+            "Refundable Tax Credits"
+        ]
+        print(results_df[selected_columns])
+        print("=====================")
 
     return results_df

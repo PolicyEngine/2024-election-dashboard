@@ -203,22 +203,6 @@ COMBINED_REFORMS = {
         "gov.irs.deductions.itemized.limitation.agi_rate": {
             "2026-01-01.2100-12-31": None
         },
-        # Set all filing status limitations to None
-        "gov.irs.deductions.itemized.limitation.applicable_amount.HEAD_OF_HOUSEHOLD": {
-            "2026-01-01.2100-12-31": None
-        },
-        "gov.irs.deductions.itemized.limitation.applicable_amount.JOINT": {
-            "2026-01-01.2100-12-31": None
-        },
-        "gov.irs.deductions.itemized.limitation.applicable_amount.SEPARATE": {
-            "2026-01-01.2100-12-31": None
-        },
-        "gov.irs.deductions.itemized.limitation.applicable_amount.SINGLE": {
-            "2026-01-01.2100-12-31": None
-        },
-        "gov.irs.deductions.itemized.limitation.applicable_amount.SURVIVING_SPOUSE": {
-            "2026-01-01.2100-12-31": None
-        },
         "gov.irs.deductions.itemized.limitation.itemized_deduction_rate": {
             "2026-01-01.2100-12-31": None
         },
@@ -240,87 +224,16 @@ COMBINED_REFORMS = {
             "2026-01-01.2100-12-31": 10000
         },
         
-        # QBI Deduction
-        "gov.irs.deductions.qbi.max.business_property.rate": {
-            "2026-01-01.2100-12-31": 0.025
-        },
-        "gov.irs.deductions.qbi.max.rate": {
-            "2026-01-01.2100-12-31": 0.2
-        },
-        "gov.irs.deductions.qbi.max.w2_wages.alt_rate": {
-            "2026-01-01.2100-12-31": 0.25
-        },
-        "gov.irs.deductions.qbi.max.w2_wages.rate": {
-            "2026-01-01.2100-12-31": 0.5
-        },
-        
-        # QBI Phase-out Parameters
-        "gov.irs.deductions.qbi.phase_out.length.HEAD_OF_HOUSEHOLD": {
-            "2026-01-01.2100-12-31": 50000
-        },
-        "gov.irs.deductions.qbi.phase_out.length.JOINT": {
-            "2026-01-01.2100-12-31": 100000
-        },
-        "gov.irs.deductions.qbi.phase_out.length.SEPARATE": {
-            "2026-01-01.2100-12-31": 50000
-        },
-        "gov.irs.deductions.qbi.phase_out.length.SINGLE": {
-            "2026-01-01.2100-12-31": 50000
-        },
-        "gov.irs.deductions.qbi.phase_out.length.SURVIVING_SPOUSE": {
-            "2026-01-01.2100-12-31": 100000
-        },
-        
         # Standard Deduction (with inflation adjustments)
         "gov.irs.deductions.standard.amount.HEAD_OF_HOUSEHOLD": {
             "2026-01-01.2026-12-31": 22950,
             "2027-01-01.2027-12-31": 23425,
-            "2028-01-01.2028-12-31": 23875,
-            "2029-01-01.2029-12-31": 24325,
-            "2030-01-01.2030-12-31": 24800,
-            "2031-01-01.2031-12-31": 25300,
-            "2032-01-01.2032-12-31": 25800,
-            "2033-01-01.2033-12-31": 26300,
-            "2034-01-01.2034-12-31": 26825,
-            "2035-01-01.2035-12-31": 27375
+            "2028-01-01.2028-12-31": 23875
         },
         "gov.irs.deductions.standard.amount.JOINT": {
             "2026-01-01.2026-12-31": 30600,
             "2027-01-01.2027-12-31": 31225,
-            "2028-01-01.2028-12-31": 31825,
-            "2029-01-01.2029-12-31": 32425,
-            "2030-01-01.2030-12-31": 33050,
-            "2031-01-01.2031-12-31": 33725,
-            "2032-01-01.2032-12-31": 34400,
-            "2033-01-01.2033-12-31": 35075,
-            "2034-01-01.2034-12-31": 35775,
-            "2035-01-01.2035-12-31": 36500
-        },
-        
-        # AMT Parameters
-        "gov.irs.income.amt.exemption.amount.HEAD_OF_HOUSEHOLD": {
-            "2026-01-01.2026-12-31": 89925,
-            "2027-01-01.2027-12-31": 91750,
-            "2028-01-01.2028-12-31": 93525,
-            "2029-01-01.2029-12-31": 95300,
-            "2030-01-01.2030-12-31": 97150,
-            "2031-01-01.2031-12-31": 99075,
-            "2032-01-01.2032-12-31": 101050,
-            "2033-01-01.2033-12-31": 103075,
-            "2034-01-01.2034-12-31": 105150,
-            "2035-01-01.2035-12-31": 107275
-        },
-        "gov.irs.income.amt.exemption.amount.JOINT": {
-            "2026-01-01.2026-12-31": 139850,
-            "2027-01-01.2027-12-31": 142675,
-            "2028-01-01.2028-12-31": 145425,
-            "2029-01-01.2029-12-31": 148200,
-            "2030-01-01.2030-12-31": 151100,
-            "2031-01-01.2031-12-31": 154100,
-            "2032-01-01.2032-12-31": 157150,
-            "2033-01-01.2033-12-31": 160300,
-            "2034-01-01.2034-12-31": 163525,
-            "2035-01-01.2035-12-31": 166850
+            "2028-01-01.2028-12-31": 31825
         },
         
         # Personal Exemption
