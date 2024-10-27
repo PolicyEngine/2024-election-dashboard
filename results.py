@@ -44,7 +44,11 @@ def create_situation(
     casualty_loss=0,
     capital_gains=0,
     spouse_income=0,
+    year=AVAILABLE_YEARS[0],  # Add year parameter with default value
 ):
+    # Convert year to string at the beginning of the function
+    year_str = str(year)
+    
     situation = {
         "people": {
             "adult": {
@@ -90,7 +94,6 @@ def create_situation(
         situation["people"]["spouse"] = {
             "age": {year_str: spouse_age},
             "employment_income": {year_str: spouse_income},
-            "employment_income": {YEAR: spouse_income},
         }
         for unit in [
             "families",
