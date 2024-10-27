@@ -117,16 +117,6 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-    # Capital gains below both columns
-    capital_gains = st.number_input(
-        "Capital gains ($)",
-        min_value=0,
-        max_value=1000000,
-        value=0,
-        step=500,
-        format="%d",
-    )
-
     return income, tip_income, overtime_income, social_security, capital_gains, spouse_income
 
 
