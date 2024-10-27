@@ -44,8 +44,6 @@ if st.button("Calculate my household income"):
         "head_age": head_age,
         "spouse_age": spouse_age,
         "income": income,
-        "tip_income": tip_income,
-        "overtime_income": overtime_income,
         "spouse_income": spouse_income,
         "social_security": social_security,
         "capital_gains": capital_gains,
