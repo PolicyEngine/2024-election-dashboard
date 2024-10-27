@@ -9,7 +9,7 @@ from calculator import (
     format_detailed_metrics,
     format_credit_components,
 )
-from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION
+from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION, ADDITIONAL_POLICIES
 
 # Page setup
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
@@ -73,6 +73,9 @@ if st.button("Calculate my household income"):
             st.markdown(credit_df.to_markdown())
         else:
             st.markdown("### No changes in credit components")
+
+    with st.expander("View Additional Tax & Benefit Proposals (Not Currently Modeled)"):
+        st.markdown(ADDITIONAL_POLICIES)
 
     st.markdown(NOTES)
     progress_text.empty()
