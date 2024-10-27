@@ -35,3 +35,42 @@ NOTES = """
 - Actual impacts may vary based on individual circumstances and final policy implementations.
 - Proposals are modeled based on currently available information and may be updated as more details are released.
 """
+
+ADDITIONAL_POLICIES = """
+### Additional Tax & Benefit Proposals Not Currently Modeled
+
+#### Harris Additional Tax Proposals
+- **Housing Tax Credits**
+  - Expanding the low-income housing tax credit
+  - Creating new credits for homebuilding in low-income communities
+  - Supporting affordable housing development
+
+- **Business Support**
+  - Increase startup expense deduction from $5,000 to $50,000
+  - Simplify tax filing process for small businesses
+  - New "America Forward tax credit" for strategic industry investment
+
+- **Corporate Tax Changes**
+  - Raise corporate tax rate from 21% to 28%
+  - Increase stock buyback excise tax from 1% to 4%
+
+#### Trump Additional Tax Proposals
+- **Business Tax Changes**
+  - Make Tax Cuts and Jobs Act (TCJA) business provisions more generous
+  - Expand business tax breaks
+  - Focus on domestic production incentives
+
+- **Energy Policy**
+  - Rescind unspent clean energy tax incentives from Inflation Reduction Act
+  - Roll back green energy tax breaks
+
+- **Corporate Tax Rate**
+  - Cut corporate tax rate from 21% to 15% for domestic production
+  - Focus on encouraging domestic manufacturing
+
+- **Import Tariffs**
+  - 10% tariff on all imports
+  - 60% tariffs on imports from China
+
+*Note: These additional policies are not currently modeled in the calculator but represent stated policy positions from both campaigns.*
+"""
