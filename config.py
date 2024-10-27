@@ -24,14 +24,19 @@ The Harris platform includes several major tax reforms:
 The Trump platform includes:
 - **Social Security Tax Exemption**: Eliminating taxes on Social Security benefits for senior citizens 
   [Learn more about the Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
+- **TCJA Extension**: Making permanent the Tax Cuts and Jobs Act provisions that are set to expire in 2026
 """
 
 NOTES = """
 ### Assumptions and Notes:
-- All calculations are based on projected 2025 tax parameters.
+- All calculations are based on projected tax parameters for the selected year (2024-2028).
+- The baseline scenario assumes TCJA provisions expire as scheduled after 2025.
+- All input values are entered in 2024 dollars and automatically adjusted for inflation:
+  - A 3% annual inflation rate is applied to all monetary inputs
 - The calculator assumes all income is from employment (wages and salaries).
 - Whether to use standard or itemized deductions is calculated based on the user input.
 - The calculator uses the PolicyEngine US microsimulation model.
+- Tax parameters are adjusted for inflation based on CBO projections.
 - Actual impacts may vary based on individual circumstances and final policy implementations.
 - Proposals are modeled based on currently available information and may be updated as more details are released.
 """

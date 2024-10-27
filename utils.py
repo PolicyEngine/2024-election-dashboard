@@ -64,6 +64,11 @@ STATE_CODES = list(STATE_NAMES.keys())
 YEAR = "2025"
 DEFAULT_AGE = 40
 
+# In utils.py
+BASE_YEAR = 2024  # Year for input values
+AVAILABLE_YEARS = [2025, 2026, 2027, 2028]  # Years for results
+
+
 # Main metrics that are always shown
 MAIN_METRICS = [
     "Household Net Income",
@@ -98,3 +103,40 @@ def format_credit_name(name, state_code=None):
 def format_currency(value):
     """Format a number as currency string"""
     return f"${value:,.2f}"
+
+def calculate_uprated_value(base_value, base_year, target_year, annual_rate=0.03):
+    """
+    Calculate the uprated value based on a 3% annual increase
+    
+    Args:
+        base_value: Original value in base year dollars
+        base_year: Year the value is originally in (int)
+        target_year: Year to project the value to (int)
+        annual_rate: Annual uprating rate (default 0.03 for 3%)
+    """
+    years_difference = target_year - base_year
+    if years_difference <= 0:
+        return base_value
+    return base_value * ((1 + annual_rate) ** years_difference)
+
+def uprate_inputs(inputs, base_year, target_year):
+    """
+    Uprate all monetary inputs from base year to target year
+    """
+    monetary_fields = [
+        'income', 'spouse_income', 'social_security', 'capital_gains',
+        'medical_expenses', 'real_estate_taxes', 'interest_expense',
+        'charitable_cash', 'charitable_non_cash', 'qualified_business_income',
+        'casualty_loss'
+    ]
+    
+    uprated_inputs = inputs.copy()
+    for field in monetary_fields:
+        if field in inputs:
+            uprated_inputs[field] = calculate_uprated_value(
+                inputs[field], 
+                base_year, 
+                target_year
+            )
+    
+    return uprated_inputs

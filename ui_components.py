@@ -53,8 +53,16 @@ def render_personal_info():
     return is_married, state, child_ages, head_age, spouse_age
 
 
-def render_income_inputs():
-    # Use consistent format for all income inputs
+def render_income_inputs(is_married=False):
+    """
+    Render income input fields with optional spouse income if married
+    
+    Args:
+        is_married (bool): Whether the user is married
+        
+    Returns:
+        tuple: (income, social_security, capital_gains, spouse_income)
+    """
     col1, col2 = st.columns(2)
 
     with col1:
@@ -65,6 +73,7 @@ def render_income_inputs():
             value=0,
             step=500,
             format="%d",
+            key="primary_wages"
         )
 
         capital_gains = st.number_input(
@@ -77,6 +86,21 @@ def render_income_inputs():
         )
 
     with col2:
+        # Show spouse income input if married, otherwise empty space
+        spouse_income = 0
+        if is_married:
+            spouse_income = st.number_input(
+                "Spouse wages and salaries ($)",
+                min_value=0,
+                max_value=1000000,
+                value=0,
+                step=500,
+                format="%d",
+                key="spouse_wages"
+            )
+        else:
+            st.empty()  # Placeholder to maintain alignment
+
         social_security = st.number_input(
             "Social security Benefits received by seniors ($)",
             min_value=0,
@@ -86,11 +110,7 @@ def render_income_inputs():
             format="%d",
         )
 
-        # Added empty space to align with left column
-        st.empty()
-
-    return income, social_security, capital_gains
-
+    return income, social_security, capital_gains, spouse_income
 
 def render_itemized_deductions():
     show_itemized = st.expander("Itemized deduction sources", expanded=False)

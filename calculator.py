@@ -1,16 +1,37 @@
 import pandas as pd
 from results import calculate_consolidated_results
 from graph import create_reform_comparison_graph
-from utils import MAIN_METRICS, format_credit_name, format_currency
+from utils import MAIN_METRICS, format_credit_name, format_currency, uprate_inputs, BASE_YEAR
 import streamlit as st
 
 
 def calculate_reforms(inputs, progress_text, chart_placeholder):
     summary_results = {}
+    selected_year = inputs.pop("year")  # Extract year from inputs
+
+    # Uprate the inputs from 2024 to selected year
+    monetary_inputs = {
+        "income": inputs["income"],
+        "spouse_income": inputs["spouse_income"],
+        "social_security": inputs["social_security"],
+        "capital_gains": inputs["capital_gains"],
+        "medical_expenses": inputs["medical_expenses"],
+        "real_estate_taxes": inputs["real_estate_taxes"],
+        "interest_expense": inputs["interest_expense"],
+        "charitable_cash": inputs["charitable_cash"],
+        "charitable_non_cash": inputs["charitable_non_cash"],
+        "qualified_business_income": inputs["qualified_business_income"],
+        "casualty_loss": inputs["casualty_loss"],
+    }
+    
+    uprated = uprate_inputs(monetary_inputs, BASE_YEAR, selected_year)
+    
+    # Update inputs with uprated values
+    inputs.update(uprated)
 
     # Calculate baseline first to get all possible metrics
     progress_text.text("Calculating Baseline...")
-    baseline_results = calculate_consolidated_results("Baseline", **inputs)
+    baseline_results = calculate_consolidated_results("Baseline", year=selected_year, **inputs)
 
     # Initialize DataFrame with all metrics from baseline results
     results_df = pd.DataFrame(
@@ -30,7 +51,7 @@ def calculate_reforms(inputs, progress_text, chart_placeholder):
     # Calculate other reforms
     for reform in ["Harris", "Trump"]:
         progress_text.text(f"Calculating {reform}...")
-        reform_results = calculate_consolidated_results(reform, **inputs)
+        reform_results = calculate_consolidated_results(reform, year=selected_year, **inputs)
 
         # Update results for all metrics
         for idx in results_df.index:
@@ -45,6 +66,7 @@ def calculate_reforms(inputs, progress_text, chart_placeholder):
         chart_placeholder.plotly_chart(fig, use_container_width=True)
 
     return summary_results, results_df
+
 
 
 def format_detailed_metrics(results_df):
