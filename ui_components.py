@@ -54,6 +54,16 @@ def render_personal_info():
 
 
 def render_income_inputs(is_married=False):
+    """
+    Render income input fields with optional spouse income if married
+    
+    Args:
+        is_married (bool): Whether the user is married
+        
+    Returns:
+        tuple: (income, social_security, capital_gains, spouse_income)
+    """
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -102,7 +112,6 @@ def render_income_inputs(is_married=False):
         )
 
     return income, social_security, capital_gains, spouse_income
-
 
 def render_itemized_deductions():
     show_itemized = st.expander("Itemized deduction sources", expanded=False)

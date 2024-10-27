@@ -1,7 +1,7 @@
 import pandas as pd
 from results import calculate_consolidated_results
 from graph import create_reform_comparison_graph
-from utils import MAIN_METRICS, format_credit_name, format_currency
+from utils import MAIN_METRICS, format_credit_name, format_currency, AVAILABLE_YEARS
 import streamlit as st
 from policyengine_us.variables.household.income.household.household_benefits import (
     household_benefits as HouseholdBenefits,
@@ -9,11 +9,27 @@ from policyengine_us.variables.household.income.household.household_benefits imp
 from utils import format_program_name, format_currency
 
 def calculate_reforms(inputs, progress_text, chart_placeholder):
+    """
+    Calculate results for all reforms with proper year handling.
+    
+    Args:
+        inputs: Dictionary containing simulation inputs including 'year'
+        progress_text: Streamlit text element for progress updates
+        chart_placeholder: Streamlit placeholder for charts
+    
+    Returns:
+        tuple: (summary_results dict, complete results DataFrame)
+    """
     summary_results = {}
+    year = inputs.get('year', AVAILABLE_YEARS)
     
     # Calculate baseline first to get all possible metrics
     progress_text.text("Calculating Baseline...")
-    baseline_results = calculate_consolidated_results("Baseline", **inputs)
+    baseline_results = calculate_consolidated_results(
+        reform_name="Baseline",
+        year=year,  # Pass year explicitly for Baseline too
+        **{k: v for k, v in inputs.items() if k != 'year'}
+    )
     
     # Initialize DataFrame with all metrics from baseline results
     results_df = pd.DataFrame(
@@ -33,8 +49,12 @@ def calculate_reforms(inputs, progress_text, chart_placeholder):
     # Calculate other reforms
     for reform in ["Harris", "Trump"]:
         progress_text.text(f"Calculating {reform}...")
-        reform_results = calculate_consolidated_results(reform, **inputs)
-        
+        reform_results = calculate_consolidated_results(
+            reform_name=reform,
+            year=year,
+            **{k: v for k, v in inputs.items() if k != 'year'}
+        )
+
         # Update results for all metrics
         for idx in results_df.index:
             if idx in reform_results.columns:
