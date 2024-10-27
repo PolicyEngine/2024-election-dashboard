@@ -7,6 +7,9 @@ from policyengine_us.variables.gov.irs.credits.income_tax_refundable_credits imp
 from policyengine_us.variables.gov.states.tax.income.state_refundable_credits import (
     state_refundable_credits as StateRefundableCredits,
 )
+from policyengine_us.variables.household.income.household.household_benefits import (
+    household_benefits as HouseholdBenefits,
+)
 from utils import YEAR
 import pkg_resources
 import yaml
@@ -36,9 +39,10 @@ def create_situation(
     charitable_non_cash=0,
     qualified_business_income=0,
     casualty_loss=0,
-    capital_gains=0,
+    capital_gains=0,    
     tip_income=0,
     overtime_income=0,
+    spouse_income=0,
 ):  # Added capital_gains parameter
     situation = {
         "people": {
@@ -89,6 +93,7 @@ def create_situation(
         # Add spouse to people
         situation["people"]["your spouse"] = {
             "age": {YEAR: spouse_age},
+            "employment_income": {YEAR: spouse_income},
         }
         for unit in [
             "families",
@@ -102,15 +107,17 @@ def create_situation(
     return situation
 
 
+
 def calculate_values(categories, simulation, year):
     result_dict = {}
     for category in categories:
         try:
-            amount = simulation.calculate(category, year, map_to="household")[0]
+            amount = int(round(simulation.calculate(category, year, map_to="household")[0]))  # Force integer
             result_dict[category] = amount
         except:
             result_dict[category] = 0
     return result_dict
+
 
 
 def calculate_consolidated_results(
@@ -132,6 +139,7 @@ def calculate_consolidated_results(
     capital_gains=0,
     tip_income=0,
     overtime_income=0,
+    spouse_income=0,
 ):  # Added capital_gains parameter
     """
     Calculates metrics for a single reform with detailed breakdowns.
@@ -155,6 +163,7 @@ def calculate_consolidated_results(
         capital_gains,
         tip_income,
         overtime_income,
+        spouse_income,  
     )
 
     if reform_name == "Baseline":
@@ -168,17 +177,14 @@ def calculate_consolidated_results(
     # Get metrics
     household_net_income = simulation.calculate("household_net_income", YEAR)[0]
     household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
-    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
+    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]  
 
-    # Rest of the f
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
 
     try:
-        federal_refundable_credits = load_credits_from_yaml(
-            package, resource_path_federal
-        )
+        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
     except FileNotFoundError:
         federal_refundable_credits = []
 
@@ -187,26 +193,27 @@ def calculate_consolidated_results(
     except FileNotFoundError:
         state_refundable_credits = []
 
+    # Get benefit categories
+    benefit_categories = HouseholdBenefits.adds
+    
     # Calculate main metrics
-    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
-    household_refundable_tax_credits = simulation.calculate(
-        "household_refundable_tax_credits", YEAR
-    )[0]
-    household_tax_before_refundable_credits = simulation.calculate(
-        "household_tax_before_refundable_credits", YEAR
-    )[0]
+    household_net_income = int(round(simulation.calculate("household_net_income", YEAR)[0]))
+    household_refundable_tax_credits = int(round(simulation.calculate("household_refundable_tax_credits", YEAR)[0]))
+    household_tax_before_refundable_credits = int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]))
+    household_benefits = int(round(simulation.calculate("household_benefits", YEAR)[0]))
 
-    # Calculate credit breakdowns
-    federal_credits_dict = calculate_values(
-        federal_refundable_credits, simulation, YEAR
-    )
+    # Calculate breakdowns
+    federal_credits_dict = calculate_values(federal_refundable_credits, simulation, YEAR)
     state_credits_dict = calculate_values(state_refundable_credits, simulation, YEAR)
+    benefits_dict = calculate_values(benefit_categories, simulation, YEAR)
 
     # Combine all results
     all_results = {
         "Household Net Income": household_net_income,
         "Income Tax Before Credits": household_tax_before_refundable_credits,
         "Refundable Tax Credits": household_refundable_tax_credits,
+        "Total Benefits": household_benefits,
+        **benefits_dict,
         **federal_credits_dict,
         **state_credits_dict,
     }

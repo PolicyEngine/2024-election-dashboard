@@ -5,8 +5,9 @@ from utils import BLUE, RED, GREY, format_currency
 
 
 def create_reform_comparison_graph(results):
-    # Convert the results dictionary into a DataFrame
+    # Convert the results dictionary into a DataFrame and round values
     df = pd.DataFrame(results.items(), columns=["reform", "net_income"])
+    df["net_income"] = df["net_income"].round(0)  # Round to nearest dollar
 
     # Split baseline and other reforms
     non_baseline = df[df["reform"] != "Baseline"].copy()
@@ -18,7 +19,7 @@ def create_reform_comparison_graph(results):
     # Combine back together with baseline and reverse to get baseline on top
     df = pd.concat([baseline, non_baseline]).iloc[::-1]
 
-    baseline_value = results.get("Baseline", 0)
+    baseline_value = int(round(results.get("Baseline", 0)))  # Force to integer
 
     fig = go.Figure()
 
@@ -27,15 +28,16 @@ def create_reform_comparison_graph(results):
 
     # Create bars
     for reform, value in zip(df["reform"], df["net_income"]):
-        diff = value - baseline_value
-        total_text = format_currency(value)
+        value = int(round(value))  # Force to integer
+        diff = int(round(value - baseline_value))  # Force to integer
+        total_text = f"<b>{format_currency(value)}</b>"  # Bold the total
         diff_text = (
-            format_currency(diff)
+            f"<b>{format_currency(diff)}</b>"  # Show and bold when diff is 0
             if diff == 0
             else (
-                f"+{format_currency(diff)}"
+                f"+<b>{format_currency(diff)}</b>"
                 if diff > 0
-                else f"-{format_currency(abs(diff))}"
+                else f"-<b>{format_currency(abs(diff))}</b>"
             )
         )
 
@@ -71,7 +73,8 @@ def create_reform_comparison_graph(results):
         )
 
         # Add difference annotation for non-baseline reforms
-        if reform != "Baseline" and diff != 0:
+        if reform != "Baseline":
+            annotation_color = colors.get(reform, "black")  # Use bar color for annotation
             fig.add_annotation(
                 y=reform,
                 x=value,
@@ -80,7 +83,7 @@ def create_reform_comparison_graph(results):
                 xshift=10,
                 text=diff_text,
                 showarrow=False,
-                font=dict(size=16),
+                font=dict(size=16, color=annotation_color),  # Set annotation color
             )
 
     # Calculate x-axis range
@@ -106,7 +109,7 @@ def create_reform_comparison_graph(results):
             gridcolor="rgba(0,0,0,0.1)",
             showline=True,
             linecolor="rgba(0,0,0,0.2)",
-            tickformat="$,.0f",
+            tickformat="$,d",  # Changed to remove decimals
             range=[0, x_max],
             title="Household Net Income",
             title_standoff=20,

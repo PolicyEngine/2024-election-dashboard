@@ -8,8 +8,9 @@ from calculator import (
     calculate_reforms,
     format_detailed_metrics,
     format_credit_components,
+    format_benefits_components,
 )
-from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION
+from config import APP_TITLE, NOTES, REFORMS_DESCRIPTION, BASELINE_DESCRIPTION, ADDITIONAL_POLICIES
 
 # Page setup
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
@@ -27,7 +28,7 @@ with personal_col:
 
 with income_col:
     st.markdown("### Income Information")
-    income, tip_income, overtime_income, social_security, capital_gains = render_income_inputs()
+    income, tip_income, overtime_income, social_security, capital_gains, spouse_income = render_income_inputs(is_married)
     itemized_deductions = render_itemized_deductions()
 
 # Calculate button
@@ -45,6 +46,7 @@ if st.button("Calculate my household income"):
         "income": income,
         "tip_income": tip_income,
         "overtime_income": overtime_income,
+        "spouse_income": spouse_income,
         "social_security": social_security,
         "capital_gains": capital_gains,
         "tip_income": tip_income,
@@ -61,21 +63,32 @@ if st.button("Calculate my household income"):
     st.markdown("## Reform Details")
     st.markdown(REFORMS_DESCRIPTION)
 
-    # Create tabs for main metrics and credit components
-    tab1, tab2 = st.tabs(["Main Breakdown", "Refundable Credits"])
-
+    # Create tabs for different breakdowns
+    tab1, tab2, tab3 = st.tabs(["Main Breakdown", "Benefits", "Refundable Credits"])
+    
     with tab1:
         # Display main metrics
         formatted_df = format_detailed_metrics(results_df)
         st.markdown(formatted_df.to_markdown())
-
+    
     with tab2:
+        # Display benefits breakdown
+        benefits_df = format_benefits_components(results_df)
+        if benefits_df is not None:
+            st.markdown(benefits_df.to_markdown())
+        else:
+            st.markdown("### No changes in benefits")
+    
+    with tab3:
         # Display credit components
         credit_df = format_credit_components(results_df, state)
         if credit_df is not None:
             st.markdown(credit_df.to_markdown())
         else:
             st.markdown("### No changes in credit components")
+
+    with st.expander("View Additional Tax & Benefit Proposals (Not Currently Modeled)"):
+        st.markdown(ADDITIONAL_POLICIES)
 
     st.markdown(NOTES)
     progress_text.empty()

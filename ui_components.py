@@ -53,8 +53,8 @@ def render_personal_info():
     return is_married, state, child_ages, head_age, spouse_age
 
 
-def render_income_inputs():
-    col1, col2 = st.columns([1, 1])  # Equal width columns
+def render_income_inputs(is_married=False):
+    col1, col2 = st.columns([1, 1]) 
 
     with col1:
         income = st.number_input(
@@ -64,10 +64,19 @@ def render_income_inputs():
             value=0,
             step=500,
             format="%d",
+            key="primary_wages"
         )
 
         tip_income = st.number_input(
             "Tip income ($)",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+        capital_gains = st.number_input(
+            "Total Capital gains ($)",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -84,6 +93,20 @@ def render_income_inputs():
             step=500,
             format="%d",
         )
+        # Show spouse income input if married, otherwise empty space
+        spouse_income = 0
+        if is_married:
+            spouse_income = st.number_input(
+                "Wages and salaries earned by the sposue ($)",
+                min_value=0,
+                max_value=1000000,
+                value=0,
+                step=500,
+                format="%d",
+                key="spouse_wages"
+            )
+        else:
+            st.empty()  # Placeholder to maintain alignment
 
         social_security = st.number_input(
             "Social security Benefits received by seniors ($)",
@@ -104,7 +127,7 @@ def render_income_inputs():
         format="%d",
     )
 
-    return income, tip_income, overtime_income, social_security, capital_gains
+    return income, tip_income, overtime_income, social_security, capital_gains, spouse_income
 
 
 def render_itemized_deductions():
