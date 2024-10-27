@@ -105,11 +105,12 @@ def calculate_values(categories, simulation, year):
     result_dict = {}
     for category in categories:
         try:
-            amount = simulation.calculate(category, year, map_to="household")[0]
+            amount = int(round(simulation.calculate(category, year, map_to="household")[0]))  # Force integer
             result_dict[category] = amount
         except:
             result_dict[category] = 0
     return result_dict
+
 
 
 def calculate_consolidated_results(
@@ -178,10 +179,10 @@ def calculate_consolidated_results(
     benefit_categories = HouseholdBenefits.adds
     
     # Calculate main metrics
-    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
-    household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
-    household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
-    household_benefits = simulation.calculate("household_benefits", YEAR)[0]
+    household_net_income = int(round(simulation.calculate("household_net_income", YEAR)[0]))
+    household_refundable_tax_credits = int(round(simulation.calculate("household_refundable_tax_credits", YEAR)[0]))
+    household_tax_before_refundable_credits = int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]))
+    household_benefits = int(round(simulation.calculate("household_benefits", YEAR)[0]))
 
     # Calculate breakdowns
     federal_credits_dict = calculate_values(federal_refundable_credits, simulation, YEAR)
