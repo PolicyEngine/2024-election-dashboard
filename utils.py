@@ -97,9 +97,8 @@ def format_credit_name(name, state_code=None):
 
 
 def format_currency(value):
-    """Format a number as currency string"""
-    return f"${value:,.2f}"
-
+    """Format a number as currency without decimal places"""
+    return f"${int(round(value)):,}"
 
 def format_program_name(name):
     """Format program names to be more readable"""
