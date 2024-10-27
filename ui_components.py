@@ -63,6 +63,7 @@ def render_income_inputs(is_married=False):
     Returns:
         tuple: (income, social_security, capital_gains, spouse_income)
     """
+
     col1, col2 = st.columns(2)
 
     with col1:
@@ -77,7 +78,7 @@ def render_income_inputs(is_married=False):
         )
 
         capital_gains = st.number_input(
-            "Capital gains ($)",
+            "Total Capital gains ($)",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -90,7 +91,7 @@ def render_income_inputs(is_married=False):
         spouse_income = 0
         if is_married:
             spouse_income = st.number_input(
-                "Spouse wages and salaries ($)",
+                "Wages and salaries earned by the sposue ($)",
                 min_value=0,
                 max_value=1000000,
                 value=0,

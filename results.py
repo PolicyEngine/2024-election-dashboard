@@ -44,17 +44,7 @@ def create_situation(
     casualty_loss=0,
     capital_gains=0,
     spouse_income=0,
-    year=2025,  # Add year parameter with default
 ):
-    """
-    Create a situation dictionary for PolicyEngine simulation.
-    
-    Args:
-        [...]
-        year (int): Year for the simulation (default 2025)
-    """
-    year_str = str(year)
-    
     situation = {
         "people": {
             "adult": {
@@ -100,6 +90,7 @@ def create_situation(
         situation["people"]["spouse"] = {
             "age": {year_str: spouse_age},
             "employment_income": {year_str: spouse_income},
+            "employment_income": {YEAR: spouse_income},
         }
         for unit in [
             "families",
@@ -111,6 +102,7 @@ def create_situation(
             situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
 
     return situation
+
 
 
 def calculate_values(categories, simulation, year):
@@ -153,26 +145,23 @@ def calculate_consolidated_results(
 
     # Create situation directly with the provided values (already uprated)
     situation = create_situation(
-        state=state,
-        is_married=is_married,
-        child_ages=child_ages,
-        head_age=head_age,
-        spouse_age=spouse_age,
-        income=income,
-        spouse_income=spouse_income,
-        social_security=social_security,
-        capital_gains=capital_gains,
-        medical_expenses=medical_expenses,
-        real_estate_taxes=real_estate_taxes,
-        interest_expense=interest_expense,
-        charitable_cash=charitable_cash,
-        charitable_non_cash=charitable_non_cash,
-        qualified_business_income=qualified_business_income,
-        casualty_loss=casualty_loss,
-        year=year,
+        state,
+        is_married,
+        child_ages,
+        income,
+        social_security,
+        head_age,
+        spouse_age,
+        medical_expenses,
+        real_estate_taxes,
+        interest_expense,
+        charitable_cash,
+        charitable_non_cash,
+        qualified_business_income,
+        casualty_loss,
+        capital_gains,  # Added capital_gains here
     )
 
-    # Rest of the function remains the same...
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
