@@ -69,6 +69,7 @@ MAIN_METRICS = [
     "Household Net Income",
     "Income Tax Before Credits",
     "Refundable Tax Credits",
+    "Total Benefits",
 ]
 
 # Acronyms for credit formatting
@@ -98,3 +99,8 @@ def format_credit_name(name, state_code=None):
 def format_currency(value):
     """Format a number as currency string"""
     return f"${value:,.2f}"
+
+
+def format_program_name(name):
+    """Format program names to be more readable"""
+    return name.replace("_", " ").title()

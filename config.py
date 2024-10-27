@@ -63,7 +63,6 @@ ADDITIONAL_POLICIES = """
 - **Energy Policy**
   - Rescind unspent clean energy tax incentives from Inflation Reduction Act
   - Roll back green energy tax breaks
-  - Projected modest tax increase across income levels
 
 - **Corporate Tax Rate**
   - Cut corporate tax rate from 21% to 15% for domestic production
