@@ -54,7 +54,7 @@ def render_personal_info():
 
 
 def render_income_inputs(is_married=False):
-    col1, col2 = st.columns([1, 1]) 
+    col1, col2 = st.columns([1, 1])
 
     with col1:
         income = st.number_input(
@@ -64,7 +64,7 @@ def render_income_inputs(is_married=False):
             value=50000,
             step=1000,
             format="%d",
-            key="primary_wages"
+            key="primary_wages",
         )
 
         tip_income = st.number_input(
@@ -96,9 +96,9 @@ def render_income_inputs(is_married=False):
                 value=0,
                 step=1000,
                 format="%d",
-                key="spouse_wages"
+                key="spouse_wages",
             )
-            
+
         overtime_income = st.number_input(
             "Amount of income received as overtime income ($)",
             min_value=0,
@@ -117,7 +117,14 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-    return income, tip_income, overtime_income, social_security, capital_gains, spouse_income
+    return (
+        income,
+        tip_income,
+        overtime_income,
+        social_security,
+        capital_gains,
+        spouse_income,
+    )
 
 
 def render_itemized_deductions():

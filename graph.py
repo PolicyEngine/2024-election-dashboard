@@ -74,7 +74,9 @@ def create_reform_comparison_graph(results):
 
         # Add difference annotation for non-baseline reforms
         if reform != "Baseline":
-            annotation_color = colors.get(reform, "black")  # Use bar color for annotation
+            annotation_color = colors.get(
+                reform, "black"
+            )  # Use bar color for annotation
             fig.add_annotation(
                 y=reform,
                 x=value,

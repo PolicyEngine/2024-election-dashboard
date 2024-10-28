@@ -100,6 +100,7 @@ def format_currency(value):
     """Format a number as currency without decimal places"""
     return f"${int(round(value)):,}"
 
+
 def format_program_name(name):
     """Format program names to be more readable"""
     return name.replace("_", " ").title()
