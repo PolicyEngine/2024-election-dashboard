@@ -69,7 +69,7 @@ COMBINED_REFORMS = {
             "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.tip_income.payroll_tax_exempt": {
-            "2024-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": False
         },
     },
     "Trump": {
@@ -92,7 +92,7 @@ COMBINED_REFORMS = {
             "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.tip_income.payroll_tax_exempt": {
-            "2024-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": False
         }
     }
 }
