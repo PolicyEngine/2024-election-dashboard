@@ -157,29 +157,41 @@ def format_state_credit_components(results_df, state_code):
 
 
 def format_benefits_components(results_df):
-    """Format the benefits breakdown using HouseholdBenefits categories"""
+    """Format the benefits breakdown showing all non-zero benefits"""
     formatted_df = results_df.copy()
 
-    # Get benefit categories from HouseholdBenefits
-    benefit_categories = HouseholdBenefits.adds
+    # List of known benefit names
+    benefits = [
+        "snap",
+        "tanf",
+        "ssi",
+        "housing_vouchers",
+        "medicaid",
+        "medicare",
+        "social_security",
+        "unemployment_compensation",
+        "wic",
+        "free_school_meals",
+        "reduced_price_school_meals",
+        "spm_unit_broadband_subsidy",
+        "high_efficiency_electric_home_rebate",
+        "residential_efficiency_electrification_rebate",
+        "head_start",
+        "early_head_start",
+    ]
 
-    # Get all benefits using these categories (excluding main metrics)
-    benefit_rows = [idx for idx in formatted_df.index if idx in benefit_categories]
+    # Get all benefits that appear in the results
+    benefit_rows = [
+        idx
+        for idx in formatted_df.index
+        if idx in benefits and any(formatted_df.loc[idx] != 0)
+    ]
 
-    # Filter benefits that exist in baseline
-    active_benefits = []
-    for idx in benefit_rows:
-        if idx in formatted_df.index:
-            # Only check baseline value
-            has_value = formatted_df.loc[idx, "Baseline"] != 0
-            if has_value:
-                active_benefits.append(idx)
-
-    if not active_benefits:
+    if not benefit_rows:
         return None
 
-    # Keep only benefits with baseline values
-    formatted_df = formatted_df.loc[active_benefits]
+    # Keep only benefits with values
+    formatted_df = formatted_df.loc[benefit_rows]
     formatted_df = formatted_df.round(2)
     formatted_df = formatted_df.applymap(format_currency)
 

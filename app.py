@@ -73,7 +73,11 @@ if st.button("Calculate my household income"):
     summary_results, results_df = calculate_reforms(
         inputs, progress_text, chart_placeholder
     )
-
+    st.write("### Full Results DataFrame:")
+    st.write("Index (row names):")
+    st.write(results_df.index.tolist())
+    st.write("\nFull DataFrame:")
+    st.write(results_df)
     # Display reform details
     st.markdown("## Reform Details")
     st.markdown(REFORMS_DESCRIPTION)
@@ -98,7 +102,7 @@ if st.button("Calculate my household income"):
         if benefits_df is not None:
             st.markdown(benefits_df.to_markdown())
         else:
-            st.markdown("### No changes in benefits")
+            st.markdown("### No Benefits available")
 
     with tab3:
         # Display federal credit components
@@ -106,7 +110,7 @@ if st.button("Calculate my household income"):
         if federal_credit_df is not None:
             st.markdown(federal_credit_df.to_markdown())
         else:
-            st.markdown("### No changes in federal credit components")
+            st.markdown("### No federal credits available")
 
     with tab4:
         # Display state credit components
