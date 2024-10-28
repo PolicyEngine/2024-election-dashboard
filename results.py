@@ -40,11 +40,13 @@ def create_situation(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
+    tip_income=0,
+    overtime_income=0,
     spouse_income=0,
 ):
     situation = {
         "people": {
-            "adult": {
+            "you": {
                 "age": {YEAR: head_age},
                 "employment_income": {YEAR: income},
                 "social_security": {YEAR: social_security},
@@ -56,35 +58,37 @@ def create_situation(
                 "casualty_loss": {YEAR: casualty_loss},
                 "real_estate_taxes": {YEAR: real_estate_taxes},
                 "capital_gains": {YEAR: capital_gains},
-            },
-        },
-        "families": {"family": {"members": ["adult"]}},
-        "marital_units": {"marital_unit": {"members": ["adult"]}},
-        "tax_units": {
-            "tax_unit": {
-                "members": ["adult"],
-                "premium_tax_credit": {YEAR: 0},
-                "alternative_minimum_tax": {YEAR: 0},
-                "net_investment_income_tax": {YEAR: 0},
+                "tip_income": {YEAR: tip_income},
+                "overtime_income": {YEAR: overtime_income},
             }
         },
+        "families": {"family": {"members": ["you"]}},
+        "marital_units": {"your marital unit": {"members": ["you"]}},
+        "tax_units": {"your tax unit": {"members": ["you"]}},
+        "spm_units": {"your household": {"members": ["you"]}},
         "households": {
-            "household": {
-                "members": ["adult"],
+            "your household": {
+                "members": ["you"],
                 "state_code": {YEAR: state},
             }
         },
-        "spm_units": {"household": {"members": ["adult"]}},
     }
 
+    # Add children if any
     for i, age in enumerate(child_ages):
         child_id = f"child_{i}"
         situation["people"][child_id] = {"age": {YEAR: age}}
-        for unit in ["families", "tax_units", "households", "spm_units"]:
+        for unit in [
+            "families",
+            "marital_units",
+            "tax_units",
+            "households",
+            "spm_units",
+        ]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append(child_id)
 
     if is_married and spouse_age is not None:
-        situation["people"]["spouse"] = {
+        situation["people"]["your spouse"] = {
             "age": {YEAR: spouse_age},
             "employment_income": {YEAR: spouse_income},
         }
@@ -95,22 +99,24 @@ def create_situation(
             "households",
             "spm_units",
         ]:
-            situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
+            situation[unit][list(situation[unit].keys())[0]]["members"].append(
+                "your spouse"
+            )
 
     return situation
-
 
 
 def calculate_values(categories, simulation, year):
     result_dict = {}
     for category in categories:
         try:
-            amount = int(round(simulation.calculate(category, year, map_to="household")[0]))  # Force integer
+            amount = int(
+                round(simulation.calculate(category, year, map_to="household")[0])
+            )  # Force integer
             result_dict[category] = amount
         except:
             result_dict[category] = 0
     return result_dict
-
 
 
 def calculate_consolidated_results(
@@ -130,8 +136,13 @@ def calculate_consolidated_results(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
+    tip_income=0,
+    overtime_income=0,
     spouse_income=0,
 ):
+    """
+    Calculates metrics for a single reform with detailed breakdowns.
+    """
     situation = create_situation(
         state,
         is_married,
@@ -148,6 +159,8 @@ def calculate_consolidated_results(
         qualified_business_income,
         casualty_loss,
         capital_gains,
+        tip_income,
+        overtime_income,
         spouse_income,
     )
 
@@ -155,10 +168,21 @@ def calculate_consolidated_results(
         simulation = Simulation(situation=situation)
     else:
         reform_dict = COMBINED_REFORMS.get(reform_name, {})
-        reform = Reform.from_dict(reform_dict, country_id="us")
-        simulation = Simulation(reform=reform, situation=situation)
+        if not reform_dict:  # If empty dict
+            simulation = Simulation(situation=situation)
+        else:
+            reform = Reform.from_dict(reform_dict, country_id="us")
+            simulation = Simulation(reform=reform, situation=situation)
 
-    # Get categories for credits
+    # Rest of the function remains the same
+    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
+    household_refundable_tax_credits = simulation.calculate(
+        "household_refundable_tax_credits", YEAR
+    )[0]
+    household_tax_before_refundable_credits = simulation.calculate(
+        "household_tax_before_refundable_credits", YEAR
+    )[0]
+
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = (
@@ -166,7 +190,9 @@ def calculate_consolidated_results(
     )
 
     try:
-        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
+        federal_refundable_credits = load_credits_from_yaml(
+            package, resource_path_federal
+        )
     except FileNotFoundError:
         federal_refundable_credits = []
 
@@ -177,15 +203,23 @@ def calculate_consolidated_results(
 
     # Get benefit categories
     benefit_categories = HouseholdBenefits.adds
-    
+
     # Calculate main metrics
-    household_net_income = int(round(simulation.calculate("household_net_income", YEAR)[0]))
-    household_refundable_tax_credits = int(round(simulation.calculate("household_refundable_tax_credits", YEAR)[0]))
-    household_tax_before_refundable_credits = int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]))
+    household_net_income = int(
+        round(simulation.calculate("household_net_income", YEAR)[0])
+    )
+    household_refundable_tax_credits = int(
+        round(simulation.calculate("household_refundable_tax_credits", YEAR)[0])
+    )
+    household_tax_before_refundable_credits = int(
+        round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])
+    )
     household_benefits = int(round(simulation.calculate("household_benefits", YEAR)[0]))
 
     # Calculate breakdowns
-    federal_credits_dict = calculate_values(federal_refundable_credits, simulation, YEAR)
+    federal_credits_dict = calculate_values(
+        federal_refundable_credits, simulation, YEAR
+    )
     state_credits_dict = calculate_values(state_refundable_credits, simulation, YEAR)
     benefits_dict = calculate_values(benefit_categories, simulation, YEAR)
 

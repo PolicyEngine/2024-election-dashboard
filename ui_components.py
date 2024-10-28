@@ -54,25 +54,34 @@ def render_personal_info():
 
 
 def render_income_inputs(is_married=False):
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns([1, 1])
 
     with col1:
         income = st.number_input(
-            "Wages and salaries ($)",
+            "Primary wages ($)",
+            min_value=0,
+            max_value=10000000,
+            value=50000,
+            step=1000,
+            format="%d",
+            key="primary_wages",
+        )
+
+        tip_income = st.number_input(
+            "Amount of income received as tip income ($)",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             format="%d",
-            key="primary_wages"
         )
 
-        capital_gains = st.number_input(
-            "Total Capital gains ($)",
+        social_security = st.number_input(
+            "Social Security benefits ($)",
             min_value=0,
-            max_value=1000000,
+            max_value=100000,
             value=0,
-            step=500,
+            step=1000,
             format="%d",
         )
 
@@ -81,19 +90,17 @@ def render_income_inputs(is_married=False):
         spouse_income = 0
         if is_married:
             spouse_income = st.number_input(
-                "Wages and salaries earned by the sposue ($)",
+                "Spouse wages ($)",
                 min_value=0,
-                max_value=1000000,
+                max_value=10000000,
                 value=0,
-                step=500,
+                step=1000,
                 format="%d",
-                key="spouse_wages"
+                key="spouse_wages",
             )
-        else:
-            st.empty()  # Placeholder to maintain alignment
 
-        social_security = st.number_input(
-            "Social security Benefits received by seniors ($)",
+        overtime_income = st.number_input(
+            "Amount of income received as overtime income ($)",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -101,7 +108,23 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-    return income, social_security, capital_gains, spouse_income
+        capital_gains = st.number_input(
+            "Capital gains ($)",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
+    return (
+        income,
+        tip_income,
+        overtime_income,
+        social_security,
+        capital_gains,
+        spouse_income,
+    )
 
 
 def render_itemized_deductions():
