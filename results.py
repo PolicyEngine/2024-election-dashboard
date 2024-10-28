@@ -178,15 +178,6 @@ def calculate_consolidated_results(
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
 
-    # Rest of the function remains the same
-    household_net_income = simulation.calculate("household_net_income", YEAR)[0]
-    household_refundable_tax_credits = simulation.calculate(
-        "household_refundable_tax_credits", YEAR
-    )[0]
-    household_tax_before_refundable_credits = simulation.calculate(
-        "household_tax_before_refundable_credits", YEAR
-    )[0]
-
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = (
@@ -212,6 +203,9 @@ def calculate_consolidated_results(
     household_net_income = int(
         round(simulation.calculate("household_net_income", YEAR)[0])
     )
+    household_market_income = int(  # Added this line
+        round(simulation.calculate("household_market_income", YEAR)[0])
+    )
     household_refundable_tax_credits = int(
         round(simulation.calculate("household_refundable_tax_credits", YEAR)[0])
     )
@@ -230,6 +224,7 @@ def calculate_consolidated_results(
     # Combine all results
     all_results = {
         "Household Net Income": household_net_income,
+        "Household Market Income": household_market_income,
         "Income Tax Before Credits": household_tax_before_refundable_credits,
         "Refundable Tax Credits": household_refundable_tax_credits,
         "Total Benefits": household_benefits,

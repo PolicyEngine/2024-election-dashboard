@@ -67,6 +67,7 @@ DEFAULT_AGE = 40
 # Main metrics that are always shown
 MAIN_METRICS = [
     "Household Net Income",
+    "Household Market Income",
     "Income Tax Before Credits",
     "Refundable Tax Credits",
     "Total Benefits",
