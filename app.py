@@ -25,7 +25,7 @@ st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 st.markdown(BASELINE_DESCRIPTION)
 st.markdown("## Enter your current household information")
-st.markdown("*Please enter annual amounts for the tax year 2024*")
+st.markdown("*Please enter estimated annual amounts for the tax year 2025*")
 
 # Render form sections
 personal_col, income_col = st.columns(2)
@@ -43,7 +43,6 @@ with income_col:
         overtime_income,
         social_security,
         capital_gains,
-        spouse_income,
     ) = render_income_inputs(is_married)
     itemized_deductions = render_itemized_deductions()
 
@@ -60,7 +59,6 @@ if st.button("Calculate my household income"):
         "head_age": head_age,
         "spouse_age": spouse_age,
         "income": income,
-        "spouse_income": spouse_income,
         "social_security": social_security,
         "capital_gains": capital_gains,
         "tip_income": tip_income,
