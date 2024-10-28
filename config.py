@@ -17,7 +17,7 @@ The Harris platform includes several major tax reforms:
   [Learn more about the Harris CTC](https://policyengine.org/us/research/harris-ctc)
 - **High Earners Reform**: High earners face a 39.6% tax rate on income above $418,450 (single) or $462,400 (married), plus increased Medicare and Net Investment Income tax of 1.2% on income above $411,000
 - **Restored EITC**: Bringing back the expanded American Rescue Plan version of the Earned Income Tax Credit
-- **Tip Income Tax Relief**: Exempting tip income from both income and payroll taxes
+- **Tip Income Tax Relief**: Exempting tip income from income tax but not payroll taxes
 
   [Learn more about the Harris EITC proposal](https://policyengine.org/us/research/harris-eitc)
 - **Capital Gains Reform**: Creating a new 28% tax bracket for capital gains income over $1,000,000
