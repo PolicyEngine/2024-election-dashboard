@@ -58,58 +58,58 @@ def render_income_inputs(is_married=False):
 
     with col1:
         income = st.number_input(
-            "Wages and salaries ($)",
+            "Primary wages ($)",
             min_value=0,
-            max_value=1000000,
-            value=0,
-            step=500,
+            max_value=10000000,
+            value=50000,
+            step=1000,
             format="%d",
             key="primary_wages"
         )
 
         tip_income = st.number_input(
-            "Tip income ($)",
+            "Amount of income received as tip income ($)",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             format="%d",
         )
-        capital_gains = st.number_input(
-            "Total Capital gains ($)",
+
+        social_security = st.number_input(
+            "Social Security benefits ($)",
             min_value=0,
-            max_value=1000000,
+            max_value=100000,
             value=0,
-            step=500,
+            step=1000,
             format="%d",
         )
 
     with col2:
+        # Show spouse income input if married, otherwise empty space
+        spouse_income = 0
+        if is_married:
+            spouse_income = st.number_input(
+                "Spouse wages ($)",
+                min_value=0,
+                max_value=10000000,
+                value=0,
+                step=1000,
+                format="%d",
+                key="spouse_wages"
+            )
+            
         overtime_income = st.number_input(
-            "Overtime income ($)",
+            "Amount of income received as overtime income ($)",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             format="%d",
         )
-        # Show spouse income input if married, otherwise empty space
-        spouse_income = 0
-        if is_married:
-            spouse_income = st.number_input(
-                "Wages and salaries earned by the sposue ($)",
-                min_value=0,
-                max_value=1000000,
-                value=0,
-                step=500,
-                format="%d",
-                key="spouse_wages"
-            )
-        else:
-            st.empty()  # Placeholder to maintain alignment
 
-        social_security = st.number_input(
-            "Social security Benefits received by seniors ($)",
+        capital_gains = st.number_input(
+            "Capital gains ($)",
             min_value=0,
             max_value=1000000,
             value=0,

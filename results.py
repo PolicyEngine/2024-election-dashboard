@@ -43,7 +43,7 @@ def create_situation(
     tip_income=0,
     overtime_income=0,
     spouse_income=0,
-):  # Added capital_gains parameter
+):
     situation = {
         "people": {
             "you": {
@@ -62,8 +62,16 @@ def create_situation(
                 "overtime_income": {YEAR: overtime_income},
             }
         },
-        "families": {"family": {"members": ["adult"]}},
-        "marital_units": {"marital_unit": {"members": ["adult"]}},
+        "families": {
+            "family": {
+                "members": ["you"]
+            }
+        },
+        "marital_units": {
+            "your marital unit": {
+                "members": ["you"]
+            }
+        },
         "tax_units": {
             "your tax unit": {
                 "members": ["you"]
@@ -75,8 +83,8 @@ def create_situation(
             }
         },
         "households": {
-            "household": {
-                "members": ["adult"],
+            "your household": {
+                "members": ["you"],
                 "state_code": {YEAR: state},
             }
         }
@@ -86,23 +94,16 @@ def create_situation(
     for i, age in enumerate(child_ages):
         child_id = f"child_{i}"
         situation["people"][child_id] = {"age": {YEAR: age}}
-        for unit in ["families", "tax_units", "households", "spm_units"]:
+        for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
             situation[unit][list(situation[unit].keys())[0]]["members"].append(child_id)
 
     if is_married and spouse_age is not None:
-        # Add spouse to people
         situation["people"]["your spouse"] = {
             "age": {YEAR: spouse_age},
             "employment_income": {YEAR: spouse_income},
         }
-        for unit in [
-            "families",
-            "marital_units",
-            "tax_units",
-            "households",
-            "spm_units",
-        ]:
-            situation[unit][list(situation[unit].keys())[0]]["members"].append("spouse")
+        for unit in ["families", "marital_units", "tax_units", "households", "spm_units"]:
+            situation[unit][list(situation[unit].keys())[0]]["members"].append("your spouse")
 
     return situation
 
@@ -140,11 +141,10 @@ def calculate_consolidated_results(
     tip_income=0,
     overtime_income=0,
     spouse_income=0,
-):  # Added capital_gains parameter
+):
     """
     Calculates metrics for a single reform with detailed breakdowns.
     """
-    # Create situation dictionary
     situation = create_situation(
         state,
         is_married,
@@ -167,14 +167,16 @@ def calculate_consolidated_results(
     )
 
     if reform_name == "Baseline":
-        reform_dict = COMBINED_REFORMS["Baseline"]
+        simulation = Simulation(situation=situation)
     else:
         reform_dict = COMBINED_REFORMS.get(reform_name, {})
-    
-    reform = Reform.from_dict(reform_dict, country_id="us")
-    simulation = Simulation(reform=reform, situation=situation)
+        if not reform_dict:  # If empty dict
+            simulation = Simulation(situation=situation)
+        else:
+            reform = Reform.from_dict(reform_dict, country_id="us")
+            simulation = Simulation(reform=reform, situation=situation)
 
-    # Get metrics
+    # Rest of the function remains the same
     household_net_income = simulation.calculate("household_net_income", YEAR)[0]
     household_refundable_tax_credits = simulation.calculate("household_refundable_tax_credits", YEAR)[0]
     household_tax_before_refundable_credits = simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]  
@@ -195,7 +197,7 @@ def calculate_consolidated_results(
 
     # Get benefit categories
     benefit_categories = HouseholdBenefits.adds
-    
+
     # Calculate main metrics
     household_net_income = int(round(simulation.calculate("household_net_income", YEAR)[0]))
     household_refundable_tax_credits = int(round(simulation.calculate("household_refundable_tax_credits", YEAR)[0]))

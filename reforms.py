@@ -63,13 +63,13 @@ COMBINED_REFORMS = {
         },
         # Tip Income Tax Exemption
         "gov.contrib.tax_exempt.in_effect": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.tip_income.income_tax_exempt": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.tip_income.payroll_tax_exempt": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
     },
     "Trump": {
@@ -80,19 +80,19 @@ COMBINED_REFORMS = {
         "gov.irs.social_security.taxability.rate.base": {"2024-01-01.2100-12-31": 0},
         # Trump Tax Exemptions
         "gov.contrib.tax_exempt.in_effect": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.overtime.income_tax_exempt": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.overtime.payroll_tax_exempt": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.tip_income.income_tax_exempt": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         },
         "gov.contrib.tax_exempt.tip_income.payroll_tax_exempt": {
-            "2025-01-01.2100-12-31": True
+            "2024-01-01.2100-12-31": True
         }
     }
 }
