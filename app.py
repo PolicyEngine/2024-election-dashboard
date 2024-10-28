@@ -73,14 +73,6 @@ if st.button("Calculate my household income"):
     summary_results, results_df = calculate_reforms(
         inputs, progress_text, chart_placeholder
     )
-    st.write("### Full Results DataFrame:")
-    st.write("Index (row names):")
-    st.write(results_df.index.tolist())
-    st.write("\nFull DataFrame:")
-    st.write(results_df)
-    # Display reform details
-    st.markdown("## Reform Details")
-    st.markdown(REFORMS_DESCRIPTION)
 
     # Create tabs for different breakdowns
     tab1, tab2, tab3, tab4 = st.tabs(

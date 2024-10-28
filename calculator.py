@@ -68,7 +68,9 @@ def format_federal_credit_components(results_df):
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     try:
-        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
+        federal_refundable_credits = load_credits_from_yaml(
+            package, resource_path_federal
+        )
     except FileNotFoundError:
         federal_refundable_credits = []
 
@@ -76,8 +78,7 @@ def format_federal_credit_components(results_df):
     federal_credit_rows = [
         idx
         for idx in formatted_df.index
-        if idx not in MAIN_METRICS 
-        and idx in federal_refundable_credits
+        if idx not in MAIN_METRICS and idx in federal_refundable_credits
     ]
 
     if not federal_credit_rows:
@@ -100,7 +101,9 @@ def format_state_credit_components(results_df, state_code):
 
     # Get credits loaded from state YAML file
     package = "policyengine_us"
-    resource_path_state = f"parameters/gov/states/{state_code.lower()}/tax/income/credits/refundable.yaml"
+    resource_path_state = (
+        f"parameters/gov/states/{state_code.lower()}/tax/income/credits/refundable.yaml"
+    )
     try:
         state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
     except FileNotFoundError:
@@ -110,8 +113,7 @@ def format_state_credit_components(results_df, state_code):
     state_credit_rows = [
         idx
         for idx in formatted_df.index
-        if idx not in MAIN_METRICS 
-        and idx in state_refundable_credits
+        if idx not in MAIN_METRICS and idx in state_refundable_credits
     ]
 
     if not state_credit_rows:
@@ -123,7 +125,9 @@ def format_state_credit_components(results_df, state_code):
     formatted_df = formatted_df.applymap(format_currency)
 
     # Format index names with state name
-    formatted_df.index = [format_credit_name(idx, state_code) for idx in formatted_df.index]
+    formatted_df.index = [
+        format_credit_name(idx, state_code) for idx in formatted_df.index
+    ]
 
     return formatted_df
 

@@ -196,9 +196,9 @@ def calculate_consolidated_results(
         "early_head_start",
         "housing_vouchers",
         "medicaid",
-        "medicare"
+        "medicare",
     ]
-    
+
     benefits_dict = {}
     for benefit in benefits:
         try:
@@ -251,11 +251,23 @@ def calculate_consolidated_results(
 
     # Combine all results
     all_results = {
-        "Household Net Income": int(round(simulation.calculate("household_net_income", YEAR)[0])),
-        "Household Market Income": int(round(simulation.calculate("household_market_income", YEAR)[0])),
-        "Income Tax Before Credits": int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])),
-        "Federal Refundable Credits": int(round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])),
-        "State Refundable Credits": int(round(simulation.calculate("state_refundable_credits", YEAR)[0])),
+        "Household Net Income": int(
+            round(simulation.calculate("household_net_income", YEAR)[0])
+        ),
+        "Household Market Income": int(
+            round(simulation.calculate("household_market_income", YEAR)[0])
+        ),
+        "Income Tax Before Credits": int(
+            round(
+                simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
+            )
+        ),
+        "Federal Refundable Credits": int(
+            round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])
+        ),
+        "State Refundable Credits": int(
+            round(simulation.calculate("state_refundable_credits", YEAR)[0])
+        ),
         "Total Benefits": total_benefits,
         **benefits_dict,
         **federal_credits_dict,
