@@ -73,7 +73,6 @@ if st.button("Calculate my household income"):
         inputs, progress_text, chart_placeholder
     )
 
-
     # Display reform details
     st.markdown("## Reform Details")
     st.markdown(REFORMS_DESCRIPTION)
