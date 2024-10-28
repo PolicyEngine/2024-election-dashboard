@@ -42,7 +42,6 @@ def create_situation(
     capital_gains=0,
     tip_income=0,
     overtime_income=0,
-    spouse_income=0,
     in_nyc=False,
 ):
     situation = {
@@ -92,7 +91,6 @@ def create_situation(
     if is_married and spouse_age is not None:
         situation["people"]["your spouse"] = {
             "age": {YEAR: spouse_age},
-            "employment_income": {YEAR: spouse_income},
         }
         for unit in [
             "families",
@@ -141,7 +139,6 @@ def calculate_consolidated_results(
     capital_gains=0,
     tip_income=0,
     overtime_income=0,
-    spouse_income=0,
     in_nyc=False,
 ):
     """
@@ -165,7 +162,6 @@ def calculate_consolidated_results(
         capital_gains,
         tip_income,
         overtime_income,
-        spouse_income,
         in_nyc,
     )
 

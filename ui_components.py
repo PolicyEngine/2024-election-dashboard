@@ -64,7 +64,7 @@ def render_income_inputs(is_married=False):
 
     with col1:
         income = st.number_input(
-            "Primary wages ($)",
+            "Total wages and salaries",
             min_value=0,
             max_value=10000000,
             value=50000,
@@ -73,17 +73,9 @@ def render_income_inputs(is_married=False):
             key="primary_wages",
         )
 
-        tip_income = st.number_input(
-            "Amount of income received as tip income ($)",
-            min_value=0,
-            max_value=1000000,
-            value=0,
-            step=500,
-            format="%d",
-        )
 
         social_security = st.number_input(
-            "Social Security benefits ($)",
+            "Social Security benefits received by seniors",
             min_value=0,
             max_value=100000,
             value=0,
@@ -91,22 +83,19 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
+        capital_gains = st.number_input(
+            "Capital gains",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
     with col2:
-        # Show spouse income input if married, otherwise empty space
-        spouse_income = 0
-        if is_married:
-            spouse_income = st.number_input(
-                "Spouse wages ($)",
-                min_value=0,
-                max_value=10000000,
-                value=0,
-                step=1000,
-                format="%d",
-                key="spouse_wages",
-            )
 
         overtime_income = st.number_input(
-            "Amount of income received as overtime income ($)",
+            "Amount of income received as overtime income",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -114,14 +103,17 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-        capital_gains = st.number_input(
-            "Capital gains ($)",
+
+
+        tip_income = st.number_input(
+            "Amount of income received as tip income",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             format="%d",
         )
+
 
     return (
         income,
@@ -129,7 +121,6 @@ def render_income_inputs(is_married=False):
         overtime_income,
         social_security,
         capital_gains,
-        spouse_income,
     )
 
 
@@ -138,7 +129,7 @@ def render_itemized_deductions():
 
     with show_itemized:
         medical_expenses = st.number_input(
-            "Medical out-of-pocket expenses ($)",
+            "Medical out-of-pocket expenses",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -147,7 +138,7 @@ def render_itemized_deductions():
         )
 
         real_estate_taxes = st.number_input(
-            "Real estate taxes ($)",
+            "Real estate taxes",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -156,7 +147,7 @@ def render_itemized_deductions():
         )
 
         interest_expense = st.number_input(
-            "Interest expense ($)",
+            "Interest expense",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -165,7 +156,7 @@ def render_itemized_deductions():
         )
 
         charitable_cash = st.number_input(
-            "Charitable cash donations ($)",
+            "Charitable cash donations",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -174,7 +165,7 @@ def render_itemized_deductions():
         )
 
         charitable_non_cash = st.number_input(
-            "Charitable non-cash donations ($)",
+            "Charitable non-cash donations",
             min_value=0,
             max_value=100000,
             value=0,
@@ -183,7 +174,7 @@ def render_itemized_deductions():
         )
 
         qualified_business_income = st.number_input(
-            "Qualified business income ($)",
+            "Qualified business income",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -192,12 +183,12 @@ def render_itemized_deductions():
         )
 
         casualty_loss = st.number_input(
-            "Casualty loss ($)",
+            "Casualty loss",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
-            help="Losses from federally declared disasters",
+            help="Losses from federally declared disasters and theft",
         )
 
     return {
