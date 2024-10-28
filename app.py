@@ -18,6 +18,7 @@ from config import (
     ADDITIONAL_POLICIES,
 )
 
+
 # Page setup
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
@@ -30,7 +31,8 @@ personal_col, income_col = st.columns(2)
 
 with personal_col:
     st.markdown("### Personal Information")
-    is_married, state, child_ages, head_age, spouse_age = render_personal_info()
+    personal_info = render_personal_info()
+    is_married, state, child_ages, head_age, spouse_age, in_nyc = personal_info
 
 with income_col:
     st.markdown("### Income Information")
@@ -62,6 +64,7 @@ if st.button("Calculate my household income"):
         "capital_gains": capital_gains,
         "tip_income": tip_income,
         "overtime_income": overtime_income,
+        "in_nyc": in_nyc,  # Add the NYC parameter
         **itemized_deductions,
     }
 

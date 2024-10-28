@@ -43,6 +43,7 @@ def create_situation(
     tip_income=0,
     overtime_income=0,
     spouse_income=0,
+    in_nyc=False,
 ):
     situation = {
         "people": {
@@ -70,6 +71,7 @@ def create_situation(
             "your household": {
                 "members": ["you"],
                 "state_code": {YEAR: state},
+                "in_nyc": {YEAR: in_nyc},
             }
         },
     }
@@ -139,6 +141,7 @@ def calculate_consolidated_results(
     tip_income=0,
     overtime_income=0,
     spouse_income=0,
+    in_nyc=False,
 ):
     """
     Calculates metrics for a single reform with detailed breakdowns.
@@ -162,6 +165,7 @@ def calculate_consolidated_results(
         tip_income,
         overtime_income,
         spouse_income,
+        in_nyc,
     )
 
     if reform_name == "Baseline":
