@@ -7,6 +7,7 @@ from policyengine_us.variables.household.income.household.household_benefits imp
     household_benefits as HouseholdBenefits,
 )
 from utils import format_program_name, format_currency
+from results import load_credits_from_yaml
 
 
 def calculate_reforms(inputs, progress_text, chart_placeholder):
@@ -63,45 +64,27 @@ def format_federal_credit_components(results_df):
     """Format federal credit components, showing items with baseline or reform values"""
     formatted_df = results_df.copy()
 
-    # Get only components from the total federal credits calculation
-    total_federal = formatted_df.loc["Federal Refundable Credits"]
-    total_state = formatted_df.loc["State Refundable Credits"]
+    # Get credits loaded from federal YAML file
+    package = "policyengine_us"
+    resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
+    try:
+        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
+    except FileNotFoundError:
+        federal_refundable_credits = []
 
-    # Get all credits (excluding main metrics and benefits)
-    credit_rows = [
+    # Get credits that are in the federal YAML
+    federal_credit_rows = [
         idx
         for idx in formatted_df.index
-        if idx not in MAIN_METRICS and "benefits" not in idx.lower()
+        if idx not in MAIN_METRICS 
+        and idx in federal_refundable_credits
     ]
 
-    # Filter credit components that contribute to federal but not state credits
-    active_credits = []
-    for idx in credit_rows:
-        if idx in formatted_df.index:
-            # Check if the credit contributes to the federal total but not the state total
-            baseline_value = formatted_df.loc[idx, "Baseline"]
-            if baseline_value > 0:
-                if (
-                    total_federal["Baseline"] >= baseline_value
-                    and total_state["Baseline"] < baseline_value
-                ):
-                    active_credits.append(idx)
-            # Also check reform values
-            for reform in ["Harris", "Trump"]:
-                reform_value = formatted_df.loc[idx, reform]
-                if reform_value > 0:
-                    if (
-                        total_federal[reform] >= reform_value
-                        and total_state[reform] < reform_value
-                    ):
-                        if idx not in active_credits:
-                            active_credits.append(idx)
-
-    if not active_credits:
+    if not federal_credit_rows:
         return None
 
     # Keep only credits with values
-    formatted_df = formatted_df.loc[active_credits]
+    formatted_df = formatted_df.loc[federal_credit_rows]
     formatted_df = formatted_df.round(2)
     formatted_df = formatted_df.applymap(format_currency)
 
@@ -115,43 +98,32 @@ def format_state_credit_components(results_df, state_code):
     """Format state credit components, showing items with baseline or reform values"""
     formatted_df = results_df.copy()
 
-    # Get only components that contribute to the state credits total
-    total_state = formatted_df.loc["State Refundable Credits"]
+    # Get credits loaded from state YAML file
+    package = "policyengine_us"
+    resource_path_state = f"parameters/gov/states/{state_code.lower()}/tax/income/credits/refundable.yaml"
+    try:
+        state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
+    except FileNotFoundError:
+        state_refundable_credits = []
 
-    # Get all credits (excluding main metrics and benefits)
-    credit_rows = [
+    # Get credits that are in the state YAML
+    state_credit_rows = [
         idx
         for idx in formatted_df.index
-        if idx not in MAIN_METRICS and "benefits" not in idx.lower()
+        if idx not in MAIN_METRICS 
+        and idx in state_refundable_credits
     ]
 
-    # Filter credit components that contribute to state credits
-    active_credits = []
-    for idx in credit_rows:
-        if idx in formatted_df.index:
-            # Check if the credit contributes to the state total
-            baseline_value = formatted_df.loc[idx, "Baseline"]
-            if baseline_value > 0 and total_state["Baseline"] >= baseline_value:
-                active_credits.append(idx)
-            # Also check reform values
-            for reform in ["Harris", "Trump"]:
-                reform_value = formatted_df.loc[idx, reform]
-                if reform_value > 0 and total_state[reform] >= reform_value:
-                    if idx not in active_credits:
-                        active_credits.append(idx)
-
-    if not active_credits:
+    if not state_credit_rows:
         return None
 
     # Keep only credits with values
-    formatted_df = formatted_df.loc[active_credits]
+    formatted_df = formatted_df.loc[state_credit_rows]
     formatted_df = formatted_df.round(2)
     formatted_df = formatted_df.applymap(format_currency)
 
     # Format index names with state name
-    formatted_df.index = [
-        format_credit_name(idx, state_code) for idx in formatted_df.index
-    ]
+    formatted_df.index = [format_credit_name(idx, state_code) for idx in formatted_df.index]
 
     return formatted_df
 

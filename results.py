@@ -179,30 +179,26 @@ def calculate_consolidated_results(
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
 
-    # Calculate main metrics
-    household_net_income = int(
-        round(simulation.calculate("household_net_income", YEAR)[0])
-    )
-    household_market_income = int(
-        round(simulation.calculate("household_market_income", YEAR)[0])
-    )
-    household_tax_before_refundable_credits = int(
-        round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])
-    )
-
-    # Calculate benefits explicitly
+    # Calculate benefits explicitly with expanded list
     benefits = [
-        "snap",
-        "tanf",
+        "social_security",
         "ssi",
+        "snap",
+        "wic",
+        "free_school_meals",
+        "reduced_price_school_meals",
+        "spm_unit_broadband_subsidy",
+        "tanf",
+        "high_efficiency_electric_home_rebate",
+        "residential_efficiency_electrification_rebate",
+        "unemployment_compensation",
+        "head_start",
+        "early_head_start",
         "housing_vouchers",
         "medicaid",
-        "medicare",
-        "social_security",
-        "unemployment_compensation",
-        "wic",
+        "medicare"
     ]
-
+    
     benefits_dict = {}
     for benefit in benefits:
         try:
@@ -214,26 +210,57 @@ def calculate_consolidated_results(
 
     total_benefits = sum(benefits_dict.values())
 
-    # Calculate federal and state credits
-    total_federal_credits = int(
-        round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])
+    # Get the lists of credits from YAML files
+    package = "policyengine_us"
+    resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
+    resource_path_state = (
+        f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
     )
-    total_state_credits = int(
-        round(simulation.calculate("state_refundable_credits", YEAR)[0])
-    )
+
+    try:
+        federal_refundable_credits = load_credits_from_yaml(
+            package, resource_path_federal
+        )
+    except FileNotFoundError:
+        federal_refundable_credits = []
+
+    try:
+        state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
+    except FileNotFoundError:
+        state_refundable_credits = []
+
+    # Calculate federal credits
+    federal_credits_dict = {}
+    for credit in federal_refundable_credits:
+        try:
+            value = int(round(simulation.calculate(credit, YEAR)[0]))
+            if value != 0:  # Only add non-zero credits
+                federal_credits_dict[credit] = value
+        except:
+            continue
+
+    # Calculate state credits
+    state_credits_dict = {}
+    for credit in state_refundable_credits:
+        try:
+            value = int(round(simulation.calculate(credit, YEAR)[0]))
+            if value != 0:  # Only add non-zero credits
+                state_credits_dict[credit] = value
+        except:
+            continue
 
     # Combine all results
     all_results = {
-        "Household Net Income": household_net_income,
-        "Household Market Income": household_market_income,
-        "Income Tax Before Credits": household_tax_before_refundable_credits,
-        "Federal Refundable Credits": total_federal_credits,
-        "State Refundable Credits": total_state_credits,
+        "Household Net Income": int(round(simulation.calculate("household_net_income", YEAR)[0])),
+        "Household Market Income": int(round(simulation.calculate("household_market_income", YEAR)[0])),
+        "Income Tax Before Credits": int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])),
+        "Federal Refundable Credits": int(round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])),
+        "State Refundable Credits": int(round(simulation.calculate("state_refundable_credits", YEAR)[0])),
         "Total Benefits": total_benefits,
+        **benefits_dict,
+        **federal_credits_dict,
+        **state_credits_dict,
     }
-
-    # Add individual benefits
-    all_results.update(benefits_dict)
 
     # Create DataFrame with all results
     results_df = pd.DataFrame({reform_name: all_results}).T
