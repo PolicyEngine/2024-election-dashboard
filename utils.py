@@ -38,6 +38,7 @@ STATE_NAMES = {
     "NJ": "New Jersey",
     "NM": "New Mexico",
     "NY": "New York",
+    "NYC": "New York City",
     "NC": "North Carolina",
     "ND": "North Dakota",
     "OH": "Ohio",
@@ -85,7 +86,11 @@ def format_credit_name(name, state_code=None):
 
     # Handle state-specific credits
     if "state_name" in name.lower() and state_code:
-        state_name = STATE_NAMES.get(state_code, state_code)
+        # Handle NYC specially
+        if state_code == "NY" and "nyc" in name.lower():
+            state_name = STATE_NAMES["NYC"]
+        else:
+            state_name = STATE_NAMES.get(state_code, state_code)
         name = name.replace("state_name", state_name)
 
     # Replace underscores with spaces and capitalize each word
