@@ -60,7 +60,7 @@ ADDITIONAL_POLICIES = """
   - Creating new credits for homebuilding in low-income communities
 
 - **Business Support**
-  - Increase startup expense deduction from $5,000 to $50,000
+  - Increase startup expense deduction from \$5,000 to \$50,000
   - Simplify tax filing process for small businesses
   - New "America Forward tax credit" for strategic industry investment
 
