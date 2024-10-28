@@ -44,13 +44,23 @@ ADDITIONAL_POLICIES = """
 ### Additional Tax & Benefit Proposals Not Currently Modeled
 
 #### Harris Additional Tax Proposals
+- **TCJA Extension**
+  - Extend 2017 tax law provisions selectively based on income:
+    * Full extension for households earning less than $400,000
+    * Limited benefits for households earning above $400,000
+  - Note: This calculator shows 2025 impacts only, before TCJA provisions expire
+
+ - **Healthcare Cost Caps**
+    - Extend Medicare's prescription drug cost limits to all Americans:
+    * $35 monthly cap on insulin costs
+    * $2,000 annual cap on out-of-pocket prescription costs 
+
 - **Housing Tax Credits**
   - Expanding the low-income housing tax credit
   - Creating new credits for homebuilding in low-income communities
-  - Supporting affordable housing development
 
 - **Business Support**
-  - Increase startup expense deduction from $5,000 to $50,000
+  - Increase startup expense deduction from \$5,000 to \$50,000
   - Simplify tax filing process for small businesses
   - New "America Forward tax credit" for strategic industry investment
 
@@ -59,10 +69,14 @@ ADDITIONAL_POLICIES = """
   - Increase stock buyback excise tax from 1% to 4%
 
 #### Trump Additional Tax Proposals
+- **TCJA Extension**
+  - Proposed extension of the Tax Cuts and Jobs Act provisions set to expire in 2026
+  - Note: This calculator shows 2025 impacts only, before TCJA provisions expire
+  - [Read our full report on the TCJA extension](https://policyengine.org/us/research/tcja-extension)
+
 - **Business Tax Changes**
   - Make Tax Cuts and Jobs Act (TCJA) business provisions more generous
   - Expand business tax breaks
-  - Focus on domestic production incentives
 
 - **Energy Policy**
   - Rescind unspent clean energy tax incentives from Inflation Reduction Act
@@ -70,7 +84,6 @@ ADDITIONAL_POLICIES = """
 
 - **Corporate Tax Rate**
   - Cut corporate tax rate from 21% to 15% for domestic production
-  - Focus on encouraging domestic manufacturing
 
 - **Import Tariffs**
   - 10% tariff on all imports
