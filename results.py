@@ -109,12 +109,13 @@ def create_situation(
 
 
 def calculate_values(categories, simulation, year):
+    """Helper function to calculate values for a list of categories"""
     result_dict = {}
     for category in categories:
         try:
             amount = int(
                 round(simulation.calculate(category, year, map_to="household")[0])
-            )  # Force integer
+            )
             result_dict[category] = amount
         except:
             result_dict[category] = 0
@@ -178,6 +179,7 @@ def calculate_consolidated_results(
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
 
+    # Get the lists of credits from YAML files
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
     resource_path_state = (
@@ -196,37 +198,40 @@ def calculate_consolidated_results(
     except FileNotFoundError:
         state_refundable_credits = []
 
-    # Get benefit categories
-    benefit_categories = HouseholdBenefits.adds
-
     # Calculate main metrics
     household_net_income = int(
         round(simulation.calculate("household_net_income", YEAR)[0])
     )
-    household_market_income = int(  # Added this line
+    household_market_income = int(
         round(simulation.calculate("household_market_income", YEAR)[0])
-    )
-    household_refundable_tax_credits = int(
-        round(simulation.calculate("household_refundable_tax_credits", YEAR)[0])
     )
     household_tax_before_refundable_credits = int(
         round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])
     )
     household_benefits = int(round(simulation.calculate("household_benefits", YEAR)[0]))
 
+    # Calculate total federal and state refundable credits
+    total_federal_credits = int(
+        round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])
+    )
+    total_state_credits = int(
+        round(simulation.calculate("state_refundable_credits", YEAR)[0])
+    )
+
     # Calculate breakdowns
     federal_credits_dict = calculate_values(
         federal_refundable_credits, simulation, YEAR
     )
     state_credits_dict = calculate_values(state_refundable_credits, simulation, YEAR)
-    benefits_dict = calculate_values(benefit_categories, simulation, YEAR)
+    benefits_dict = calculate_values(HouseholdBenefits.adds, simulation, YEAR)
 
     # Combine all results
     all_results = {
         "Household Net Income": household_net_income,
         "Household Market Income": household_market_income,
         "Income Tax Before Credits": household_tax_before_refundable_credits,
-        "Refundable Tax Credits": household_refundable_tax_credits,
+        "Federal Refundable Credits": total_federal_credits,
+        "State Refundable Credits": total_state_credits,
         "Total Benefits": household_benefits,
         **benefits_dict,
         **federal_credits_dict,
