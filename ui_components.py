@@ -27,6 +27,12 @@ def render_personal_info():
             )
 
     state = st.selectbox("State of residence", STATE_CODES)
+    
+    # Add NYC checkbox if NY is selected
+    in_nyc = False
+    if state == "NY":
+        in_nyc = st.checkbox("I live in New York City")
+
     num_children = st.number_input(
         "Number of Children", min_value=0, max_value=10, value=0, step=1
     )
@@ -50,8 +56,8 @@ def render_personal_info():
                         )
                         child_ages.append(age)
 
-    return is_married, state, child_ages, head_age, spouse_age
 
+    return is_married, state, child_ages, head_age, spouse_age, in_nyc
 
 def render_income_inputs(is_married=False):
     col1, col2 = st.columns([1, 1])
