@@ -3,6 +3,11 @@ BLUE = "#3378b2"
 RED = "#f45959"
 GREY = "#868686"
 
+# Tariff rates
+CHINA_TARIFF_RATE = 0.60  # 60% tariff on Chinese imports
+OTHER_TARIFF_RATE = 0.10  # 10% tariff on other imports
+
+
 # State Codes and Names
 STATE_NAMES = {
     "AL": "Alabama",

@@ -56,7 +56,40 @@ def render_personal_info():
                         )
                         child_ages.append(age)
 
-    return is_married, state, child_ages, head_age, spouse_age, in_nyc
+    # Add Imported Goods section here
+    st.markdown("### Imported Goods Expenses")
+    imports_col1, imports_col2 = st.columns([1, 1])
+
+    with imports_col1:
+        china_imports = st.number_input(
+            "Annual spending on imported goods from China",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
+    with imports_col2:
+        other_imports = st.number_input(
+            "Annual spending on imported goods from countries other than China",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
+    return (
+        is_married,
+        state,
+        child_ages,
+        head_age,
+        spouse_age,
+        in_nyc,
+        china_imports,
+        other_imports,
+    )
 
 
 def render_income_inputs(is_married=False):
@@ -68,7 +101,7 @@ def render_income_inputs(is_married=False):
             min_value=0,
             max_value=10000000,
             value=50000,
-            step=1000,
+            step=500,
             format="%d",
             key="primary_wages",
         )
@@ -76,9 +109,9 @@ def render_income_inputs(is_married=False):
         social_security = st.number_input(
             "Social Security benefits received by seniors",
             min_value=0,
-            max_value=100000,
+            max_value=1000000,
             value=0,
-            step=1000,
+            step=500,
             format="%d",
         )
 
@@ -92,7 +125,6 @@ def render_income_inputs(is_married=False):
         )
 
     with col2:
-
         overtime_income = st.number_input(
             "Amount of income received as overtime income",
             min_value=0,

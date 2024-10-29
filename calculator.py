@@ -1,7 +1,7 @@
 import pandas as pd
 from results import calculate_consolidated_results
 from graph import create_reform_comparison_graph
-from utils import MAIN_METRICS, format_credit_name, format_currency, STATE_NAMES
+from utils import MAIN_METRICS, format_credit_name, format_currency
 import streamlit as st
 from policyengine_us.variables.household.income.household.household_benefits import (
     household_benefits as HouseholdBenefits,
@@ -207,6 +207,36 @@ def format_tax_components(results_df):
             "Payroll Tax",
             "Federal Income Tax",
             "State Income Tax",
+        ]
+
+        return formatted_df
+
+    except KeyError:
+        return None
+
+
+def format_tariff_components(results_df):
+    """Format the tariff components"""
+    formatted_df = results_df.copy()
+
+    # List of tariff component rows
+    tariff_components = ["china_tariffs", "other_tariffs"]
+
+    # Keep only tariff components
+    try:
+        formatted_df = formatted_df.loc[
+            [row for row in tariff_components if row in formatted_df.index]
+        ]
+        if formatted_df.empty:
+            return None
+
+        formatted_df = formatted_df.round(2)
+        formatted_df = formatted_df.applymap(format_currency)
+
+        # Rename the index for better display
+        formatted_df.index = [
+            "Import Tariffs on Goods from China",
+            "Import Tariffs from outside of China",
         ]
 
         return formatted_df
