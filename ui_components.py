@@ -229,7 +229,7 @@ def render_itemized_deductions():
             max_value=1000000,
             value=0,
             step=500,
-            help="Losses from federally declared disasters and theft",
+            help="Losses from federally declared disasters",
         )
 
 
