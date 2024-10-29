@@ -10,11 +10,11 @@ from calculator import (
     format_federal_credit_components,
     format_state_credit_components,
     format_benefits_components,
+    format_tax_components,
 )
 from config import (
     APP_TITLE,
     NOTES,
-    REFORMS_DESCRIPTION,
     BASELINE_DESCRIPTION,
     ADDITIONAL_POLICIES,
 )
@@ -73,9 +73,10 @@ if st.button("Calculate my household income"):
     )
 
     # Create tabs for different breakdowns
-    tab1, tab2, tab3, tab4 = st.tabs(
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
         [
             "Main Breakdown",
+            "Taxes",
             "Benefits",
             "Federal Refundable Credits",
             "State Refundable Credits",
@@ -87,6 +88,14 @@ if st.button("Calculate my household income"):
         st.markdown(formatted_df.to_markdown())
 
     with tab2:
+        # Display tax breakdown
+        tax_df = format_tax_components(results_df)
+        if tax_df is not None:
+            st.markdown(tax_df.to_markdown())
+        else:
+            st.markdown("### No applicable income tax")
+
+    with tab3:
         # Display benefits breakdown
         benefits_df = format_benefits_components(results_df)
         if benefits_df is not None:
@@ -94,7 +103,7 @@ if st.button("Calculate my household income"):
         else:
             st.markdown("### No Benefits available")
 
-    with tab3:
+    with tab4:
         # Display federal credit components
         federal_credit_df = format_federal_credit_components(results_df)
         if federal_credit_df is not None:
@@ -102,7 +111,7 @@ if st.button("Calculate my household income"):
         else:
             st.markdown("### No federal credits available")
 
-    with tab4:
+    with tab5:
         # Display state credit components
         state_credit_df = format_state_credit_components(results_df, state)
         if state_credit_df is not None:

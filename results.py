@@ -175,6 +175,23 @@ def calculate_consolidated_results(
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
 
+    # Calculate tax breakdown components
+    tax_components = {
+        "employee_payroll_tax": int(
+            round(simulation.calculate("employee_payroll_tax", YEAR)[0])
+        ),
+        "income_tax_before_refundable_credits": int(
+            round(simulation.calculate("income_tax_before_refundable_credits", YEAR)[0])
+        ),
+        "household_state_tax_before_refundable_credits": int(
+            round(
+                simulation.calculate(
+                    "household_state_tax_before_refundable_credits", YEAR
+                )[0]
+            )
+        ),
+    }
+
     # Calculate benefits explicitly with expanded list
     benefits = [
         "social_security",
@@ -268,6 +285,7 @@ def calculate_consolidated_results(
         **benefits_dict,
         **federal_credits_dict,
         **state_credits_dict,
+        **tax_components,
     }
 
     # Create DataFrame with all results

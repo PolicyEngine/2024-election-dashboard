@@ -73,7 +73,6 @@ def render_income_inputs(is_married=False):
             key="primary_wages",
         )
 
-
         social_security = st.number_input(
             "Social Security benefits received by seniors",
             min_value=0,
@@ -103,8 +102,6 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-
-
         tip_income = st.number_input(
             "Amount of income received as tip income",
             min_value=0,
@@ -113,7 +110,6 @@ def render_income_inputs(is_married=False):
             step=500,
             format="%d",
         )
-
 
     return (
         income,

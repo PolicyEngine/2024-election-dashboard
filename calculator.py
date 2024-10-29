@@ -178,3 +178,38 @@ def format_benefits_components(results_df):
     formatted_df = formatted_df.sort_values("Baseline", ascending=False)
 
     return formatted_df
+
+
+def format_tax_components(results_df):
+    """Format the tax breakdown components"""
+    formatted_df = results_df.copy()
+
+    # List of tax component rows
+    tax_components = [
+        "employee_payroll_tax",
+        "income_tax_before_refundable_credits",
+        "household_state_tax_before_refundable_credits",
+    ]
+
+    # Keep only tax components and transpose to get components as columns
+    try:
+        formatted_df = formatted_df.loc[
+            [row for row in tax_components if row in formatted_df.index]
+        ]
+        if formatted_df.empty:
+            return None
+
+        formatted_df = formatted_df.round(2)
+        formatted_df = formatted_df.applymap(format_currency)
+
+        # Rename the index for better display
+        formatted_df.index = [
+            "Payroll Tax",
+            "Federal Income Tax",
+            "State Income Tax",
+        ]
+
+        return formatted_df
+
+    except KeyError:
+        return None
