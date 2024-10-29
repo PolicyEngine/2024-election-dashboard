@@ -121,18 +121,16 @@ def render_income_inputs(is_married=False):
             value=0,
             step=100,
             format="%d",
-            help="Estimated annual spending on goods imported from China",
         )
 
     with imports_col2:
         other_imports = st.number_input(
-            "Annual spending on imported goods from other countries",
+            "Annual spending on imported goods from countries other than China",
             min_value=0,
             max_value=1000000,
             value=0,
             step=100,
             format="%d",
-            help="Estimated annual spending on goods imported from countries other than China",
         )
 
     return (
