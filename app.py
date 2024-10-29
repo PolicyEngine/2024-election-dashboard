@@ -118,12 +118,6 @@ if st.button("Calculate my household income"):
         if tariffs_df is not None:
             st.markdown("### Import Tariffs")
             st.markdown(tariffs_df.to_markdown())
-            st.markdown(
-                """
-            - Additional 60% tariff applied to imports from China
-            - Additional 10% tariff applied to imports from other countries
-            """
-            )
         else:
             st.markdown("### No tariffs applicable")
 
