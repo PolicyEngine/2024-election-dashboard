@@ -8,3 +8,4 @@ black
 IPython
 plotly
 numpy
+tabulate
