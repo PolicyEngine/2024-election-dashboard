@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import STATE_CODES
+from utils import STATE_CODES, format_currency
 
 
 def render_personal_info():
@@ -169,14 +169,27 @@ def render_itemized_deductions():
             help="Property taxes paid on your primary residence",
         )
 
-        interest_expense = st.number_input(
-            "Interest expense",
+        # Split interest inputs into mortgage/investment and auto loan
+        mortgage_investment_interest = st.number_input(
+            "Mortgage and investment interest",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             help="Mortgage interest and investment interest expenses",
         )
+
+        auto_loan_interest = st.number_input(
+            "Auto loan interest",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            help="Interest paid on auto loans",
+        )
+
+        # Combine the interest expenses
+        total_interest_expense = mortgage_investment_interest + auto_loan_interest
 
         charitable_cash = st.number_input(
             "Charitable cash donations",
@@ -211,13 +224,14 @@ def render_itemized_deductions():
             max_value=1000000,
             value=0,
             step=500,
-            help="Losses from federally declared disasters and theft",
+            help="Losses from federally declared disasters",
         )
 
     return {
         "medical_expenses": medical_expenses,
         "real_estate_taxes": real_estate_taxes,
-        "interest_expense": interest_expense,
+        "interest_expense": total_interest_expense,
+        "auto_loan_interest": auto_loan_interest,
         "charitable_cash": charitable_cash,
         "charitable_non_cash": charitable_non_cash,
         "qualified_business_income": qualified_business_income,
