@@ -34,7 +34,16 @@ personal_col, income_col = st.columns(2)
 with personal_col:
     st.markdown("### Personal Information")
     personal_info = render_personal_info()
-    is_married, state, child_ages, head_age, spouse_age, in_nyc = personal_info
+    (
+        is_married,
+        state,
+        child_ages,
+        head_age,
+        spouse_age,
+        in_nyc,
+        china_imports,
+        other_imports,
+    ) = personal_info
 
 with income_col:
     st.markdown("### Income Information")
@@ -44,8 +53,6 @@ with income_col:
         overtime_income,
         social_security,
         capital_gains,
-        china_imports,
-        other_imports,
     ) = render_income_inputs(is_married)
     itemized_deductions = render_itemized_deductions()
 
