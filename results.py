@@ -159,7 +159,9 @@ def calculate_consolidated_results(
     Calculates metrics for a single reform with detailed breakdowns.
     """
     # Add auto loan interest to total interest only for Trump reform
-    total_interest = interest_expense + (auto_loan_interest if reform_name == "Trump" else 0)
+    total_interest = interest_expense + (
+        auto_loan_interest if reform_name == "Trump" else 0
+    )
 
     situation = create_situation(
         state,

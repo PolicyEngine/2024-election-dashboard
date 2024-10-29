@@ -232,7 +232,6 @@ def render_itemized_deductions():
             help="Losses from federally declared disasters",
         )
 
-
     return {
         "medical_expenses": medical_expenses,
         "real_estate_taxes": real_estate_taxes,
