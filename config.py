@@ -27,6 +27,9 @@ The Trump platform includes:
   [Read our full report on the Trump Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
 - **Tip Income Tax Relief**: Exempting all tip income from both income and payroll taxes
 - **Overtime Tax Relief**: Exempting all overtime income from both income and payroll taxes
+- **Import Tariffs**: Implementing a 60% tariff on imported goods from China and a 10% tariff on imported goods from all other countries
+
+
 """
 
 NOTES = """

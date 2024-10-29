@@ -18,6 +18,7 @@ from config import (
     NOTES,
     BASELINE_DESCRIPTION,
     ADDITIONAL_POLICIES,
+    REFORMS_DESCRIPTION,
 )
 
 
@@ -83,6 +84,9 @@ if st.button("Calculate my household income"):
     summary_results, results_df = calculate_reforms(
         inputs, progress_text, chart_placeholder
     )
+
+    # Add policy descriptions
+    st.markdown(REFORMS_DESCRIPTION)
 
     # Create tabs for different breakdowns
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
