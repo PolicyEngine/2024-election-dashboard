@@ -66,7 +66,7 @@ def render_personal_info():
             min_value=0,
             max_value=1000000,
             value=0,
-            step=100,
+            step=500,
             format="%d",
         )
 
@@ -76,7 +76,7 @@ def render_personal_info():
             min_value=0,
             max_value=1000000,
             value=0,
-            step=100,
+            step=500,
             format="%d",
         )
 
@@ -101,7 +101,7 @@ def render_income_inputs(is_married=False):
             min_value=0,
             max_value=10000000,
             value=50000,
-            step=1000,
+            step=500,
             format="%d",
             key="primary_wages",
         )
@@ -109,9 +109,9 @@ def render_income_inputs(is_married=False):
         social_security = st.number_input(
             "Social Security benefits received by seniors",
             min_value=0,
-            max_value=100000,
+            max_value=1000000,
             value=0,
-            step=1000,
+            step=500,
             format="%d",
         )
 
