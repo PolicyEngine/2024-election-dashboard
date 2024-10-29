@@ -1,7 +1,7 @@
 import pandas as pd
 from results import calculate_consolidated_results
 from graph import create_reform_comparison_graph
-from utils import MAIN_METRICS, format_credit_name, format_currency, STATE_NAMES
+from utils import MAIN_METRICS, format_credit_name, format_currency
 import streamlit as st
 from policyengine_us.variables.household.income.household.household_benefits import (
     household_benefits as HouseholdBenefits,

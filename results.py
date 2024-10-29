@@ -10,7 +10,7 @@ from policyengine_us.variables.gov.states.tax.income.state_refundable_credits im
 from policyengine_us.variables.household.income.household.household_benefits import (
     household_benefits as HouseholdBenefits,
 )
-from utils import YEAR
+from utils import YEAR, CHINA_TARIFF_RATE, OTHER_TARIFF_RATE
 import pkg_resources
 import yaml
 import pandas as pd
@@ -123,8 +123,10 @@ def calculate_values(categories, simulation, year):
 def calculate_tariffs(reform_name, china_imports, other_imports):
     """Calculate tariffs based on the reform"""
     if reform_name == "Trump":
-        china_tariff = china_imports * 0.60  # 60% tariff on Chinese imports
-        other_tariff = other_imports * 0.10  # 10% tariff on other imports
+        china_tariff = (
+            china_imports * CHINA_TARIFF_RATE
+        )  # 60% tariff on Chinese imports
+        other_tariff = other_imports * OTHER_TARIFF_RATE  # 10% tariff on other imports
         return china_tariff + other_tariff
     return 0
 
