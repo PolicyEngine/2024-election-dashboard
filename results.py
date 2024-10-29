@@ -192,7 +192,6 @@ def calculate_consolidated_results(
         ),
     }
 
-
     # Calculate benefits explicitly with expanded list
     benefits = [
         "social_security",
