@@ -5,3 +5,6 @@ policyengine-us
 pyyaml
 setuptools
 black
+IPython
+plotly
+numpy
