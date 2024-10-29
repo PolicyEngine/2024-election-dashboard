@@ -54,7 +54,7 @@ def create_reform_comparison_graph(results):
             )
         )
 
-        # Add reform label on the left
+        # Add reform label on the left, setting color to match the bar color
         fig.add_annotation(
             y=reform,
             x=0,
@@ -63,7 +63,7 @@ def create_reform_comparison_graph(results):
             yanchor="middle",
             xshift=-10,
             showarrow=False,
-            font=dict(size=16),
+            font=dict(size=16, color=colors.get(reform, GREY)),  # Match color
         )
 
         # Add difference annotation for non-baseline reforms
