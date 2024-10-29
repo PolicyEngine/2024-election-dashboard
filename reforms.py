@@ -1,3 +1,5 @@
+import numpy as np
+
 COMBINED_REFORMS = {
     "Baseline": None,
     "Harris": {
@@ -89,6 +91,22 @@ COMBINED_REFORMS = {
         },
         "gov.contrib.tax_exempt.tip_income.payroll_tax_exempt": {
             "2024-01-01.2100-12-31": False
+        },
+        # Trump SALT cap repeal
+        "gov.irs.deductions.itemized.salt_and_real_estate.cap.HEAD_OF_HOUSEHOLD": {
+            "2025-01-01.2100-12-31": np.inf
+        },
+        "gov.irs.deductions.itemized.salt_and_real_estate.cap.JOINT": {
+            "2025-01-01.2100-12-31": np.inf
+        },
+        "gov.irs.deductions.itemized.salt_and_real_estate.cap.SEPARATE": {
+            "2025-01-01.2100-12-31": np.inf
+        },
+        "gov.irs.deductions.itemized.salt_and_real_estate.cap.SINGLE": {
+            "2025-01-01.2100-12-31": np.inf
+        },
+        "gov.irs.deductions.itemized.salt_and_real_estate.cap.SURVIVING_SPOUSE": {
+            "2025-01-01.2100-12-31": np.inf
         },
     },
 }

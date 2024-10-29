@@ -3,6 +3,7 @@ from ui_components import (
     render_personal_info,
     render_income_inputs,
     render_itemized_deductions,
+    render_import_expenses,
 )
 from calculator import (
     calculate_reforms,
@@ -20,7 +21,6 @@ from config import (
     ADDITIONAL_POLICIES,
     REFORMS_DESCRIPTION,
 )
-
 
 # Page setup
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
@@ -42,8 +42,6 @@ with personal_col:
         head_age,
         spouse_age,
         in_nyc,
-        china_imports,
-        other_imports,
     ) = personal_info
 
 with income_col:
@@ -54,15 +52,19 @@ with income_col:
         overtime_income,
         social_security,
         capital_gains,
+        dividend_income,
     ) = render_income_inputs(is_married)
     itemized_deductions = render_itemized_deductions()
+
+china_imports, other_imports = render_import_expenses()
+
 
 # Calculate button
 if st.button("Calculate my household income"):
     chart_placeholder = st.empty()
     progress_text = st.empty()
 
-    # Prepare inputs
+    # Prepare inputs and calculate results
     inputs = {
         "state": state,
         "is_married": is_married,
@@ -72,9 +74,10 @@ if st.button("Calculate my household income"):
         "income": income,
         "social_security": social_security,
         "capital_gains": capital_gains,
+        "dividend_income": dividend_income,
         "tip_income": tip_income,
         "overtime_income": overtime_income,
-        "in_nyc": in_nyc,  # Add the NYC parameter
+        "in_nyc": in_nyc,
         **itemized_deductions,
         "china_imports": china_imports,
         "other_imports": other_imports,
@@ -85,10 +88,7 @@ if st.button("Calculate my household income"):
         inputs, progress_text, chart_placeholder
     )
 
-    # Add policy descriptions
-    st.markdown(REFORMS_DESCRIPTION)
-
-    # Create tabs for different breakdowns
+    # Create tabs for all breakdowns
     tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
         [
             "Main Breakdown",
@@ -99,8 +99,9 @@ if st.button("Calculate my household income"):
             "State Refundable Credits",
         ]
     )
+
     with tab1:
-        # Display main metrics
+        # Display main metrics in first tab
         formatted_df = format_detailed_metrics(results_df)
         st.markdown(formatted_df.to_markdown())
 
@@ -145,8 +146,14 @@ if st.button("Calculate my household income"):
         else:
             st.markdown("### No state credits available")
 
+    # Add collapsible sections after tabs
+    with st.expander("Policy Proposals modeled in this calculator"):
+        st.markdown(REFORMS_DESCRIPTION)
+
     with st.expander("View Additional Tax & Benefit Proposals (Not Currently Modeled)"):
         st.markdown(ADDITIONAL_POLICIES)
 
-    st.markdown(NOTES)
+    with st.expander("Assumptions and Notes"):
+        st.markdown(NOTES)
+
     progress_text.empty()

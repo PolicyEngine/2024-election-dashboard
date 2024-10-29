@@ -40,15 +40,19 @@ def create_situation(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
+    dividend_income=0,
     tip_income=0,
     overtime_income=0,
     in_nyc=False,
 ):
+    # Calculate total employment income
+    total_employment_income = income + tip_income + overtime_income
+
     situation = {
         "people": {
             "you": {
                 "age": {YEAR: head_age},
-                "employment_income": {YEAR: income},
+                "employment_income": {YEAR: total_employment_income},  # Combined income
                 "social_security": {YEAR: social_security},
                 "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
                 "interest_expense": {YEAR: interest_expense},
@@ -58,8 +62,13 @@ def create_situation(
                 "casualty_loss": {YEAR: casualty_loss},
                 "real_estate_taxes": {YEAR: real_estate_taxes},
                 "capital_gains": {YEAR: capital_gains},
-                "tip_income": {YEAR: tip_income},
-                "overtime_income": {YEAR: overtime_income},
+                "dividend_income": {YEAR: dividend_income},
+                "tip_income": {
+                    YEAR: tip_income
+                },  # Keep separate for policy calculations
+                "overtime_income": {
+                    YEAR: overtime_income
+                },  # Keep separate for policy calculations
             }
         },
         "families": {"family": {"members": ["you"]}},
@@ -149,6 +158,7 @@ def calculate_consolidated_results(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
+    dividend_income=0,
     tip_income=0,
     overtime_income=0,
     china_imports=0,
@@ -179,6 +189,7 @@ def calculate_consolidated_results(
         qualified_business_income,
         casualty_loss,
         capital_gains,
+        dividend_income,
         tip_income,
         overtime_income,
         in_nyc,
@@ -302,7 +313,7 @@ def calculate_consolidated_results(
     household_net_income = int(
         round(simulation.calculate("household_net_income", YEAR)[0])
     )
-    adjusted_net_income = household_net_income - tariffs
+    adjusted_net_income = max(household_net_income - tariffs, 0)
 
     # Combine all results
     all_results = {

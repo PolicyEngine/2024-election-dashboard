@@ -56,35 +56,37 @@ def render_personal_info():
                         )
                         child_ages.append(age)
 
-    show_imports = st.expander("Expenses on imported goods", expanded=False)
+    return is_married, state, child_ages, head_age, spouse_age, in_nyc
 
 
-    with show_imports:
-        imports_col1, imports_col2 = st.columns([1, 1])
-        
-        with imports_col1:
-            china_imports = st.number_input(
-                "Annual spending on imported goods from China",
-                min_value=0,
-                max_value=1000000,
-                value=0,
-                step=100,
-                format="%d",
-                help="Estimated annual spending on goods imported from China",
-            )
+def render_import_expenses():
+    st.markdown("### Expenses on Imported Goods")
 
-        with imports_col2:
-            other_imports = st.number_input(
-                "Annual spending on imported goods from other countries",
-                min_value=0,
-                max_value=1000000,
-                value=0,
-                step=100,
-                format="%d",
-                help="Estimated annual spending on goods imported from countries other than China",
-            )
+    import_col1, import_col2 = st.columns([1, 1])
 
-    return is_married, state, child_ages, head_age, spouse_age, in_nyc, china_imports, other_imports
+    with import_col1:
+        china_imports = st.number_input(
+            "Annual spending on imported goods from China",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=100,
+            format="%d",
+            help="Estimated annual spending on goods imported from China",
+        )
+
+    with import_col2:
+        other_imports = st.number_input(
+            "Annual spending on imported goods from other countries",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=100,
+            format="%d",
+            help="Estimated annual spending on goods imported from countries other than China",
+        )
+
+    return china_imports, other_imports
 
 
 def render_income_inputs(is_married=False):
@@ -92,7 +94,7 @@ def render_income_inputs(is_married=False):
 
     with col1:
         income = st.number_input(
-            "Total wages and salaries",
+            "Total wages and salaries excluding overtime and tips",
             min_value=0,
             max_value=10000000,
             value=50000,
@@ -121,7 +123,7 @@ def render_income_inputs(is_married=False):
 
     with col2:
         overtime_income = st.number_input(
-            "Amount of income received as overtime income",
+            "Overtime income",
             min_value=0,
             max_value=1000000,
             value=0,
@@ -130,12 +132,22 @@ def render_income_inputs(is_married=False):
         )
 
         tip_income = st.number_input(
-            "Amount of income received as tip income",
+            "Tip income",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             format="%d",
+        )
+
+        dividend_income = st.number_input(
+            "Dividend income",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+            help="Qualified and non-qualified dividends",
         )
 
     return (
@@ -144,6 +156,7 @@ def render_income_inputs(is_married=False):
         overtime_income,
         social_security,
         capital_gains,
+        dividend_income,
     )
 
 

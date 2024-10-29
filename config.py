@@ -1,3 +1,12 @@
+import pkg_resources
+
+# Get PolicyEngine-US version
+try:
+    PE_VERSION = pkg_resources.get_distribution("policyengine-us").version
+except pkg_resources.DistributionNotFound:
+    PE_VERSION = "unknown"
+
+
 APP_TITLE = "2024 Election, Personal Household Impact Calculator"
 
 BASELINE_DESCRIPTION = """
@@ -26,22 +35,19 @@ The Trump platform includes:
 - **Social Security Tax Exemption**: Eliminating taxes on Social Security benefits for senior citizens 
   [Read our full report on the Trump Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
 - **Tip Income Tax Exempt**: Exempting all tip income from both income and payroll taxes
-- **Overtime Tax Exempt**: Exempting all overtime income from both income and payroll taxes
+- **Overtime Tax Exempt**: Exempting all overtime income from income tax but not payroll taxes
 - **Import Tariffs**: Implementing a 60% tariff on imported goods from China and a 10% tariff on imported goods from all other countries
 - **Auto Loan Interest**: Making auto loan interest tax-deductible as part of itemized deductions
-
-
+- **SALT Cap Elimination**: Removing the $10,000 cap on state and local tax (SALT) deduction in 2025
 """
 
-NOTES = """
-### Assumptions and Notes:
+NOTES = f"""
 - All calculations are based on projected 2025 tax parameters.
-- The calculator assumes all income is from employment (wages and salaries).
 - Whether to use standard or itemized deductions is calculated based on the user input.
-- The calculator uses the PolicyEngine US microsimulation model.
+- The calculator uses the PolicyEngine US version {PE_VERSION} microsimulation model.
+- Net income can not be reduced below zero.
 - Actual impacts may vary based on individual circumstances and final policy implementations.
 - Proposals are modeled based on currently available information and may be updated as more details are released.
-- Tax exemptions for tip and overtime income apply to both income tax and payroll taxes under the specified reforms.
 - We assume that tariffs are fully passed through to consumers in the form of higher prices
 - The modeled tariff rates (60% for China, 10% for other countries) are applied on top of any existing tariff rates.
 - We include a simplified model of tariff impacts and actual effects may vary based on market conditions and business responses.
