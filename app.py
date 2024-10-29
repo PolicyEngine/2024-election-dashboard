@@ -11,6 +11,7 @@ from calculator import (
     format_state_credit_components,
     format_benefits_components,
     format_tax_components,
+    format_tariff_components,
 )
 from config import (
     APP_TITLE,
@@ -43,6 +44,8 @@ with income_col:
         overtime_income,
         social_security,
         capital_gains,
+        china_imports,
+        other_imports,
     ) = render_income_inputs(is_married)
     itemized_deductions = render_itemized_deductions()
 
@@ -65,6 +68,8 @@ if st.button("Calculate my household income"):
         "overtime_income": overtime_income,
         "in_nyc": in_nyc,  # Add the NYC parameter
         **itemized_deductions,
+        "china_imports": china_imports,
+        "other_imports": other_imports,
     }
 
     # Calculate and display results
@@ -73,10 +78,11 @@ if st.button("Calculate my household income"):
     )
 
     # Create tabs for different breakdowns
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+    tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(
         [
             "Main Breakdown",
             "Taxes",
+            "Tariffs",
             "Benefits",
             "Federal Refundable Credits",
             "State Refundable Credits",
@@ -96,6 +102,21 @@ if st.button("Calculate my household income"):
             st.markdown("### No applicable income tax")
 
     with tab3:
+        # Display tariffs breakdown
+        tariffs_df = format_tariff_components(results_df)
+        if tariffs_df is not None:
+            st.markdown("### Import Tariffs")
+            st.markdown(tariffs_df.to_markdown())
+            st.markdown(
+                """
+            - Additional 60% tariff applied to imports from China
+            - Additional 10% tariff applied to imports from other countries
+            """
+            )
+        else:
+            st.markdown("### No tariffs applicable")
+
+    with tab4:
         # Display benefits breakdown
         benefits_df = format_benefits_components(results_df)
         if benefits_df is not None:
@@ -103,7 +124,7 @@ if st.button("Calculate my household income"):
         else:
             st.markdown("### No Benefits available")
 
-    with tab4:
+    with tab5:
         # Display federal credit components
         federal_credit_df = format_federal_credit_components(results_df)
         if federal_credit_df is not None:
@@ -111,7 +132,7 @@ if st.button("Calculate my household income"):
         else:
             st.markdown("### No federal credits available")
 
-    with tab5:
+    with tab6:
         # Display state credit components
         state_credit_df = format_state_credit_components(results_df, state)
         if state_credit_df is not None:

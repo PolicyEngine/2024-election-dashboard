@@ -38,6 +38,9 @@ NOTES = """
 - Actual impacts may vary based on individual circumstances and final policy implementations.
 - Proposals are modeled based on currently available information and may be updated as more details are released.
 - Tax exemptions for tip and overtime income apply to both income tax and payroll taxes under the specified reforms.
+- We assume that tariffs are fully passed through to consumers in the form of higher prices
+- The modeled tariff rates (60% for China, 10% for other countries) are applied on top of any existing tariff rates.
+- We include a simplified model of tariff impacts and actual effects may vary based on market conditions and business responses.
 """
 
 ADDITIONAL_POLICIES = """
@@ -84,10 +87,6 @@ ADDITIONAL_POLICIES = """
 
 - **Corporate Tax Rate**
   - Cut corporate tax rate from 21% to 15% for domestic production
-
-- **Import Tariffs**
-  - 10% tariff on all imports
-  - 60% tariffs on imports from China
 
 *Note: These additional policies are not currently modeled in the calculator but represent stated policy positions from both campaigns.*
 """

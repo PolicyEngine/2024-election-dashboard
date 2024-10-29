@@ -120,6 +120,15 @@ def calculate_values(categories, simulation, year):
     return result_dict
 
 
+def calculate_tariffs(reform_name, china_imports, other_imports):
+    """Calculate tariffs based on the reform"""
+    if reform_name == "Trump":
+        china_tariff = china_imports * 0.60  # 60% tariff on Chinese imports
+        other_tariff = other_imports * 0.10  # 10% tariff on other imports
+        return china_tariff + other_tariff
+    return 0
+
+
 def calculate_consolidated_results(
     reform_name,
     state,
@@ -140,6 +149,8 @@ def calculate_consolidated_results(
     tip_income=0,
     overtime_income=0,
     in_nyc=False,
+    china_imports=0,
+    other_imports=0,
 ):
     """
     Calculates metrics for a single reform with detailed breakdowns.
@@ -174,6 +185,13 @@ def calculate_consolidated_results(
         else:
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
+
+    tariffs = calculate_tariffs(reform_name, china_imports, other_imports)
+
+    household_net_income = int(
+        round(simulation.calculate("household_net_income", YEAR)[0])
+    )
+    adjusted_net_income = household_net_income - tariffs
 
     # Calculate tax breakdown components
     tax_components = {
@@ -262,11 +280,22 @@ def calculate_consolidated_results(
         except:
             continue
 
+    if reform_name == "Trump":
+        tariff_components = {
+            "china_tariffs": china_imports * 0.60,
+            "other_tariffs": other_imports * 0.10,
+            "total_tariffs": tariffs,
+        }
+    else:
+        tariff_components = {
+            "china_tariffs": 0,
+            "other_tariffs": 0,
+            "total_tariffs": 0,
+        }
+
     # Combine all results
     all_results = {
-        "Household Net Income": int(
-            round(simulation.calculate("household_net_income", YEAR)[0])
-        ),
+        "Household Net Income": adjusted_net_income,  # Use adjusted net income
         "Household Market Income": int(
             round(simulation.calculate("household_market_income", YEAR)[0])
         ),
@@ -282,10 +311,11 @@ def calculate_consolidated_results(
             round(simulation.calculate("state_refundable_credits", YEAR)[0])
         ),
         "Total Benefits": total_benefits,
+        **tax_components,
         **benefits_dict,
         **federal_credits_dict,
         **state_credits_dict,
-        **tax_components,
+        **tariff_components,  # Add tariff components
     }
 
     # Create DataFrame with all results
