@@ -28,6 +28,7 @@ The Trump platform includes:
 - **Tip Income Tax Exempt**: Exempting all tip income from both income and payroll taxes
 - **Overtime Tax Exempt**: Exempting all overtime income from both income and payroll taxes
 - **Import Tariffs**: Implementing a 60% tariff on imported goods from China and a 10% tariff on imported goods from all other countries
+- **Auto Loan Interest**: Making auto loan interest tax-deductible as part of itemized deductions
 
 
 """

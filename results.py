@@ -143,6 +143,7 @@ def calculate_consolidated_results(
     medical_expenses=0,
     real_estate_taxes=0,
     interest_expense=0,
+    auto_loan_interest=0,
     charitable_cash=0,
     charitable_non_cash=0,
     qualified_business_income=0,
@@ -150,13 +151,16 @@ def calculate_consolidated_results(
     capital_gains=0,
     tip_income=0,
     overtime_income=0,
-    in_nyc=False,
     china_imports=0,
     other_imports=0,
+    in_nyc=False,
 ):
     """
     Calculates metrics for a single reform with detailed breakdowns.
     """
+    # Add auto loan interest to total interest only for Trump reform
+    total_interest = interest_expense + (auto_loan_interest if reform_name == "Trump" else 0)
+
     situation = create_situation(
         state,
         is_married,
@@ -167,7 +171,7 @@ def calculate_consolidated_results(
         spouse_age,
         medical_expenses,
         real_estate_taxes,
-        interest_expense,
+        total_interest,  # Use combined interest amount
         charitable_cash,
         charitable_non_cash,
         qualified_business_income,
@@ -188,12 +192,8 @@ def calculate_consolidated_results(
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
 
+    # Calculate tariffs
     tariffs = calculate_tariffs(reform_name, china_imports, other_imports)
-
-    household_net_income = int(
-        round(simulation.calculate("household_net_income", YEAR)[0])
-    )
-    adjusted_net_income = household_net_income - tariffs
 
     # Calculate tax breakdown components
     tax_components = {
@@ -282,10 +282,11 @@ def calculate_consolidated_results(
         except:
             continue
 
+    # Calculate tariff components
     if reform_name == "Trump":
         tariff_components = {
-            "china_tariffs": china_imports * 0.60,
-            "other_tariffs": other_imports * 0.10,
+            "china_tariffs": china_imports * CHINA_TARIFF_RATE,
+            "other_tariffs": other_imports * OTHER_TARIFF_RATE,
             "total_tariffs": tariffs,
         }
     else:
@@ -295,9 +296,15 @@ def calculate_consolidated_results(
             "total_tariffs": 0,
         }
 
+    # Calculate household net income and adjust for tariffs
+    household_net_income = int(
+        round(simulation.calculate("household_net_income", YEAR)[0])
+    )
+    adjusted_net_income = household_net_income - tariffs
+
     # Combine all results
     all_results = {
-        "Household Net Income": adjusted_net_income,  # Use adjusted net income
+        "Household Net Income": adjusted_net_income,
         "Household Market Income": int(
             round(simulation.calculate("household_market_income", YEAR)[0])
         ),
@@ -317,7 +324,7 @@ def calculate_consolidated_results(
         **benefits_dict,
         **federal_credits_dict,
         **state_credits_dict,
-        **tariff_components,  # Add tariff components
+        **tariff_components,
     }
 
     # Create DataFrame with all results
