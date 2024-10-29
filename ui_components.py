@@ -56,40 +56,35 @@ def render_personal_info():
                         )
                         child_ages.append(age)
 
-    # Add Imported Goods section here
-    st.markdown("### Imported Goods Expenses")
-    imports_col1, imports_col2 = st.columns([1, 1])
+    show_imports = st.expander("Expenses on imported goods", expanded=False)
 
-    with imports_col1:
-        china_imports = st.number_input(
-            "Annual spending on imported goods from China",
-            min_value=0,
-            max_value=1000000,
-            value=0,
-            step=500,
-            format="%d",
-        )
 
-    with imports_col2:
-        other_imports = st.number_input(
-            "Annual spending on imported goods from countries other than China",
-            min_value=0,
-            max_value=1000000,
-            value=0,
-            step=500,
-            format="%d",
-        )
+    with show_imports:
+        imports_col1, imports_col2 = st.columns([1, 1])
+        
+        with imports_col1:
+            china_imports = st.number_input(
+                "Annual spending on imported goods from China",
+                min_value=0,
+                max_value=1000000,
+                value=0,
+                step=100,
+                format="%d",
+                help="Estimated annual spending on goods imported from China",
+            )
 
-    return (
-        is_married,
-        state,
-        child_ages,
-        head_age,
-        spouse_age,
-        in_nyc,
-        china_imports,
-        other_imports,
-    )
+        with imports_col2:
+            other_imports = st.number_input(
+                "Annual spending on imported goods from other countries",
+                min_value=0,
+                max_value=1000000,
+                value=0,
+                step=100,
+                format="%d",
+                help="Estimated annual spending on goods imported from countries other than China",
+            )
+
+    return is_married, state, child_ages, head_age, spouse_age, in_nyc, china_imports, other_imports
 
 
 def render_income_inputs(is_married=False):
