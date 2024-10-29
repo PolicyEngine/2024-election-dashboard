@@ -18,15 +18,15 @@ The Harris platform includes several major tax reforms:
 - **High Earners Reform**: High earners face a 39.6% tax rate on income above \$418,450 (single) or \$462,400 (married), plus increased Medicare and Net Investment Income tax of 1.2% on income above \$411,000
 - **Restored EITC**: Bringing back the expanded American Rescue Plan version of the Earned Income Tax Credit
   [Read our full report on the Harris EITC proposal](https://policyengine.org/us/research/harris-eitc)
-- **Tip Income Tax Relief**: Exempting tip income from income tax but not payroll taxes
+- **Tip Income Tax Exempt**: Exempting tip income from income tax but not payroll taxes
 - **Capital Gains Reform**: Creating a new 28% tax bracket for capital gains income over $1,000,000
 
 ### Trump Economic Package
 The Trump platform includes:
 - **Social Security Tax Exemption**: Eliminating taxes on Social Security benefits for senior citizens 
   [Read our full report on the Trump Social Security proposal](https://policyengine.org/us/research/social-security-tax-exemption)
-- **Tip Income Tax Relief**: Exempting all tip income from both income and payroll taxes
-- **Overtime Tax Relief**: Exempting all overtime income from both income and payroll taxes
+- **Tip Income Tax Exempt**: Exempting all tip income from both income and payroll taxes
+- **Overtime Tax Exempt**: Exempting all overtime income from both income and payroll taxes
 - **Import Tariffs**: Implementing a 60% tariff on imported goods from China and a 10% tariff on imported goods from all other countries
 
 
