@@ -1,7 +1,7 @@
 # Colors
 BLUE = "#3378b2"
 RED = "#f45959"
-GREY = "#868686"
+GREY = "#bababa"
 
 # Tariff rates
 CHINA_TARIFF_RATE = 0.60  # 60% tariff on Chinese imports
@@ -64,41 +64,6 @@ STATE_NAMES = {
     "WY": "Wyoming",
 }
 
-STATE_CREDIT_MAP = {
-    "CA": ["ca_yctc", "ca_eitc"],
-    "CO": ["co_ctc", "co_eitc"],
-    "CT": [None, "ct_eitc"],
-    "DC": [None, "dc_eitc"],
-    "DE": [None, "de_eitc"],
-    "HI": [None, "hi_eitc"],
-    "IA": [None, "ia_eitc"],
-    "IL": [None, "il_eitc"],
-    "IN": [None, "in_eitc"],
-    "KS": [None, "ks_total_eitc"],
-    "LA": [None, "la_eitc"],
-    "MA": [None, "ma_eitc"],
-    "MD": ["md_ctc", "md_eitc"],
-    "ME": [None, "me_eitc"],
-    "MI": [None, "mi_eitc"],
-    "MN": ["mn_child_and_working_families_credits", None],
-    "MO": [None, "mo_wftc"],
-    "MT": ["mt_ctc", "mt_eitc"],
-    "NC": ["nc_ctc", None],
-    "NE": [None, "ne_eitc"],
-    "NJ": ["nj_ctc", "nj_eitc"],
-    "NM": ["nm_ctc", "nm_eitc"],
-    "NY": ["ny_ctc", "ny_eitc"],
-    "OH": [None, "oh_eitc"],
-    "OK": [None, "ok_eitc"],
-    "OR": ["or_ctc", "or_eitc"],
-    "RI": [None, "ri_eitc"],
-    "SC": [None, "sc_eitc"],
-    "UT": [None, "ut_eitc"],
-    "VA": [None, "va_eitc"],
-    "VT": ["vt_ctc", "vt_eitc"],
-    "WA": [None, "wa_working_families_tax_credit"],
-    "WI": [None, "wi_earned_income_credit"],
-}
 
 STATE_CODES = list(STATE_NAMES.keys())
 

@@ -42,15 +42,14 @@ The Trump platform includes:
 """
 
 NOTES = f"""
-- All calculations are based on projected 2025 tax parameters.
-- Whether to use standard or itemized deductions is calculated based on the user input.
-- The calculator uses the PolicyEngine US version {PE_VERSION} microsimulation model.
-- Net income can not be reduced below zero.
+- All calculations are based on projected 2025 tax parameters
+- Whether to use standard or itemized deductions is calculated based on the user input
+- The calculator uses the PolicyEngine US version {PE_VERSION} microsimulation model
+- Net income can not be reduced below zero
 - Actual impacts may vary based on individual circumstances and final policy implementations.
-- Proposals are modeled based on currently available information and may be updated as more details are released.
+- Proposals are modeled based on currently available information and may be updated as more details are released
 - We assume that tariffs are fully passed through to consumers in the form of higher prices
-- The modeled tariff rates (60% for China, 10% for other countries) are applied on top of any existing tariff rates.
-- We include a simplified model of tariff impacts and actual effects may vary based on market conditions and business responses.
+- The modeled tariff rates (60% for China, 10% for other countries) are applied on top of any existing tariff rates
 """
 
 ADDITIONAL_POLICIES = """

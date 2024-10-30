@@ -236,7 +236,7 @@ def format_tariff_components(results_df):
         # Rename the index for better display
         formatted_df.index = [
             "New Tariffs on Chinese Imports",
-            "New Tariffs on other Imports",
+            "New Tariffs on Other Imports",
         ]
 
         return formatted_df
