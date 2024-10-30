@@ -112,15 +112,6 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-        capital_gains = st.number_input(
-            "Capital gains",
-            min_value=0,
-            max_value=1000000,
-            value=0,
-            step=500,
-            format="%d",
-        )
-
     with col2:
         overtime_income = st.number_input(
             "Overtime income",
@@ -140,15 +131,48 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-        dividend_income = st.number_input(
-            "Dividend income",
+    # Add collapsible section for capital gains and investment income
+    show_investment = st.expander("Capital Gains & Investment Income", expanded=False)
+    
+    with show_investment:
+        capital_gains = st.number_input(
+            "Capital gains",
+            min_value=0,
+            max_value=10000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
+        qualified_dividend_income = st.number_input(
+            "Qualified dividend income",
             min_value=0,
             max_value=1000000,
             value=0,
             step=500,
             format="%d",
-            help="Qualified and non-qualified dividends",
         )
+
+        non_qualified_dividend_income = st.number_input(
+            "Non-qualified dividend income",
+            min_value=0,
+            max_value=1000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
+        net_investment_income = st.number_input(
+            "Net investment income",
+            min_value=0,
+            max_value=10000000,
+            value=0,
+            step=500,
+            format="%d",
+        )
+
+    # Add itemized deductions section below capital gains
+    itemized_deductions = render_itemized_deductions()
 
     return (
         income,
@@ -156,7 +180,10 @@ def render_income_inputs(is_married=False):
         overtime_income,
         social_security,
         capital_gains,
-        dividend_income,
+        qualified_dividend_income,
+        non_qualified_dividend_income,
+        net_investment_income,
+        itemized_deductions,  # Add this to the return values
     )
 
 

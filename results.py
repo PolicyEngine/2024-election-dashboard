@@ -40,7 +40,9 @@ def create_situation(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
-    dividend_income=0,
+    qualified_dividend_income=0,
+    non_qualified_dividend_income=0,
+    net_investment_income=0,
     tip_income=0,
     overtime_income=0,
     in_nyc=False,
@@ -52,7 +54,7 @@ def create_situation(
         "people": {
             "you": {
                 "age": {YEAR: head_age},
-                "employment_income": {YEAR: total_employment_income},  # Combined income
+                "employment_income": {YEAR: total_employment_income},
                 "social_security": {YEAR: social_security},
                 "medical_out_of_pocket_expenses": {YEAR: medical_expenses},
                 "interest_expense": {YEAR: interest_expense},
@@ -62,18 +64,20 @@ def create_situation(
                 "casualty_loss": {YEAR: casualty_loss},
                 "real_estate_taxes": {YEAR: real_estate_taxes},
                 "capital_gains": {YEAR: capital_gains},
-                "dividend_income": {YEAR: dividend_income},
-                "tip_income": {
-                    YEAR: tip_income
-                },  # Keep separate for policy calculations
-                "overtime_income": {
-                    YEAR: overtime_income
-                },  # Keep separate for policy calculations
+                "qualified_dividend_income": {YEAR: qualified_dividend_income},
+                "non_qualified_dividend_income": {YEAR: non_qualified_dividend_income},
+                "tip_income": {YEAR: tip_income},
+                "overtime_income": {YEAR: overtime_income},
+            }
+        },
+        "tax_units": {
+            "your tax unit": {
+                "members": ["you"],
+                "net_investment_income": {YEAR: net_investment_income},
             }
         },
         "families": {"family": {"members": ["you"]}},
         "marital_units": {"your marital unit": {"members": ["you"]}},
-        "tax_units": {"your tax unit": {"members": ["you"]}},
         "spm_units": {"your household": {"members": ["you"]}},
         "households": {
             "your household": {
@@ -158,21 +162,21 @@ def calculate_consolidated_results(
     qualified_business_income=0,
     casualty_loss=0,
     capital_gains=0,
-    dividend_income=0,
+    qualified_dividend_income=0,
+    non_qualified_dividend_income=0,
+    net_investment_income=0,
     tip_income=0,
     overtime_income=0,
     china_imports=0,
     other_imports=0,
     in_nyc=False,
 ):
-    """
-    Calculates metrics for a single reform with detailed breakdowns.
-    """
     # Add auto loan interest to total interest only for Trump reform
     total_interest = interest_expense + (
         auto_loan_interest if reform_name == "Trump" else 0
     )
 
+    # Create situation with updated parameters
     situation = create_situation(
         state,
         is_married,
@@ -183,17 +187,20 @@ def calculate_consolidated_results(
         spouse_age,
         medical_expenses,
         real_estate_taxes,
-        total_interest,  # Use combined interest amount
+        total_interest,
         charitable_cash,
         charitable_non_cash,
         qualified_business_income,
         casualty_loss,
         capital_gains,
-        dividend_income,
+        qualified_dividend_income,
+        non_qualified_dividend_income,
+        net_investment_income,
         tip_income,
         overtime_income,
         in_nyc,
     )
+
 
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
