@@ -135,12 +135,7 @@ def create_reform_comparison_graph(results):
     # Override the logo settings with larger size
     if len(fig.layout.images) > 0:
         fig.layout.images[0].update(
-            sizex=0.15,
-            sizey=0.15,
-            x=1,
-            y=-0.1,
-            xanchor="right",
-            yanchor="bottom"
+            sizex=0.15, sizey=0.15, x=1, y=-0.1, xanchor="right", yanchor="bottom"
         )
 
     return fig

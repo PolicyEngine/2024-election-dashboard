@@ -133,7 +133,7 @@ def render_income_inputs(is_married=False):
 
     # Add collapsible section for capital gains and investment income
     show_investment = st.expander("Capital Gains & Investment Income", expanded=False)
-    
+
     with show_investment:
         capital_gains = st.number_input(
             "Capital gains",

@@ -97,15 +97,17 @@ if st.button("Calculate my household income"):
 
     # Right column - All tabs
     with right_col:
-        tabs = st.tabs([
-            "Main Breakdown",
-            "Taxes",
-            "Tariffs",
-            "Benefits",
-            "Federal Credits",
-            "State Credits"
-        ])
-        
+        tabs = st.tabs(
+            [
+                "Main Breakdown",
+                "Taxes",
+                "Tariffs",
+                "Benefits",
+                "Federal Credits",
+                "State Credits",
+            ]
+        )
+
         with tabs[0]:
             formatted_df = format_detailed_metrics(results_df)
             st.markdown(formatted_df.to_markdown())

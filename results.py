@@ -201,7 +201,6 @@ def calculate_consolidated_results(
         in_nyc,
     )
 
-
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
