@@ -160,13 +160,23 @@ def render_income_inputs(is_married=False):
             format="%d",
         )
 
-        net_investment_income = st.number_input(
-            "Net investment income",
+        taxable_interest_income = st.number_input(
+            "Taxable interest income",
             min_value=0,
             max_value=10000000,
             value=0,
             step=500,
             format="%d",
+        )
+
+        rental_income = st.number_input(
+            "Rental income",
+            min_value=0,
+            max_value=10000000,
+            value=0,
+            step=500,
+            format="%d",
+            help="Income from rental of property",
         )
 
     # Add itemized deductions section below capital gains
@@ -180,7 +190,8 @@ def render_income_inputs(is_married=False):
         capital_gains,
         qualified_dividend_income,
         non_qualified_dividend_income,
-        net_investment_income,
+        taxable_interest_income,
+        rental_income,
         itemized_deductions,  # Add this to the return values
     )
 

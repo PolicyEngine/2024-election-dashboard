@@ -54,7 +54,8 @@ with income_col:
         capital_gains,
         qualified_dividend_income,
         non_qualified_dividend_income,
-        net_investment_income,
+        rental_income,
+        taxable_interest_income,
         itemized_deductions,  # Get itemized deductions from the income inputs
     ) = render_income_inputs(is_married)
 
@@ -79,7 +80,8 @@ if st.button("Calculate my household income"):
         "capital_gains": capital_gains,
         "qualified_dividend_income": qualified_dividend_income,
         "non_qualified_dividend_income": non_qualified_dividend_income,
-        "net_investment_income": net_investment_income,
+        "taxable_interest_income": taxable_interest_income,
+        "rental_income": rental_income,
         "tip_income": tip_income,
         "overtime_income": overtime_income,
         "in_nyc": in_nyc,
