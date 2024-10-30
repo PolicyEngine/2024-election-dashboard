@@ -10,7 +10,7 @@ from policyengine_us.variables.gov.states.tax.income.state_refundable_credits im
 from policyengine_us.variables.household.income.household.household_benefits import (
     household_benefits as HouseholdBenefits,
 )
-from utils import YEAR, CHINA_TARIFF_RATE, OTHER_TARIFF_RATE
+from utils import YEAR, CHINA_TARIFF_RATE, OTHER_TARIFF_RATE, EITCS, CTCS
 import pkg_resources
 import yaml
 import pandas as pd
@@ -175,36 +175,18 @@ def calculate_consolidated_results(
     in_nyc=False,
 ):
     # Add auto loan interest to total interest only for Trump reform
-    total_interest = interest_expense + (
-        auto_loan_interest if reform_name == "Trump" else 0
-    )
+    total_interest = interest_expense + (auto_loan_interest if reform_name == "Trump" else 0)
 
     # Create situation with updated parameters
     situation = create_situation(
-        state,
-        is_married,
-        child_ages,
-        income,
-        social_security,
-        head_age,
-        spouse_age,
-        medical_expenses,
-        real_estate_taxes,
-        total_interest,
-        charitable_cash,
-        charitable_non_cash,
-        qualified_business_income,
-        casualty_loss,
-        capital_gains,
-        qualified_dividend_income,
-        non_qualified_dividend_income,
-        taxable_interest_income,
-        rental_income,
-        tip_income,
-        overtime_income,
-        in_nyc,
+        state, is_married, child_ages, income, social_security, head_age, spouse_age,
+        medical_expenses, real_estate_taxes, total_interest, charitable_cash,
+        charitable_non_cash, qualified_business_income, casualty_loss, capital_gains,
+        qualified_dividend_income, non_qualified_dividend_income, taxable_interest_income,
+        rental_income, tip_income, overtime_income, in_nyc,
     )
 
+    # Create simulation based on reform
     if reform_name == "Baseline":
         simulation = Simulation(situation=situation)
     else:
@@ -215,143 +197,116 @@ def calculate_consolidated_results(
             reform = Reform.from_dict(reform_dict, country_id="us")
             simulation = Simulation(reform=reform, situation=situation)
 
-    # Calculate tariffs
-    tariffs = calculate_tariffs(reform_name, china_imports, other_imports)
+    # Calculate federal credits
+    package = "policyengine_us"
+    resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
+    resource_path_state = f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
 
-    # Calculate tax breakdown components
-    tax_components = {
-        "employee_payroll_tax": int(
-            round(simulation.calculate("employee_payroll_tax", YEAR)[0])
-        ),
-        "income_tax_before_refundable_credits": int(
-            round(simulation.calculate("income_tax_before_refundable_credits", YEAR)[0])
-        ),
-        "household_state_tax_before_refundable_credits": int(
-            round(
-                simulation.calculate(
-                    "household_state_tax_before_refundable_credits", YEAR
-                )[0]
-            )
-        ),
+    try:
+        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
+    except FileNotFoundError:
+        federal_refundable_credits = []
+
+    federal_credits_dict = {}
+    for credit in federal_refundable_credits:
+        try:
+            value = int(round(simulation.calculate(credit, YEAR)[0]))
+            if value != 0:
+                federal_credits_dict[credit] = value
+        except:
+            continue
+
+    # Calculate specific federal credits
+    specific_federal_credits = {
+        "refundable_ctc": int(round(simulation.calculate("refundable_ctc", YEAR)[0])),
+        "eitc": int(round(simulation.calculate("eitc", YEAR)[0])),
+    }
+    federal_credits_dict.update(specific_federal_credits)
+
+    # Calculate state-specific credits
+    state_code = state.lower()
+    state_specific_programs = {
+        program for program in (CTCS + EITCS) 
+        if program.startswith(f"{state_code}_")
     }
 
-    # Calculate benefits explicitly with expanded list
+    state_credits_dict = {}
+    # First calculate from YAML
+    try:
+        state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
+        for credit in state_refundable_credits:
+            try:
+                value = int(round(simulation.calculate(credit, YEAR)[0]))
+                if value != 0:
+                    state_credits_dict[credit] = value
+            except:
+                continue
+    except FileNotFoundError:
+        pass
+
+    # Then add state-specific programs
+    for program in state_specific_programs:
+        try:
+            value = int(round(simulation.calculate(program, YEAR)[0]))
+            if value != 0:
+                state_credits_dict[program] = value
+        except:
+            continue
+
+    # Calculate benefits
     benefits = [
-        "social_security",
-        "ssi",
-        "snap",
-        "wic",
-        "free_school_meals",
-        "reduced_price_school_meals",
-        "spm_unit_broadband_subsidy",
-        "tanf",
-        "high_efficiency_electric_home_rebate",
-        "residential_efficiency_electrification_rebate",
-        "unemployment_compensation",
-        "head_start",
-        "early_head_start",
-        "housing_vouchers",
-        "medicaid",
-        "medicare",
+        "social_security", "ssi", "snap", "wic", "free_school_meals",
+        "reduced_price_school_meals", "spm_unit_broadband_subsidy", "tanf",
+        "high_efficiency_electric_home_rebate", "residential_efficiency_electrification_rebate",
+        "unemployment_compensation", "head_start", "early_head_start",
+        "housing_vouchers", "medicaid", "medicare",
     ]
 
     benefits_dict = {}
     for benefit in benefits:
         try:
             amount = int(round(simulation.calculate(benefit, YEAR)[0]))
-            if amount > 0:  # Only include non-zero benefits
+            if amount > 0:
                 benefits_dict[benefit] = amount
         except:
             continue
 
     total_benefits = sum(benefits_dict.values())
 
-    # Get the lists of credits from YAML files
-    package = "policyengine_us"
-    resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
-    resource_path_state = (
-        f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
-    )
+    # Calculate tax components
+    tax_components = {
+        "employee_payroll_tax": int(round(simulation.calculate("employee_payroll_tax", YEAR)[0])),
+        "income_tax_before_refundable_credits": int(round(simulation.calculate("income_tax_before_refundable_credits", YEAR)[0])),
+        "household_state_tax_before_refundable_credits": int(round(simulation.calculate("household_state_tax_before_refundable_credits", YEAR)[0])),
+    }
 
-    try:
-        federal_refundable_credits = load_credits_from_yaml(
-            package, resource_path_federal
-        )
-    except FileNotFoundError:
-        federal_refundable_credits = []
+    # Calculate tariffs
+    tariffs = calculate_tariffs(reform_name, china_imports, other_imports)
+    tariff_components = {
+        "china_tariffs": china_imports * CHINA_TARIFF_RATE if reform_name == "Trump" else 0,
+        "other_tariffs": other_imports * OTHER_TARIFF_RATE if reform_name == "Trump" else 0,
+        "total_tariffs": tariffs,
+    }
 
-    try:
-        state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
-    except FileNotFoundError:
-        state_refundable_credits = []
-
-    # Calculate federal credits
-    federal_credits_dict = {}
-    for credit in federal_refundable_credits:
-        try:
-            value = int(round(simulation.calculate(credit, YEAR)[0]))
-            if value != 0:  # Only add non-zero credits
-                federal_credits_dict[credit] = value
-        except:
-            continue
-
-    # Calculate state credits
-    state_credits_dict = {}
-    for credit in state_refundable_credits:
-        try:
-            value = int(round(simulation.calculate(credit, YEAR)[0]))
-            if value != 0:  # Only add non-zero credits
-                state_credits_dict[credit] = value
-        except:
-            continue
-
-    # Calculate tariff components
-    if reform_name == "Trump":
-        tariff_components = {
-            "china_tariffs": china_imports * CHINA_TARIFF_RATE,
-            "other_tariffs": other_imports * OTHER_TARIFF_RATE,
-            "total_tariffs": tariffs,
-        }
-    else:
-        tariff_components = {
-            "china_tariffs": 0,
-            "other_tariffs": 0,
-            "total_tariffs": 0,
-        }
-
-    # Calculate household net income and adjust for tariffs
-    household_net_income = int(
-        round(simulation.calculate("household_net_income", YEAR)[0])
-    )
+    # Calculate final income
+    household_net_income = int(round(simulation.calculate("household_net_income", YEAR)[0]))
     adjusted_net_income = max(household_net_income - tariffs, 0)
 
     # Combine all results
     all_results = {
         "Household Net Income": adjusted_net_income,
-        "Household Market Income": int(
-            round(simulation.calculate("household_market_income", YEAR)[0])
-        ),
-        "Income Tax Before Credits": int(
-            round(
-                simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
-            )
-        ),
+        "Household Market Income": int(round(simulation.calculate("household_market_income", YEAR)[0])),
+        "Income Tax Before Credits": int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])),
         "Tariffs": tariffs,
-        "Federal Refundable Credits": int(
-            round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])
-        ),
-        "State Refundable Credits": int(
-            round(simulation.calculate("state_refundable_credits", YEAR)[0])
-        ),
+        "Federal Refundable Credits": int(round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])),
+        "State Refundable Credits": int(round(simulation.calculate("state_refundable_credits", YEAR)[0])),
         "Total Benefits": total_benefits,
         **tax_components,
         **benefits_dict,
         **federal_credits_dict,
         **state_credits_dict,
         **tariff_components,
+        **specific_federal_credits,
     }
 
-    # Create DataFrame with all results
-    results_df = pd.DataFrame({reform_name: all_results}).T
-
-    return results_df
+    return pd.DataFrame({reform_name: all_results}).T

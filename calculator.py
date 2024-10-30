@@ -98,37 +98,25 @@ def format_federal_credit_components(results_df):
 def format_state_credit_components(results_df, state_code):
     """Format state credit components, showing items with baseline or reform values"""
     formatted_df = results_df.copy()
-
-    # Get credits loaded from state YAML file
-    package = "policyengine_us"
-    resource_path_state = (
-        f"parameters/gov/states/{state_code.lower()}/tax/income/credits/refundable.yaml"
-    )
-    try:
-        state_refundable_credits = load_credits_from_yaml(package, resource_path_state)
-    except FileNotFoundError:
-        state_refundable_credits = []
-
-    # Get credits that are in the state YAML
+    
+    # Get all state-specific rows
     state_credit_rows = [
-        idx
-        for idx in formatted_df.index
-        if idx not in MAIN_METRICS and idx in state_refundable_credits
+        idx for idx in formatted_df.index 
+        if idx.startswith(state_code.lower() + "_")
     ]
+    
+    print(f"Found state credit rows: {state_credit_rows}")
 
     if not state_credit_rows:
         return None
 
-    # Keep only credits with values
     formatted_df = formatted_df.loc[state_credit_rows]
     formatted_df = formatted_df.round(2)
     formatted_df = formatted_df.applymap(format_currency)
-
-    # Format index names with state name
-    formatted_df.index = [
-        format_credit_name(idx, state_code) for idx in formatted_df.index
-    ]
-
+    
+    # Format index names
+    formatted_df.index = [format_credit_name(idx, state_code) for idx in formatted_df.index]
+    
     return formatted_df
 
 
@@ -243,3 +231,4 @@ def format_tariff_components(results_df):
 
     except KeyError:
         return None
+

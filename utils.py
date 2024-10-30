@@ -7,6 +7,57 @@ GREY = "#bababa"
 CHINA_TARIFF_RATE = 0.60  # 60% tariff on Chinese imports
 OTHER_TARIFF_RATE = 0.10  # 10% tariff on other imports
 
+# State Credits
+CTCS = [
+    "ca_yctc",
+    "co_ctc",
+    "co_family_affordability_credit", 
+    "id_ctc",
+    "md_ctc",
+    "mn_child_and_working_families_credits",
+    "mt_ctc",
+    "nc_ctc",
+    "nj_ctc",
+    "nm_ctc", 
+    "ny_ctc",
+    "or_ctc",
+    "vt_ctc"
+]
+
+EITCS = [
+    "ca_eitc",
+    "co_eitc", 
+    "ct_eitc",
+    "dc_eitc",
+    "de_eitc",
+    "hi_eitc",
+    "ia_eitc",
+    "il_eitc", 
+    "in_eitc",
+    "ks_total_eitc",
+    "la_eitc",
+    "ma_eitc",
+    "md_eitc",
+    "me_eitc",
+    "mi_eitc",
+    "mo_wftc",
+    "mt_eitc",
+    "ne_eitc",
+    "nj_eitc",
+    "nm_eitc",
+    "ny_eitc",
+    "oh_eitc",
+    "ok_eitc",
+    "or_eitc",
+    "ri_eitc",
+    "sc_eitc",
+    "ut_eitc",
+    "va_eitc",
+    "vt_eitc",
+    "wa_working_families_tax_credit",
+    "wi_earned_income_credit"
+]
+
 
 # State Codes and Names
 STATE_NAMES = {
