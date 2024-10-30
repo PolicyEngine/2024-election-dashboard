@@ -26,8 +26,8 @@ from config import (
 st.set_page_config(page_title=APP_TITLE, page_icon="👪", layout="wide")
 st.title(APP_TITLE)
 st.markdown(BASELINE_DESCRIPTION)
-st.markdown("## Enter your current household information")
-st.markdown("*Please enter estimated annual amounts for the tax year 2025*")
+st.markdown("## Enter your household information")
+st.markdown("*Please enter estimated annual amounts for 2025*")
 
 # Render form sections
 personal_col, income_col = st.columns(2)
@@ -52,9 +52,12 @@ with income_col:
         overtime_income,
         social_security,
         capital_gains,
-        dividend_income,
+        qualified_dividend_income,
+        non_qualified_dividend_income,
+        net_investment_income,
+        itemized_deductions,  # Get itemized deductions from the income inputs
     ) = render_income_inputs(is_married)
-    itemized_deductions = render_itemized_deductions()
+
 
 china_imports, other_imports = render_import_expenses()
 
@@ -74,7 +77,9 @@ if st.button("Calculate my household income"):
         "income": income,
         "social_security": social_security,
         "capital_gains": capital_gains,
-        "dividend_income": dividend_income,
+        "qualified_dividend_income": qualified_dividend_income,
+        "non_qualified_dividend_income": non_qualified_dividend_income,
+        "net_investment_income": net_investment_income,
         "tip_income": tip_income,
         "overtime_income": overtime_income,
         "in_nyc": in_nyc,
@@ -92,15 +97,17 @@ if st.button("Calculate my household income"):
 
     # Right column - All tabs
     with right_col:
-        tabs = st.tabs([
-            "Main Breakdown",
-            "Taxes",
-            "Tariffs",
-            "Benefits",
-            "Federal Credits",
-            "State Credits"
-        ])
-        
+        tabs = st.tabs(
+            [
+                "Main Breakdown",
+                "Taxes",
+                "Tariffs",
+                "Benefits",
+                "Federal Credits",
+                "State Credits",
+            ]
+        )
+
         with tabs[0]:
             formatted_df = format_detailed_metrics(results_df)
             st.markdown(formatted_df.to_markdown())

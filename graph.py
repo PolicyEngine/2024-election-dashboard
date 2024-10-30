@@ -23,16 +23,9 @@ def create_reform_comparison_graph(results):
     for reform, value in zip(df["reform"], df["net_income"]):
         value = int(round(value))
         diff = int(round(value - baseline_value))
-        text_inside = format_currency(value)
-        diff_text = (
-            format_currency(diff)
-            if diff == 0
-            else (
-                f"+{format_currency(diff)}"
-                if diff > 0
-                else f"-{format_currency(abs(diff))}"
-            )
-        )
+        text_inside = f"${value:,.0f}"
+        # Always add plus sign for non-negative values
+        diff_text = f"+${diff:,.0f}" if diff >= 0 else f"-${-diff:,.0f}"
 
         # Add bar
         fig.add_trace(
@@ -45,7 +38,7 @@ def create_reform_comparison_graph(results):
                 text=f"<b>{text_inside}</b>",
                 textposition="inside",
                 insidetextanchor="middle",
-                textfont=dict(color="white", size=16, weight="bold"),
+                textfont=dict(size=18, color="white", weight="bold"),
                 hovertemplate=(
                     f"Total: {text_inside}<br>"
                     f"Difference: {diff_text}<extra></extra>"
@@ -63,7 +56,7 @@ def create_reform_comparison_graph(results):
             yanchor="middle",
             xshift=-10,
             showarrow=False,
-            font=dict(size=16, color=colors.get(reform, GREY)),  # Match color
+            font=dict(size=18, color=colors.get(reform, GREY)),
         )
 
         # Add difference annotation for non-baseline reforms
@@ -77,28 +70,28 @@ def create_reform_comparison_graph(results):
                 xshift=10,
                 text=f"<b>{diff_text}</b>",
                 showarrow=False,
-                font=dict(size=14, color=annotation_color),
+                font=dict(size=16, color=annotation_color),
             )
 
     # Calculate x-axis range
     max_value = df["net_income"].max()
     x_max = max_value
 
-    # Update layout with mobile-friendly settings and left-aligned title
+    # Update layout with line break in title but original height
     fig.update_layout(
         title={
-            "text": "<b>How would each candidate's policies affect your net income in 2025?</b>",
+            "text": "<b>How would each candidate's policies<br>affect your net income in 2025?</b>",
             "y": 0.95,
-            "x": 0,  # Left align
-            "xanchor": "left",  # Left align
+            "x": 0,
+            "xanchor": "left",
             "yanchor": "top",
-            "font": dict(size=20),
+            "font": dict(size=24),
             "xref": "paper",
-            "pad": dict(t=10, b=10, l=0),  # Adjust padding around title
+            "pad": dict(t=10, b=10, l=0),
         },
-        height=300,  # Reduced height for mobile
+        height=300,  # Original height
         showlegend=False,
-        margin=dict(t=80, b=50, r=100, l=120),  # Reduced right margin from 200 to 100
+        margin=dict(t=80, b=50, r=100, l=120),  # Original margins
         yaxis=dict(
             showgrid=False,
             showline=False,
@@ -112,14 +105,14 @@ def create_reform_comparison_graph(results):
             linecolor="rgba(0,0,0,0.2)",
             tickformat="$,.0f",
             range=[0, x_max],
-            tickfont=dict(size=12),
+            tickfont=dict(size=14),
             title=dict(text="Household Net Income", font=dict(size=14), standoff=15),
         ),
         plot_bgcolor="rgba(0,0,0,0)",
         paper_bgcolor="rgba(0,0,0,0)",
-        bargap=0.15,
-        font=dict(size=12),
-        uniformtext_minsize=8,
+        bargap=0.2,
+        font=dict(size=14),
+        uniformtext_minsize=10,
         uniformtext_mode="hide",
     )
 
@@ -142,12 +135,7 @@ def create_reform_comparison_graph(results):
     # Override the logo settings with larger size
     if len(fig.layout.images) > 0:
         fig.layout.images[0].update(
-            sizex=0.15,  # Increased from 0.08
-            sizey=0.15,  # Increased from 0.08
-            x=1,
-            y=-0.1,
-            xanchor="right",
-            yanchor="bottom"
+            sizex=0.15, sizey=0.15, x=1, y=-0.1, xanchor="right", yanchor="bottom"
         )
 
     return fig
