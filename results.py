@@ -332,6 +332,7 @@ def calculate_consolidated_results(
                 simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
             )
         ),
+        "Tariffs": tariffs,
         "Federal Refundable Credits": int(
             round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])
         ),

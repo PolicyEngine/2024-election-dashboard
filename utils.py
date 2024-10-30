@@ -76,6 +76,7 @@ MAIN_METRICS = [
     "Household Net Income",
     "Household Market Income",
     "Income Tax Before Credits",
+    "Tariffs",
     "Federal Refundable Credits",
     "State Refundable Credits",
     "Total Benefits",
