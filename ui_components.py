@@ -72,7 +72,6 @@ def render_import_expenses():
             value=0,
             step=100,
             format="%d",
-            help="Estimated annual spending on goods imported from China",
         )
 
     with import_col2:
@@ -83,7 +82,6 @@ def render_import_expenses():
             value=0,
             step=100,
             format="%d",
-            help="Estimated annual spending on goods imported from countries other than China",
         )
 
     return china_imports, other_imports
