@@ -42,8 +42,9 @@ def create_situation(
     capital_gains=0,
     qualified_dividend_income=0,
     non_qualified_dividend_income=0,
-    net_investment_income=0,
+    taxable_interest_income=0,
     tip_income=0,
+    rental_income=0,
     overtime_income=0,
     in_nyc=False,
 ):
@@ -68,12 +69,13 @@ def create_situation(
                 "non_qualified_dividend_income": {YEAR: non_qualified_dividend_income},
                 "tip_income": {YEAR: tip_income},
                 "overtime_income": {YEAR: overtime_income},
+                "taxable_interest_income": {YEAR: taxable_interest_income},
+                "rental_income": {YEAR: rental_income},
             }
         },
         "tax_units": {
             "your tax unit": {
                 "members": ["you"],
-                "net_investment_income": {YEAR: net_investment_income},
             }
         },
         "families": {"family": {"members": ["you"]}},
@@ -164,7 +166,8 @@ def calculate_consolidated_results(
     capital_gains=0,
     qualified_dividend_income=0,
     non_qualified_dividend_income=0,
-    net_investment_income=0,
+    taxable_interest_income=0,
+    rental_income=0,
     tip_income=0,
     overtime_income=0,
     china_imports=0,
@@ -195,7 +198,8 @@ def calculate_consolidated_results(
         capital_gains,
         qualified_dividend_income,
         non_qualified_dividend_income,
-        net_investment_income,
+        taxable_interest_income,
+        rental_income,
         tip_income,
         overtime_income,
         in_nyc,
