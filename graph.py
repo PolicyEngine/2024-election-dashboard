@@ -87,7 +87,7 @@ def create_reform_comparison_graph(results):
     # Update layout with mobile-friendly settings and left-aligned title
     fig.update_layout(
         title={
-            "text": "<b>How would each candidate's policies affect your net income?</b>",
+            "text": "<b>How would each candidate's policies affect your net income in 2025?</b>",
             "y": 0.95,
             "x": 0,  # Left align
             "xanchor": "left",  # Left align
@@ -139,10 +139,15 @@ def create_reform_comparison_graph(results):
     # Apply PolicyEngine formatting
     fig = format_fig(fig)
 
-    # Override the logo settings with smaller size
+    # Override the logo settings with larger size
     if len(fig.layout.images) > 0:
         fig.layout.images[0].update(
-            sizex=0.08, sizey=0.08, x=1, y=-0.1, xanchor="right", yanchor="bottom"
+            sizex=0.15,  # Increased from 0.08
+            sizey=0.15,  # Increased from 0.08
+            x=1,
+            y=-0.1,
+            xanchor="right",
+            yanchor="bottom"
         )
 
     return fig
