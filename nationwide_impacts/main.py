@@ -10,8 +10,8 @@ def render_nationwide_impacts():
     # Add description
     st.write(
         """
-    This calculator shows the impact of various tax reform proposals on poverty, inequality, and household income.
-    Select a reform package to analyze its effects.
+    This calculator shows the impact of various tax reform proposals on the budget, poverty, and inequality in 2025.
+    Select a reform to analyze its effects.
     """
     )
 
@@ -74,25 +74,31 @@ def render_nationwide_impacts():
     st.header("State-Level Impacts")
     render_reform_map()
 
-    # Create state-level table
-    state_table = reform_results[
-        [
-            "state",
-            "poverty_pct_cut",
-            "child_poverty_pct_cut",
-            "poverty_gap_pct_cut",
-            "gini_index_pct_cut",
+    # Create state-level table in an expander
+    with st.expander("View Detailed State-Level Data", expanded=False):
+        # Convert cost to billions before creating table
+        reform_results['cost'] = reform_results['cost'] / 1e9
+        
+        state_table = reform_results[
+            [
+                "state",
+                "cost",
+                "poverty_pct_cut",
+                "child_poverty_pct_cut",
+                "poverty_gap_pct_cut",
+                "gini_index_pct_cut",
+            ]
+        ].copy()
+
+        # Rename columns for display
+        state_table.columns = [
+            "State",
+            "Budgetary Impact ($B)",
+            "Poverty Change (%)",
+            "Child Poverty Change (%)",
+            "Poverty Gap Change (%)",
+            "Gini Index Change",
         ]
-    ].copy()
 
-    # Rename columns for display
-    state_table.columns = [
-        "State",
-        "Poverty Change (%)",
-        "Child Poverty Change (%)",
-        "Poverty Gap Change (%)",
-        "Gini Index Change",
-    ]
-
-    # Display state results in an interactive table
-    st.dataframe(state_table.round(2), hide_index=True, use_container_width=True)
+        # Display state results in an interactive table
+        st.dataframe(state_table.round(2), hide_index=True, use_container_width=True)
