@@ -65,9 +65,9 @@ def render_nationwide_impacts():
             delta=None,
         )
         st.metric(
-            "Change in Gini Index", 
-            f"{nationwide_reform_results['gini_index_pct_cut']/100:.4f}", 
-            delta=None
+            "Change in Gini Index",
+            f"{nationwide_reform_results['gini_index_pct_cut']/100:.4f}",
+            delta=None,
         )
 
     # Add map visualization
@@ -77,8 +77,8 @@ def render_nationwide_impacts():
     # Create state-level table in an expander
     with st.expander("View Detailed State-Level Data", expanded=False):
         # Convert cost to billions before creating table
-        reform_results['cost'] = reform_results['cost'] / 1e9
-        
+        reform_results["cost"] = reform_results["cost"] / 1e9
+
         state_table = reform_results[
             [
                 "state",

@@ -5,6 +5,7 @@ from nationwide_impacts.calculator.reforms import REFORMS
 from policyengine_core.reforms import Reform
 import os
 
+
 def calculate_nationwide_enhanced(reform_params=None, year=2025):
     """Calculate nationwide impact using enhanced CPS dataset."""
     if reform_params is None:
@@ -17,13 +18,13 @@ def calculate_nationwide_enhanced(reform_params=None, year=2025):
 
     # Calculate nationwide metrics
     net_income = sim.calc("household_net_income", period=year).sum()
-    
+
     poverty = sim.calc("in_poverty", period=year, map_to="person").mean()
     child = sim.calc("is_child", period=year, map_to="person")
     child_poverty = (sim.calc("in_poverty", period=year, map_to="person")[child]).mean()
-    
+
     poverty_gap = sim.calc("poverty_gap", period=year, map_to="household").sum()
-    
+
     personal_hh_equiv_income = sim.calculate("equiv_household_net_income")
     household_count_people = sim.calculate("household_count_people")
     personal_hh_equiv_income.weights *= household_count_people
@@ -34,8 +35,9 @@ def calculate_nationwide_enhanced(reform_params=None, year=2025):
         "poverty_rate": poverty,
         "child_poverty_rate": child_poverty,
         "poverty_gap": poverty_gap,
-        "gini_index": gini
+        "gini_index": gini,
     }
+
 
 def calculate_reform_impact(reform_params=None, year=2025):
     """Calculate impact for a single reform against baseline."""
@@ -78,6 +80,7 @@ def calculate_reform_impact(reform_params=None, year=2025):
         )
     }
 
+
 def calculate_all_reform_impacts():
     """Calculate impacts for all reforms and save to CSV files."""
     # Create data directory if it doesn't exist
@@ -89,37 +92,49 @@ def calculate_all_reform_impacts():
     # Calculate nationwide impacts using enhanced CPS
     print("Calculating nationwide baseline using enhanced CPS...")
     baseline_enhanced = calculate_nationwide_enhanced(None, year)
-    
+
     nationwide_results = []
-    
+
     for reform_name, reform_params in REFORMS.items():
         if reform_name == "Baseline":
             continue
-            
+
         print(f"Calculating nationwide impacts for {reform_name} using enhanced CPS...")
         reform_enhanced = calculate_nationwide_enhanced(reform_params, year)
-        
-        nationwide_results.append({
-            "reform_type": reform_name,
-            "cost": baseline_enhanced["net_income"] - reform_enhanced["net_income"],
-            "poverty_pct_cut": -(
-                (reform_enhanced["poverty_rate"] - baseline_enhanced["poverty_rate"])
-                / baseline_enhanced["poverty_rate"] * 100
-            ),
-            "child_poverty_pct_cut": -(
-                (reform_enhanced["child_poverty_rate"] - baseline_enhanced["child_poverty_rate"])
-                / baseline_enhanced["child_poverty_rate"] * 100
-            ),
-            "poverty_gap_pct_cut": -(
-                (reform_enhanced["poverty_gap"] - baseline_enhanced["poverty_gap"])
-                / baseline_enhanced["poverty_gap"] * 100
-            ),
-            "gini_index_pct_cut": -(
-                (reform_enhanced["gini_index"] - baseline_enhanced["gini_index"])
-                / baseline_enhanced["gini_index"] * 100
-            )
-        })
-    
+
+        nationwide_results.append(
+            {
+                "reform_type": reform_name,
+                "cost": baseline_enhanced["net_income"] - reform_enhanced["net_income"],
+                "poverty_pct_cut": -(
+                    (
+                        reform_enhanced["poverty_rate"]
+                        - baseline_enhanced["poverty_rate"]
+                    )
+                    / baseline_enhanced["poverty_rate"]
+                    * 100
+                ),
+                "child_poverty_pct_cut": -(
+                    (
+                        reform_enhanced["child_poverty_rate"]
+                        - baseline_enhanced["child_poverty_rate"]
+                    )
+                    / baseline_enhanced["child_poverty_rate"]
+                    * 100
+                ),
+                "poverty_gap_pct_cut": -(
+                    (reform_enhanced["poverty_gap"] - baseline_enhanced["poverty_gap"])
+                    / baseline_enhanced["poverty_gap"]
+                    * 100
+                ),
+                "gini_index_pct_cut": -(
+                    (reform_enhanced["gini_index"] - baseline_enhanced["gini_index"])
+                    / baseline_enhanced["gini_index"]
+                    * 100
+                ),
+            }
+        )
+
     # Save nationwide results
     nationwide_df = pd.DataFrame(nationwide_results)
     nationwide_df.to_csv("data/nationwide_impacts_2025.csv", index=False)
