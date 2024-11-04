@@ -8,9 +8,7 @@ CTC_REFORM = {
     "gov.irs.credits.ctc.amount.arpa[0].amount": {"2023-01-01.2028-12-31": 3600},
     "gov.irs.credits.ctc.amount.arpa[1].amount": {"2023-01-01.2028-12-31": 3000},
     "gov.irs.credits.ctc.phase_out.arpa.in_effect": {"2023-01-01.2028-12-31": True},
-    "gov.irs.credits.ctc.refundable.fully_refundable": {
-        "2023-01-01.2028-12-31": True
-    }
+    "gov.irs.credits.ctc.refundable.fully_refundable": {"2023-01-01.2028-12-31": True},
 }
 
 # High Earners Reform
@@ -40,44 +38,28 @@ HIGH_EARNERS_REFORM = {
     },
     "gov.irs.income.bracket.thresholds.5.SURVIVING_SPOUSE": {
         "2025-01-01.2025-12-31": 462400,
-    }
-}
-
-# Capital Gains Reform
-CAPITAL_GAINS_REFORM = {
-    "gov.contrib.harris.capital_gains.in_effect": {"2025-01-01.2100-12-31": True},
-    "gov.contrib.harris.capital_gains.brackets.thresholds.3.SEPARATE": {
-        "2025-01-01.2100-12-31": 500000
-    }
+    },
 }
 
 # EITC Reform
 EITC_REFORM = {
     "gov.irs.credits.eitc.eligibility.age.max": {"2024-01-01.2033-12-31": 100},
     "gov.irs.credits.eitc.eligibility.age.min": {"2024-01-01.2033-12-31": 19},
-    "gov.irs.credits.eitc.eligibility.age.min_student": {
-        "2024-01-01.2033-12-31": 24
-    },
+    "gov.irs.credits.eitc.eligibility.age.min_student": {"2024-01-01.2033-12-31": 24},
     "gov.irs.credits.eitc.max[0].amount": {
         "2025-01-01.2025-12-31": 1774,
     },
-    "gov.irs.credits.eitc.phase_in_rate[0].amount": {
-        "2024-01-01.2033-12-31": 0.153
-    },
-    "gov.irs.credits.eitc.phase_out.rate[0].amount": {
-        "2024-01-01.2033-12-31": 0.153
-    },
+    "gov.irs.credits.eitc.phase_in_rate[0].amount": {"2024-01-01.2033-12-31": 0.153},
+    "gov.irs.credits.eitc.phase_out.rate[0].amount": {"2024-01-01.2033-12-31": 0.153},
     "gov.irs.credits.eitc.phase_out.start[0].amount": {
         "2025-01-01.2025-12-31": 13706,
-    }
+    },
 }
 
 # Social Security Reform
 SOCIAL_SECURITY_REFORM = {
-    "gov.irs.social_security.taxability.rate.additional": {
-        "2024-01-01.2100-12-31": 0
-    },
-    "gov.irs.social_security.taxability.rate.base": {"2024-01-01.2100-12-31": 0}
+    "gov.irs.social_security.taxability.rate.additional": {"2024-01-01.2100-12-31": 0},
+    "gov.irs.social_security.taxability.rate.base": {"2024-01-01.2100-12-31": 0},
 }
 
 
@@ -97,7 +79,7 @@ SALT_CAP_REFORM = {
     },
     "gov.irs.deductions.itemized.salt_and_real_estate.cap.SURVIVING_SPOUSE": {
         "2025-01-01.2100-12-31": np.inf
-    }
+    },
 }
 
 # Combined dictionary for all reforms
@@ -105,18 +87,13 @@ REFORMS = {
     "Baseline": None,
     "Harris CTC Reform": CTC_REFORM,
     "Harris High Earners Revenue Raisers": HIGH_EARNERS_REFORM,
-    "Harris Capital Gains Reform": CAPITAL_GAINS_REFORM,
     "Harris EITC Reform": EITC_REFORM,
     "Trump Social Security Reform": SOCIAL_SECURITY_REFORM,
     "Trump SALT Cap Reform": SALT_CAP_REFORM,
-    "Harris Full Package": {
+    "Harris Combined Economic Package": {
         **CTC_REFORM,
         **HIGH_EARNERS_REFORM,
-        **CAPITAL_GAINS_REFORM,
         **EITC_REFORM,
     },
-    "Trump Full Package": {
-        **SOCIAL_SECURITY_REFORM,
-        **SALT_CAP_REFORM
-    }
+    "Trump Combined Economic Package": {**SOCIAL_SECURITY_REFORM, **SALT_CAP_REFORM},
 }
