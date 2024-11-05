@@ -40,16 +40,16 @@ def render_reform_map():
         + reform_data["cost"].round(1).astype(str)
         + "B<br>"
         + "Poverty Reduction(%): "
-        + reform_data["poverty_pct_cut"].round(2).astype(str)
+        + reform_data["poverty_pct_cut"].round(1).astype(str)
         + "%<br>"
         + "Child Poverty Reduction (%): "
-        + reform_data["child_poverty_pct_cut"].round(2).astype(str)
+        + reform_data["child_poverty_pct_cut"].round(1).astype(str)
         + "%<br>"
         + "Poverty Gap Reduction (%): "
-        + reform_data["poverty_gap_pct_cut"].round(2).astype(str)
+        + reform_data["poverty_gap_pct_cut"].round(1).astype(str)
         + "%<br>"
         + "Gini Index Reduction (%): "
-        + reform_data["gini_index_pct_cut"].round(4).astype(str)
+        + reform_data["gini_index_pct_cut"].round(1).astype(str)
     )
 
     # Create choropleth map
@@ -61,12 +61,35 @@ def render_reform_map():
         scope="usa",
         color_continuous_scale=px.colors.diverging.RdBu,
         color_continuous_midpoint=0,
-        title=f"Impact of {selected_reform} on {selected_metric_name} by State",
+        title=f"{selected_metric_name} of the {selected_reform} by State",
         labels={metric_column: selected_metric_name},
         custom_data=["hover_text"],
     )
 
-    # Update hover template to use custom hover text
-    fig.update_traces(hovertemplate="%{customdata[0]}<extra></extra>")
+    # Update layout with centered title
+    fig.update_layout(
+        width=900,
+        height=600,
+        margin={"r": 0, "t": 50, "l": 0, "b": 0},  # Increased top margin for title
+        hoverlabel={"bgcolor": "white", "font_size": 14, "font_color": "black"},
+        title={
+            "text": f"{selected_metric_name} of the {selected_reform} by State",
+            "y": 0.95,  # Adjust this value to move title up/down
+            "x": 0.5,
+            "xanchor": "center",
+            "yanchor": "top",
+            "font": {"size": 20},  # Optional: adjust title font size
+        },
+    )
 
-    st.plotly_chart(fig, use_container_width=True)
+    # Update traces to use custom hover template
+    fig.update_traces(
+        hovertemplate="%{customdata[0]}<extra></extra>",
+    )
+
+    # Render with container width
+    st.plotly_chart(
+        fig,
+        use_container_width=True,
+        config={"displayModeBar": True, "scrollZoom": True},
+    )

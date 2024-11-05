@@ -43,19 +43,29 @@ def render_nationwide_impacts():
     col1, col2 = st.columns(2)
 
     with col1:
+        # Calculate the value first
+        budget_value = nationwide_reform_results["cost"] / 1e9
+        # Format with negative sign in front of dollar sign if negative
+        budget_display = (
+            f"-${abs(budget_value):.1f}B"
+            if budget_value < 0
+            else f"${budget_value:.1f}B"
+        )
+
         st.metric(
             "Budgetary Impact",
-            f"${nationwide_reform_results['cost']/1e9:.1f}B",
+            budget_display,
             delta=None,
         )
+
         st.metric(
             "Poverty Rate Reduction",
-            f"{nationwide_reform_results['poverty_pct_cut']:.2f}%",
+            f"{nationwide_reform_results['poverty_pct_cut']:.1f}%",
             delta=None,
         )
         st.metric(
             "Child Poverty Reduction",
-            f"{nationwide_reform_results['child_poverty_pct_cut']:.2f}%",
+            f"{nationwide_reform_results['child_poverty_pct_cut']:.1f}%",
             delta=None,
         )
 
@@ -67,7 +77,7 @@ def render_nationwide_impacts():
         )
         st.metric(
             "Gini Index Reduction",
-            f"{nationwide_reform_results['gini_index_pct_cut']/100:.4f}",
+            f"{nationwide_reform_results['gini_index_pct_cut']:.1f}%",
             delta=None,
         )
 
@@ -98,7 +108,7 @@ def render_nationwide_impacts():
             "Poverty Reduction (%)",
             "Child Poverty Reduction (%)",
             "Poverty Gap Reduction (%)",
-            "Gini Index Reduction",
+            "Gini Index Reduction (%)",
         ]
 
         # Display state results in an interactive table
