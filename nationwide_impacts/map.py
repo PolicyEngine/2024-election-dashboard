@@ -2,6 +2,9 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+def get_metric_range(data, metric_column):
+    """Get the maximum value for a given metric across all reforms"""
+    return data[metric_column].max()
 
 def render_reform_map():
     """Renders a map visualization of reform impacts by state."""
@@ -11,25 +14,16 @@ def render_reform_map():
         st.session_state.data = pd.read_csv("data/reform_impacts_2025.csv")
     data = st.session_state.data
 
-    # Get selected reform and metric
-    selected_reform = st.session_state.get(
-        "selected_reform", data["reform_type"].iloc[0]
-    )
-    METRICS = {
-        "Average Household Impact ($)": "cost",
-        "Poverty Reduction (%)": "poverty_pct_cut",
-        "Child Poverty Reduction (%)": "child_poverty_pct_cut",
-        "Poverty Gap Reduction (%)": "poverty_gap_pct_cut",
-        "Gini Index Reduction (%)": "gini_index_pct_cut",
-    }
-    selected_metric_name = st.selectbox("Select Metric", list(METRICS.keys()))
-    metric_column = METRICS[selected_metric_name]
+    # Get selected values from session state
+    selected_reform = st.session_state.selected_reform
+    selected_metric_name = st.session_state.selected_metric
+    metric_column = st.session_state.selected_metric_column
 
     # Filter data for selected reform
     reform_data = data[data["reform_type"] == selected_reform].copy()
 
-    # Convert cost to billions
-    reform_data["cost"] = reform_data["cost"]
+    # Get the maximum value for the selected metric across all reforms
+    max_value = data[metric_column].max()
 
     # Create hover text with all metrics
     reform_data["hover_text"] = (
@@ -38,29 +32,23 @@ def render_reform_map():
         + "</b><br>"
         + "Average Household Impact: $"
         + reform_data["cost"].round(1).astype(str)
-        + "B<br>"
+        + "<br>"
         + "Poverty Reduction(%): "
         + reform_data["poverty_pct_cut"].round(1).astype(str)
-        + "%<br>"
-        + "Child Poverty Reduction (%): "
-        + reform_data["child_poverty_pct_cut"].round(1).astype(str)
-        + "%<br>"
-        + "Poverty Gap Reduction (%): "
-        + reform_data["poverty_gap_pct_cut"].round(1).astype(str)
         + "%<br>"
         + "Gini Index Reduction (%): "
         + reform_data["gini_index_pct_cut"].round(1).astype(str)
     )
 
-    # Create choropleth map
+    # Create choropleth map with fixed range starting at 0
     fig = px.choropleth(
         reform_data,
         locations="state",
         locationmode="USA-states",
         color=metric_column,
         scope="usa",
-        color_continuous_scale=px.colors.diverging.RdBu,
-        color_continuous_midpoint=0,
+        color_continuous_scale="Blues",
+        range_color=[0, max_value],
         title=f"{selected_metric_name} of the {selected_reform} by State",
         labels={metric_column: selected_metric_name},
         custom_data=["hover_text"],
@@ -70,15 +58,15 @@ def render_reform_map():
     fig.update_layout(
         width=900,
         height=600,
-        margin={"r": 0, "t": 50, "l": 0, "b": 0},  # Increased top margin for title
+        margin={"r": 0, "t": 50, "l": 0, "b": 0},
         hoverlabel={"bgcolor": "white", "font_size": 14, "font_color": "black"},
         title={
             "text": f"{selected_metric_name} of the {selected_reform} by State",
-            "y": 0.95,  # Adjust this value to move title up/down
+            "y": 0.95,
             "x": 0.5,
             "xanchor": "center",
             "yanchor": "top",
-            "font": {"size": 20},  # Optional: adjust title font size
+            "font": {"size": 20},
         },
     )
 

@@ -20,23 +20,62 @@ def render_nationwide_impacts():
     nationwide_results_df = pd.read_csv("data/nationwide_impacts_2025.csv")
     state_results_df = pd.read_csv("data/reform_impacts_2025.csv")
 
-    # Reform selector
+    # Create columns for selectors
+    col1, col2 = st.columns(2)
+
+    # Reform selector in first column
     reform_options = list(REFORMS.keys())
     reform_options.remove("Baseline")  # Remove baseline as it's not in results
-    selected_reform = st.selectbox(
-        "Select a reform package to view impacts:", options=reform_options
-    )
-    st.session_state.selected_reform = selected_reform
+    
+    with col1:
+        selected_reform = st.selectbox(
+            "Select a reform to view impacts:",
+            options=reform_options
+        )
+        st.session_state.selected_reform = selected_reform
 
-    # Get nationwide results for selected reform
-    nationwide_reform_results = nationwide_results_df[
-        nationwide_results_df["reform_type"] == selected_reform
-    ].iloc[0]
+    # Metric selector in second column
+    METRICS = {
+        "Average Household Impact ($)": "cost",
+        "Poverty Reduction (%)": "poverty_pct_cut",
+        "Gini Index Reduction (%)": "gini_index_pct_cut",
+    }
+    
+    with col2:
+        selected_metric_name = st.selectbox(
+            "Select Metric:",
+            options=list(METRICS.keys())
+        )
+    st.session_state.selected_metric = selected_metric_name
+    st.session_state.selected_metric_column = METRICS[selected_metric_name]
 
-    # Get state results for selected reform
-    reform_results = state_results_df[
-        state_results_df["reform_type"] == selected_reform
-    ].copy()
+    # Add map visualization
+    render_reform_map()
+
+    # Create state-level table in an expander
+    with st.expander("View Detailed State-Level Data", expanded=False):
+        # Convert cost to billions before creating table
+        reform_results["cost"] = reform_results["cost"]
+
+        state_table = reform_results[
+            [
+                "state",
+                "cost",
+                "poverty_pct_cut",
+                "gini_index_pct_cut",
+            ]
+        ].copy()
+
+        # Rename columns for display
+        state_table.columns = [
+            "State",
+            "Average Household Impact ($)",
+            "Poverty Reduction (%)",
+            "Gini Index Reduction (%)",
+        ]
+
+        # Display state results in an interactive table
+        st.dataframe(state_table.round(2), hide_index=True, use_container_width=True)
 
     # Display nationwide results
     st.header("Nationwide Impacts")
@@ -80,39 +119,6 @@ def render_nationwide_impacts():
             f"{nationwide_reform_results['gini_index_pct_cut']:.1f}%",
             delta=None,
         )
-
-    # Add map visualization
-    st.header("State-Level Impacts")
-    render_reform_map()
-
-    # Create state-level table in an expander
-    with st.expander("View Detailed State-Level Data", expanded=False):
-        # Convert cost to billions before creating table
-        reform_results["cost"] = reform_results["cost"]
-
-        state_table = reform_results[
-            [
-                "state",
-                "cost",
-                "poverty_pct_cut",
-                "child_poverty_pct_cut",
-                "poverty_gap_pct_cut",
-                "gini_index_pct_cut",
-            ]
-        ].copy()
-
-        # Rename columns for display
-        state_table.columns = [
-            "State",
-            "Average Household Impact ($)",
-            "Poverty Reduction (%)",
-            "Child Poverty Reduction (%)",
-            "Poverty Gap Reduction (%)",
-            "Gini Index Reduction (%)",
-        ]
-
-        # Display state results in an interactive table
-        st.dataframe(state_table.round(2), hide_index=True, use_container_width=True)
 
     with st.expander("Reform Details & Policy Explanations"):
         st.markdown(REFORM_DETAILS)

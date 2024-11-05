@@ -20,10 +20,7 @@ def calculate_nationwide_enhanced(reform_params=None, year=2025):
     net_income = sim.calc("household_net_income", period=year).sum()
 
     poverty = sim.calc("in_poverty", period=year, map_to="person").mean()
-    child = sim.calc("is_child", period=year, map_to="person")
-    child_poverty = (sim.calc("in_poverty", period=year, map_to="person")[child]).mean()
 
-    poverty_gap = sim.calc("poverty_gap", period=year, map_to="household").sum()
 
     personal_hh_equiv_income = sim.calculate("equiv_household_net_income")
     household_count_people = sim.calculate("household_count_people")
@@ -33,8 +30,6 @@ def calculate_nationwide_enhanced(reform_params=None, year=2025):
     return {
         "net_income": net_income,
         "poverty_rate": poverty,
-        "child_poverty_rate": child_poverty,
-        "poverty_gap": poverty_gap,
         "gini_index": gini,
     }
 
@@ -57,8 +52,6 @@ def calculate_reform_impact(reform_params=None, year=2025):
     poverty = sim.calc("in_poverty", period=year, map_to="person")
     state_code_person = sim.calc("state_code", period=year, map_to="person")
 
-    child = sim.calc("is_child", period=year, map_to="person")
-    poverty_gap = sim.calc("poverty_gap", period=year, map_to="household")
 
     personal_hh_equiv_income = sim.calculate("equiv_household_net_income")
     household_count_people = sim.calculate("household_count_people")
@@ -69,10 +62,6 @@ def calculate_reform_impact(reform_params=None, year=2025):
             {
                 "net_income": net_income.groupby(state_code_household).mean(),
                 "poverty": poverty.groupby(state_code_person).mean(),
-                "child_poverty": poverty[child]
-                .groupby(state_code_person[child])
-                .mean(),
-                "poverty_gap": poverty_gap.groupby(state_code_household).sum(),
                 "gini_index": personal_hh_equiv_income.groupby(
                     state_code_household
                 ).gini(),
@@ -112,19 +101,6 @@ def calculate_all_reform_impacts():
                         - baseline_enhanced["poverty_rate"]
                     )
                     / baseline_enhanced["poverty_rate"]
-                    * 100
-                ),
-                "child_poverty_pct_cut": -(
-                    (
-                        reform_enhanced["child_poverty_rate"]
-                        - baseline_enhanced["child_poverty_rate"]
-                    )
-                    / baseline_enhanced["child_poverty_rate"]
-                    * 100
-                ),
-                "poverty_gap_pct_cut": -(
-                    (reform_enhanced["poverty_gap"] - baseline_enhanced["poverty_gap"])
-                    / baseline_enhanced["poverty_gap"]
                     * 100
                 ),
                 "gini_index_pct_cut": -(
@@ -172,20 +148,6 @@ def calculate_all_reform_impacts():
                     )
                     / baseline_metrics.loc[state, "poverty"]
                     * 100,
-                    "child_poverty_pct_cut": -(
-                        reform_metrics.loc[state, "child_poverty"]
-                        - baseline_metrics.loc[state, "child_poverty"]
-                    )
-                    / baseline_metrics.loc[state, "child_poverty"]
-                    * 100,
-                    "poverty_gap_pct_cut": -(
-                        (
-                            reform_metrics.loc[state, "poverty_gap"]
-                            - baseline_metrics.loc[state, "poverty_gap"]
-                        )
-                        / baseline_metrics.loc[state, "poverty_gap"]
-                        * 100
-                    ),
                     "gini_index_pct_cut": -(
                         reform_metrics.loc[state, "gini_index"]
                         - baseline_metrics.loc[state, "gini_index"]
