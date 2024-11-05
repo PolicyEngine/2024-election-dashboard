@@ -11,35 +11,6 @@ CTC_REFORM = {
     "gov.irs.credits.ctc.refundable.fully_refundable": {"2023-01-01.2028-12-31": True},
 }
 
-# High Earners Reform
-HIGH_EARNERS_REFORM = {
-    "gov.contrib.biden.budget_2025.medicare.rate": {"2025-01-01.2100-12-31": 0.012},
-    "gov.contrib.biden.budget_2025.medicare.threshold": {
-        "2025-01-01.2025-12-31": 411000,
-    },
-    "gov.contrib.biden.budget_2025.net_investment_income.rate": {
-        "2025-01-01.2100-12-31": 0.012
-    },
-    "gov.contrib.biden.budget_2025.net_investment_income.threshold": {
-        "2025-01-01.2025-12-31": 411000,
-    },
-    "gov.irs.income.bracket.rates.7": {"2025-01-01.2025-12-31": 0.396},
-    "gov.irs.income.bracket.thresholds.5.HEAD_OF_HOUSEHOLD": {
-        "2026-01-01.2026-12-31": 444600,
-    },
-    "gov.irs.income.bracket.thresholds.5.JOINT": {
-        "2025-01-01.2025-12-31": 462400,
-    },
-    "gov.irs.income.bracket.thresholds.5.SEPARATE": {
-        "2025-01-01.2025-12-31": 231200,
-    },
-    "gov.irs.income.bracket.thresholds.5.SINGLE": {
-        "2026-01-01.2026-12-31": 418450,
-    },
-    "gov.irs.income.bracket.thresholds.5.SURVIVING_SPOUSE": {
-        "2025-01-01.2025-12-31": 462400,
-    },
-}
 
 # EITC Reform
 EITC_REFORM = {
@@ -86,14 +57,7 @@ SALT_CAP_REFORM = {
 REFORMS = {
     "Baseline": None,
     "Harris CTC Reform": CTC_REFORM,
-    "Harris High Earners Revenue Raisers": HIGH_EARNERS_REFORM,
     "Harris EITC Reform": EITC_REFORM,
     "Trump Social Security Reform": SOCIAL_SECURITY_REFORM,
     "Trump SALT Cap Reform": SALT_CAP_REFORM,
-    "Harris Combined Economic Package": {
-        **CTC_REFORM,
-        **HIGH_EARNERS_REFORM,
-        **EITC_REFORM,
-    },
-    "Trump Combined Economic Package": {**SOCIAL_SECURITY_REFORM, **SALT_CAP_REFORM},
 }

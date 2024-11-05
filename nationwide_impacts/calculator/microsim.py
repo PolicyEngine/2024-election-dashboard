@@ -43,10 +43,10 @@ def calculate_reform_impact(reform_params=None, year=2025):
     """Calculate impact for a single reform against baseline."""
     # Your existing function remains exactly the same
     if reform_params is None:
-        sim = Microsimulation(dataset="cps_2024")
+        sim = Microsimulation(dataset="pooled_3_year_cps_2023")
     else:
         reform = Reform.from_dict(reform_params, country_id="us")
-        sim = Microsimulation(reform=reform, dataset="cps_2024")
+        sim = Microsimulation(reform=reform, dataset="pooled_3_year_cps_2023")
 
     sim.macro_cache_read = False
 
@@ -67,7 +67,7 @@ def calculate_reform_impact(reform_params=None, year=2025):
     return {
         "metrics": pd.DataFrame(
             {
-                "net_income": net_income.groupby(state_code_household).sum(),
+                "net_income": net_income.groupby(state_code_household).mean(),
                 "poverty": poverty.groupby(state_code_person).mean(),
                 "child_poverty": poverty[child]
                 .groupby(state_code_person[child])
