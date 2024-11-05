@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from nationwide_impacts.calculator.reforms import REFORMS
 from nationwide_impacts.map import render_reform_map
+from .utils import REFORM_DETAILS, TECHNICAL_NOTES
 
 
 def render_nationwide_impacts():
@@ -102,3 +103,9 @@ def render_nationwide_impacts():
 
         # Display state results in an interactive table
         st.dataframe(state_table.round(2), hide_index=True, use_container_width=True)
+
+    with st.expander("Reform Details & Policy Explanations"):
+        st.markdown(REFORM_DETAILS)
+
+    with st.expander("Technical Notes & Assumptions"):
+        st.markdown(TECHNICAL_NOTES)

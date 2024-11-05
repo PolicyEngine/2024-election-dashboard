@@ -20,7 +20,7 @@ def render_reform_map():
         "Poverty Reduction (%)": "poverty_pct_cut",
         "Child Poverty Reduction (%)": "child_poverty_pct_cut",
         "Poverty Gap Reduction (%)": "poverty_gap_pct_cut",
-        "Gini Index Reduction": "gini_index_pct_cut",
+        "Gini Index Reduction (%)": "gini_index_pct_cut",
     }
     selected_metric_name = st.selectbox("Select Metric", list(METRICS.keys()))
     metric_column = METRICS[selected_metric_name]
@@ -39,16 +39,16 @@ def render_reform_map():
         + "Budgetary Impact: $"
         + reform_data["cost"].round(1).astype(str)
         + "B<br>"
-        + "Poverty Change: "
+        + "Poverty Reduction(%): "
         + reform_data["poverty_pct_cut"].round(2).astype(str)
         + "%<br>"
-        + "Child Poverty Change: "
+        + "Child Poverty Reduction (%): "
         + reform_data["child_poverty_pct_cut"].round(2).astype(str)
         + "%<br>"
-        + "Poverty Gap Change: "
+        + "Poverty Gap Reduction (%): "
         + reform_data["poverty_gap_pct_cut"].round(2).astype(str)
         + "%<br>"
-        + "Gini Change: "
+        + "Gini Index Reduction (%): "
         + reform_data["gini_index_pct_cut"].round(4).astype(str)
     )
 
