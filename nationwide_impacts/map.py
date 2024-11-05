@@ -17,8 +17,8 @@ def render_reform_map():
     )
     METRICS = {
         "Budgetary Impact ($B)": "cost",
-        "Poverty Rate Change (pp)": "poverty_pct_cut",
-        "Child Poverty Rate Change (pp)": "child_poverty_pct_cut",
+        "Poverty Rate Change (%)": "poverty_pct_cut",
+        "Child Poverty Rate Change (%)": "child_poverty_pct_cut",
         "Poverty Gap Change (%)": "poverty_gap_pct_cut",
         "Gini Change": "gini_index_pct_cut",
     }
@@ -41,10 +41,10 @@ def render_reform_map():
         + "B<br>"
         + "Poverty Change: "
         + reform_data["poverty_pct_cut"].round(2).astype(str)
-        + "pp<br>"
+        + "%<br>"
         + "Child Poverty Change: "
         + reform_data["child_poverty_pct_cut"].round(2).astype(str)
-        + "pp<br>"
+        + "%<br>"
         + "Poverty Gap Change: "
         + reform_data["poverty_gap_pct_cut"].round(2).astype(str)
         + "%<br>"

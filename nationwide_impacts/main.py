@@ -49,19 +49,19 @@ def render_nationwide_impacts():
         )
         st.metric(
             "Change in Poverty Rate",
-            f"{nationwide_reform_results['poverty_pct_cut']:.2f}pp",
+            f"{nationwide_reform_results['poverty_pct_cut']:.2f}%",
             delta=None,
         )
         st.metric(
             "Change in Child Poverty Rate",
-            f"{nationwide_reform_results['child_poverty_pct_cut']:.2f}pp",
+            f"{nationwide_reform_results['child_poverty_pct_cut']:.2f}%",
             delta=None,
         )
 
     with col2:
         st.metric(
             "Change in Poverty Gap",
-            f"{nationwide_reform_results['poverty_gap_pct_cut']:.1f}pp",
+            f"{nationwide_reform_results['poverty_gap_pct_cut']:.1f}%",
             delta=None,
         )
         st.metric(
