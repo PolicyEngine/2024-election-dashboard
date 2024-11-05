@@ -2,9 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 
+
 def get_metric_range(data, metric_column):
     """Get the maximum value for a given metric across all reforms"""
     return data[metric_column].max()
+
 
 def render_reform_map():
     """Renders a map visualization of reform impacts by state."""
