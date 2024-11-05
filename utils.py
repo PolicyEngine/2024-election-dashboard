@@ -94,7 +94,6 @@ STATE_NAMES = {
     "NJ": "New Jersey",
     "NM": "New Mexico",
     "NY": "New York",
-    "NYC": "New York City",
     "NC": "North Carolina",
     "ND": "North Dakota",
     "OH": "Ohio",
