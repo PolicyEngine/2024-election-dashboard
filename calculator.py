@@ -98,13 +98,12 @@ def format_federal_credit_components(results_df):
 def format_state_credit_components(results_df, state_code):
     """Format state credit components, showing items with baseline or reform values"""
     formatted_df = results_df.copy()
-    
+
     # Get all state-specific rows
     state_credit_rows = [
-        idx for idx in formatted_df.index 
-        if idx.startswith(state_code.lower() + "_")
+        idx for idx in formatted_df.index if idx.startswith(state_code.lower() + "_")
     ]
-    
+
     print(f"Found state credit rows: {state_credit_rows}")
 
     if not state_credit_rows:
@@ -113,10 +112,12 @@ def format_state_credit_components(results_df, state_code):
     formatted_df = formatted_df.loc[state_credit_rows]
     formatted_df = formatted_df.round(2)
     formatted_df = formatted_df.applymap(format_currency)
-    
+
     # Format index names
-    formatted_df.index = [format_credit_name(idx, state_code) for idx in formatted_df.index]
-    
+    formatted_df.index = [
+        format_credit_name(idx, state_code) for idx in formatted_df.index
+    ]
+
     return formatted_df
 
 
@@ -231,4 +232,3 @@ def format_tariff_components(results_df):
 
     except KeyError:
         return None
-

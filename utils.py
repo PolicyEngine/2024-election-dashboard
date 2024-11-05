@@ -11,28 +11,28 @@ OTHER_TARIFF_RATE = 0.10  # 10% tariff on other imports
 CTCS = [
     "ca_yctc",
     "co_ctc",
-    "co_family_affordability_credit", 
+    "co_family_affordability_credit",
     "id_ctc",
     "md_ctc",
     "mn_child_and_working_families_credits",
     "mt_ctc",
     "nc_ctc",
     "nj_ctc",
-    "nm_ctc", 
+    "nm_ctc",
     "ny_ctc",
     "or_ctc",
-    "vt_ctc"
+    "vt_ctc",
 ]
 
 EITCS = [
     "ca_eitc",
-    "co_eitc", 
+    "co_eitc",
     "ct_eitc",
     "dc_eitc",
     "de_eitc",
     "hi_eitc",
     "ia_eitc",
-    "il_eitc", 
+    "il_eitc",
     "in_eitc",
     "ks_total_eitc",
     "la_eitc",
@@ -55,7 +55,7 @@ EITCS = [
     "va_eitc",
     "vt_eitc",
     "wa_working_families_tax_credit",
-    "wi_earned_income_credit"
+    "wi_earned_income_credit",
 ]
 
 

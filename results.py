@@ -175,15 +175,34 @@ def calculate_consolidated_results(
     in_nyc=False,
 ):
     # Add auto loan interest to total interest only for Trump reform
-    total_interest = interest_expense + (auto_loan_interest if reform_name == "Trump" else 0)
+    total_interest = interest_expense + (
+        auto_loan_interest if reform_name == "Trump" else 0
+    )
 
     # Create situation with updated parameters
     situation = create_situation(
-        state, is_married, child_ages, income, social_security, head_age, spouse_age,
-        medical_expenses, real_estate_taxes, total_interest, charitable_cash,
-        charitable_non_cash, qualified_business_income, casualty_loss, capital_gains,
-        qualified_dividend_income, non_qualified_dividend_income, taxable_interest_income,
-        rental_income, tip_income, overtime_income, in_nyc,
+        state,
+        is_married,
+        child_ages,
+        income,
+        social_security,
+        head_age,
+        spouse_age,
+        medical_expenses,
+        real_estate_taxes,
+        total_interest,
+        charitable_cash,
+        charitable_non_cash,
+        qualified_business_income,
+        casualty_loss,
+        capital_gains,
+        qualified_dividend_income,
+        non_qualified_dividend_income,
+        taxable_interest_income,
+        rental_income,
+        tip_income,
+        overtime_income,
+        in_nyc,
     )
 
     # Create simulation based on reform
@@ -200,10 +219,14 @@ def calculate_consolidated_results(
     # Calculate federal credits
     package = "policyengine_us"
     resource_path_federal = "parameters/gov/irs/credits/refundable.yaml"
-    resource_path_state = f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
+    resource_path_state = (
+        f"parameters/gov/states/{state.lower()}/tax/income/credits/refundable.yaml"
+    )
 
     try:
-        federal_refundable_credits = load_credits_from_yaml(package, resource_path_federal)
+        federal_refundable_credits = load_credits_from_yaml(
+            package, resource_path_federal
+        )
     except FileNotFoundError:
         federal_refundable_credits = []
 
@@ -226,8 +249,7 @@ def calculate_consolidated_results(
     # Calculate state-specific credits
     state_code = state.lower()
     state_specific_programs = {
-        program for program in (CTCS + EITCS) 
-        if program.startswith(f"{state_code}_")
+        program for program in (CTCS + EITCS) if program.startswith(f"{state_code}_")
     }
 
     state_credits_dict = {}
@@ -255,11 +277,22 @@ def calculate_consolidated_results(
 
     # Calculate benefits
     benefits = [
-        "social_security", "ssi", "snap", "wic", "free_school_meals",
-        "reduced_price_school_meals", "spm_unit_broadband_subsidy", "tanf",
-        "high_efficiency_electric_home_rebate", "residential_efficiency_electrification_rebate",
-        "unemployment_compensation", "head_start", "early_head_start",
-        "housing_vouchers", "medicaid", "medicare",
+        "social_security",
+        "ssi",
+        "snap",
+        "wic",
+        "free_school_meals",
+        "reduced_price_school_meals",
+        "spm_unit_broadband_subsidy",
+        "tanf",
+        "high_efficiency_electric_home_rebate",
+        "residential_efficiency_electrification_rebate",
+        "unemployment_compensation",
+        "head_start",
+        "early_head_start",
+        "housing_vouchers",
+        "medicaid",
+        "medicare",
     ]
 
     benefits_dict = {}
@@ -275,31 +308,57 @@ def calculate_consolidated_results(
 
     # Calculate tax components
     tax_components = {
-        "employee_payroll_tax": int(round(simulation.calculate("employee_payroll_tax", YEAR)[0])),
-        "income_tax_before_refundable_credits": int(round(simulation.calculate("income_tax_before_refundable_credits", YEAR)[0])),
-        "household_state_tax_before_refundable_credits": int(round(simulation.calculate("household_state_tax_before_refundable_credits", YEAR)[0])),
+        "employee_payroll_tax": int(
+            round(simulation.calculate("employee_payroll_tax", YEAR)[0])
+        ),
+        "income_tax_before_refundable_credits": int(
+            round(simulation.calculate("income_tax_before_refundable_credits", YEAR)[0])
+        ),
+        "household_state_tax_before_refundable_credits": int(
+            round(
+                simulation.calculate(
+                    "household_state_tax_before_refundable_credits", YEAR
+                )[0]
+            )
+        ),
     }
 
     # Calculate tariffs
     tariffs = calculate_tariffs(reform_name, china_imports, other_imports)
     tariff_components = {
-        "china_tariffs": china_imports * CHINA_TARIFF_RATE if reform_name == "Trump" else 0,
-        "other_tariffs": other_imports * OTHER_TARIFF_RATE if reform_name == "Trump" else 0,
+        "china_tariffs": (
+            china_imports * CHINA_TARIFF_RATE if reform_name == "Trump" else 0
+        ),
+        "other_tariffs": (
+            other_imports * OTHER_TARIFF_RATE if reform_name == "Trump" else 0
+        ),
         "total_tariffs": tariffs,
     }
 
     # Calculate final income
-    household_net_income = int(round(simulation.calculate("household_net_income", YEAR)[0]))
+    household_net_income = int(
+        round(simulation.calculate("household_net_income", YEAR)[0])
+    )
     adjusted_net_income = max(household_net_income - tariffs, 0)
 
     # Combine all results
     all_results = {
         "Household Net Income": adjusted_net_income,
-        "Household Market Income": int(round(simulation.calculate("household_market_income", YEAR)[0])),
-        "Income Tax Before Credits": int(round(simulation.calculate("household_tax_before_refundable_credits", YEAR)[0])),
+        "Household Market Income": int(
+            round(simulation.calculate("household_market_income", YEAR)[0])
+        ),
+        "Income Tax Before Credits": int(
+            round(
+                simulation.calculate("household_tax_before_refundable_credits", YEAR)[0]
+            )
+        ),
         "Tariffs": tariffs,
-        "Federal Refundable Credits": int(round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])),
-        "State Refundable Credits": int(round(simulation.calculate("state_refundable_credits", YEAR)[0])),
+        "Federal Refundable Credits": int(
+            round(simulation.calculate("income_tax_refundable_credits", YEAR)[0])
+        ),
+        "State Refundable Credits": int(
+            round(simulation.calculate("state_refundable_credits", YEAR)[0])
+        ),
         "Total Benefits": total_benefits,
         **tax_components,
         **benefits_dict,
