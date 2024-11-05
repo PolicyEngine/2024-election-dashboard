@@ -48,24 +48,24 @@ def render_nationwide_impacts():
             delta=None,
         )
         st.metric(
-            "Change in Poverty Rate",
+            "Poverty Rate Reduction",
             f"{nationwide_reform_results['poverty_pct_cut']:.2f}%",
             delta=None,
         )
         st.metric(
-            "Change in Child Poverty Rate",
+            "Child Poverty Reduction",
             f"{nationwide_reform_results['child_poverty_pct_cut']:.2f}%",
             delta=None,
         )
 
     with col2:
         st.metric(
-            "Change in Poverty Gap",
+            "Poverty Gap Reduction",
             f"{nationwide_reform_results['poverty_gap_pct_cut']:.1f}%",
             delta=None,
         )
         st.metric(
-            "Change in Gini Index",
+            "Gini Index Reduction",
             f"{nationwide_reform_results['gini_index_pct_cut']/100:.4f}",
             delta=None,
         )
@@ -94,10 +94,10 @@ def render_nationwide_impacts():
         state_table.columns = [
             "State",
             "Budgetary Impact ($B)",
-            "Poverty Change (%)",
-            "Child Poverty Change (%)",
-            "Poverty Gap Change (%)",
-            "Gini Index Change",
+            "Poverty Reduction (%)",
+            "Child Poverty Reduction (%)",
+            "Poverty Gap Reduction (%)",
+            "Gini Index Reduction",
         ]
 
         # Display state results in an interactive table

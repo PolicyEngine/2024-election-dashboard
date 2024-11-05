@@ -17,10 +17,10 @@ def render_reform_map():
     )
     METRICS = {
         "Budgetary Impact ($B)": "cost",
-        "Poverty Rate Change (%)": "poverty_pct_cut",
-        "Child Poverty Rate Change (%)": "child_poverty_pct_cut",
-        "Poverty Gap Change (%)": "poverty_gap_pct_cut",
-        "Gini Change": "gini_index_pct_cut",
+        "Poverty Reduction (%)": "poverty_pct_cut",
+        "Child Poverty Reduction (%)": "child_poverty_pct_cut",
+        "Poverty Gap Reduction (%)": "poverty_gap_pct_cut",
+        "Gini Index Reduction": "gini_index_pct_cut",
     }
     selected_metric_name = st.selectbox("Select Metric", list(METRICS.keys()))
     metric_column = METRICS[selected_metric_name]
