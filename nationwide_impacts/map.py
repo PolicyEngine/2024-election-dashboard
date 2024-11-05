@@ -16,7 +16,7 @@ def render_reform_map():
         "selected_reform", data["reform_type"].iloc[0]
     )
     METRICS = {
-        "Budgetary Impact ($B)": "cost",
+        "Average Household Impact ($)": "cost",
         "Poverty Reduction (%)": "poverty_pct_cut",
         "Child Poverty Reduction (%)": "child_poverty_pct_cut",
         "Poverty Gap Reduction (%)": "poverty_gap_pct_cut",
@@ -29,14 +29,14 @@ def render_reform_map():
     reform_data = data[data["reform_type"] == selected_reform].copy()
 
     # Convert cost to billions
-    reform_data["cost"] = reform_data["cost"] / 1e9
+    reform_data["cost"] = reform_data["cost"]
 
     # Create hover text with all metrics
     reform_data["hover_text"] = (
         "<b>"
         + reform_data["state"]
         + "</b><br>"
-        + "Budgetary Impact: $"
+        + "Average Household Impact: $"
         + reform_data["cost"].round(1).astype(str)
         + "B<br>"
         + "Poverty Reduction(%): "

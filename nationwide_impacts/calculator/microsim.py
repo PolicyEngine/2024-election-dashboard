@@ -105,7 +105,7 @@ def calculate_all_reform_impacts():
         nationwide_results.append(
             {
                 "reform_type": reform_name,
-                "cost": baseline_enhanced["net_income"] - reform_enhanced["net_income"],
+                "cost": reform_enhanced["net_income"] - baseline_enhanced["net_income"],
                 "poverty_pct_cut": -(
                     (
                         reform_enhanced["poverty_rate"]

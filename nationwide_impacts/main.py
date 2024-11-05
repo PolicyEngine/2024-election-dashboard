@@ -88,7 +88,7 @@ def render_nationwide_impacts():
     # Create state-level table in an expander
     with st.expander("View Detailed State-Level Data", expanded=False):
         # Convert cost to billions before creating table
-        reform_results["cost"] = reform_results["cost"] / 1e9
+        reform_results["cost"] = reform_results["cost"]
 
         state_table = reform_results[
             [
@@ -104,7 +104,7 @@ def render_nationwide_impacts():
         # Rename columns for display
         state_table.columns = [
             "State",
-            "Budgetary Impact ($B)",
+            "Average Household Impact ($)",
             "Poverty Reduction (%)",
             "Child Poverty Reduction (%)",
             "Poverty Gap Reduction (%)",
