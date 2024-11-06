@@ -37,7 +37,6 @@ def render_nationwide_impacts():
     METRICS = {
         "Average Household Impact ($)": "cost",
         "Poverty Reduction (%)": "poverty_pct_cut",
-        "Gini Index Reduction (%)": "gini_index_pct_cut",
     }
 
     with col2:
@@ -80,11 +79,6 @@ def render_nationwide_impacts():
                 f"{nationwide_reform_results['poverty_pct_cut']:.1f}%",
                 delta=None,
             )
-            st.metric(
-                "Child Poverty Reduction",
-                f"{nationwide_reform_results['child_poverty_pct_cut']:.1f}%",
-                delta=None,
-            )
 
         with col2:
             st.metric(
@@ -93,8 +87,8 @@ def render_nationwide_impacts():
                 delta=None,
             )
             st.metric(
-                "Gini Index Reduction",
-                f"{nationwide_reform_results['gini_index_pct_cut']:.1f}%",
+                "Child Poverty Reduction",
+                f"{nationwide_reform_results['child_poverty_pct_cut']:.1f}%",
                 delta=None,
             )
 

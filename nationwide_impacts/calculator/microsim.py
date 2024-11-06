@@ -24,13 +24,8 @@ def calculate_nationwide_enhanced(reform_params=None, year=2025):
     personal_hh_equiv_income = sim.calculate("equiv_household_net_income")
     household_count_people = sim.calculate("household_count_people")
     personal_hh_equiv_income.weights *= household_count_people
-    gini = personal_hh_equiv_income.gini()
 
-    return {
-        "net_income": net_income,
-        "poverty_rate": poverty,
-        "gini_index": gini,
-    }
+    return {"net_income": net_income, "poverty_rate": poverty}
 
 
 def calculate_reform_impact(reform_params=None, year=2025):
@@ -51,18 +46,11 @@ def calculate_reform_impact(reform_params=None, year=2025):
     poverty = sim.calc("in_poverty", period=year, map_to="person")
     state_code_person = sim.calc("state_code", period=year, map_to="person")
 
-    personal_hh_equiv_income = sim.calculate("equiv_household_net_income")
-    household_count_people = sim.calculate("household_count_people")
-    personal_hh_equiv_income.weights *= household_count_people
-
     return {
         "metrics": pd.DataFrame(
             {
                 "net_income": net_income.groupby(state_code_household).mean(),
                 "poverty": poverty.groupby(state_code_person).mean(),
-                "gini_index": personal_hh_equiv_income.groupby(
-                    state_code_household
-                ).gini(),
             }
         )
     }
@@ -99,11 +87,6 @@ def calculate_all_reform_impacts():
                         - baseline_enhanced["poverty_rate"]
                     )
                     / baseline_enhanced["poverty_rate"]
-                    * 100
-                ),
-                "gini_index_pct_cut": -(
-                    (reform_enhanced["gini_index"] - baseline_enhanced["gini_index"])
-                    / baseline_enhanced["gini_index"]
                     * 100
                 ),
             }
@@ -145,12 +128,6 @@ def calculate_all_reform_impacts():
                         )
                     )
                     / baseline_metrics.loc[state, "poverty"]
-                    * 100,
-                    "gini_index_pct_cut": -(
-                        reform_metrics.loc[state, "gini_index"]
-                        - baseline_metrics.loc[state, "gini_index"]
-                    )
-                    / baseline_metrics.loc[state, "gini_index"]
                     * 100,
                 }
             )
