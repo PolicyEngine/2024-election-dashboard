@@ -25,10 +25,7 @@ def calculate_nationwide_enhanced(reform_params=None, year=2025):
     household_count_people = sim.calculate("household_count_people")
     personal_hh_equiv_income.weights *= household_count_people
 
-    return {
-        "net_income": net_income,
-        "poverty_rate": poverty
-    }
+    return {"net_income": net_income, "poverty_rate": poverty}
 
 
 def calculate_reform_impact(reform_params=None, year=2025):
@@ -48,7 +45,6 @@ def calculate_reform_impact(reform_params=None, year=2025):
 
     poverty = sim.calc("in_poverty", period=year, map_to="person")
     state_code_person = sim.calc("state_code", period=year, map_to="person")
-
 
     return {
         "metrics": pd.DataFrame(

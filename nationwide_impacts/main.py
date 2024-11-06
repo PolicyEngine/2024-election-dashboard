@@ -36,7 +36,7 @@ def render_nationwide_impacts():
     # Metric selector in second column
     METRICS = {
         "Average Household Impact ($)": "cost",
-        "Poverty Reduction (%)": "poverty_pct_cut"
+        "Poverty Reduction (%)": "poverty_pct_cut",
     }
 
     with col2:
@@ -79,7 +79,6 @@ def render_nationwide_impacts():
                 f"{nationwide_reform_results['poverty_pct_cut']:.1f}%",
                 delta=None,
             )
-
 
         with col2:
             st.metric(
