@@ -37,9 +37,6 @@ def render_reform_map():
         + "<br>"
         + "Poverty Reduction(%): "
         + reform_data["poverty_pct_cut"].round(1).astype(str)
-        + "%<br>"
-        + "Gini Index Reduction (%): "
-        + reform_data["gini_index_pct_cut"].round(1).astype(str)
     )
 
     # Create choropleth map with fixed range starting at 0
