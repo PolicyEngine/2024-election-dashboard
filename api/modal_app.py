@@ -10,6 +10,7 @@ app = modal.App("election-dashboard")
 image = (
     modal.Image.debian_slim(python_version="3.12")
     .pip_install(
+        "fastapi[standard]",
         "policyengine-us==1.88.0",
         "flask==3.1.0",
         "flask-cors==5.0.0",
