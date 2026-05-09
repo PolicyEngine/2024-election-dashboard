@@ -1,0 +1,13 @@
+@import "tailwindcss";
+@import "@policyengine/ui-kit/theme.css";
+@import "@mantine/core/styles.css";
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100vh;
+}

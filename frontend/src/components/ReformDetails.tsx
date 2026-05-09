@@ -1,3 +1,5 @@
+'use client';
+
 import { Stack, Title, Text, List, Anchor, Paper } from "@mantine/core";
 
 export function ReformDetails() {

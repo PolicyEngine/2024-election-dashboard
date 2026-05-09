@@ -1,7 +1,7 @@
 import type { HouseholdInputs, CalculationResponse } from "./types";
 
 const API_URL =
-  import.meta.env.VITE_API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
   "https://policyengine--election-dashboard-calculate.modal.run";
 
 export async function calculateHouseholdImpact(

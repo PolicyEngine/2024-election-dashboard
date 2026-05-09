@@ -1,3 +1,5 @@
+'use client';
+
 import { Table, Text } from "@mantine/core";
 import type { ReformResults } from "../types";
 import { MAIN_METRICS, STATE_NAMES } from "../types";
