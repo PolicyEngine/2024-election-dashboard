@@ -3,8 +3,6 @@ import "@policyengine/ui-kit/styles.css";
 
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
-import PolicyEngineHeader from '@/components/PolicyEngineHeader';
-
 export const metadata: Metadata = {
   title: '2024 election household impact calculator | PolicyEngine',
   description:
@@ -25,7 +23,6 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <PolicyEngineShell country="us">
-        <PolicyEngineHeader />
         {children}
               </PolicyEngineShell>
       </body>
