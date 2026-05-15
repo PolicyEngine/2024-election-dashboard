@@ -13,7 +13,7 @@
   "dependencies": {
     "@mantine/core": "^8.3.10",
     "@mantine/hooks": "^8.3.10",
-    "@policyengine/ui-kit": "^0.9.0",
+    "@policyengine/ui-kit": "^0.12.0",
     "next": "^16.2.6",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
